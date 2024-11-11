@@ -40,7 +40,7 @@ export default class Navbar extends Component {
             <nav className="navbar navbar-expand-lg fixed-top " style={{ backgroundColor: "light blue" }}>
                 <div className="container" >
 
-                    <div ><Link to={'/'}><img src={logo2} alt="@" width={150} height={80} /></Link></div>
+                    <div ><Link to={'/'}><img src={logo2} alt="@" width={270} height={80} /></Link></div>
 
                     {/* <Link className="navbar-brand text-info" to={'/'} ><h2 >INFINITY TRAVELS</h2></Link> */}
 
