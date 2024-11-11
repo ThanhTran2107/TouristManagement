@@ -3,6 +3,9 @@ import UserProfileService from "../../Services/UserProfileService";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const firstName = sessionStorage.getItem("firstName");
+const lastName = sessionStorage.getItem('lastName');
+
 const UserProfile = () => {
   
   const navigate = useNavigate();
@@ -32,27 +35,29 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <div style={Styles.container}>
-      <div style={Styles.profileContainer}>
-        <div className="row" style={Styles.header}>
-          <div className="col-6">
-            <h2 style={Styles.title}>User Profile</h2>
+    <div className="form-group" style={{ paddingTop: 100, height: "850px", position: "relative", background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)` }}>
+      <div style={Styles.container}>
+        <div style={Styles.profileContainer}>
+          <div className="row" style={Styles.header}>
+            <div className="col-6">
+              <h2 style={Styles.title}>{firstName} {lastName}'s Profile</h2>
+            </div>
+            <div className="col-6" style={{ textAlign: "right" }}>
+              <button className="btn btn-outline-primary" style={Styles.buttonStyle} onClick={nav}><b>Edit</b></button>
+            </div>
           </div>
-          <div className="col-6" style={{ textAlign: "right" }}>
-            <button className="btn btn-outline-primary" style={Styles.buttonStyle} onClick={nav}><b>Edit</b></button>
-          </div>
-        </div>
-        
-        <hr />
-        
-        <div className="row">
-          <div className="col-12">
-            <ProfileDetail label="First Name" value={Profile.firstName} />
-            <ProfileDetail label="Last Name" value={Profile.lastName} />
-            <ProfileDetail label="Email" value={Profile.email} />
-            <ProfileDetail label="Date of Birth" value={Profile.dob} />
-            <ProfileDetail label="Phone No" value={Profile.phoneNo} />
-            <ProfileDetail label="Address" value={Profile.address} />
+          
+          <hr />
+          
+          <div className="row">
+            <div className="col-12">
+              <ProfileDetail label="First Name" value={Profile.firstName} />
+              <ProfileDetail label="Last Name" value={Profile.lastName} />
+              <ProfileDetail label="Email" value={Profile.email} />
+              <ProfileDetail label="Date Of Birth" value={Profile.dob} />
+              <ProfileDetail label="Phone Number" value={Profile.phoneNo} />
+              <ProfileDetail label="Address" value={Profile.address} />
+            </div>
           </div>
         </div>
       </div>
@@ -71,9 +76,14 @@ const ProfileDetail = ({ label, value }) => {
 
 const Styles = {
   container: {
-    backgroundColor: "#f5f5f5",
-    minHeight: "100vh",
-    paddingTop: "15vh",  // Tăng paddingTop để dịch xuống dưới
+    borderColor: "crimson",
+    width: "850px",
+    height: "435px",  
+    margin: "auto",
+    marginTop: "1vw",
+    borderRadius: 20,
+    padding: "30px",
+    boxShadow: "2px 2px 25px 1px #B3B3B3",
   },
   profileContainer: {
     backgroundColor: "#ffffff",
@@ -89,7 +99,8 @@ const Styles = {
   title: {
     fontSize: "30px",
     fontWeight: "600",
-    fontFamily: "'Arial', sans-serif",
+    fontFamily: "Georgia, serif", 
+    color: "#143F6B",
   },
   buttonStyle: {
     fontSize: "16px",

@@ -168,7 +168,7 @@ const styles = {
   container: {
     borderColor: "crimson",
     width: 400,
-    height: 700,  
+    height: 720,  
     margin: "auto",
     marginTop: "1vw",
     borderRadius: 20,

@@ -32,7 +32,6 @@ export const Feedback = () => {
 
             const feedback = { firstName, email, rating, comment }
             let userId = sessionStorage.getItem("userId");
-            //create
             FeedBackService.createFeedback(feedback, userId)
                 .then(response => {
                     console.log("feedback added successfully", response.data);
@@ -115,7 +114,6 @@ const Styles = {
         padding: "15px",
         boxShadow: "3px 3px 10px 2px #576F72",
         backgroundColor: "white"
-        // backgroundColor:"#F0EBE3"
     },
     feedbackText: {
         textAlign: "center",

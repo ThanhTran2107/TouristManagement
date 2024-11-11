@@ -107,7 +107,7 @@ export default class Navbar extends Component {
 
                             {uID === ' ' ? ' ' : <h5 style={{ marginTop: "8px", marginLeft: "2vw", fontFamily: "Georgia, serif", color: "#143F6B" }}> &nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;{firstName} {lastName}</b> </h5>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                            {uID === ' ' ? ' ' : <Link className="btn btn-danger" onClick={this.logout} to={'/'} type="submit" style={{ height: "5.5vh", }} > Logout </Link>}
+                            {uID === ' ' ? ' ' : <Link className="btn btn-danger" onClick={this.logout} to={'/'} type="submit" style={{ height: "5.5vh", }} ><b>Logout</b></Link>}
 
                         </ul>
                     </div>

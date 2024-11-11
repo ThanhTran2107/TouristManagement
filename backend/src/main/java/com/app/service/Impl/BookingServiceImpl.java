@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,8 @@ import com.app.repository.TourDetailsRepository;
 import com.app.repository.TouristRepository;
 import com.app.repository.UserRepositry;
 import com.app.service.BookingService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
@@ -134,6 +134,7 @@ public class BookingServiceImpl implements BookingService {
 //					(booking)->this.modelMapper
 //						.map(booking,BookingDTO.class)).collect(Collectors.toList()
 //				);
+        @SuppressWarnings("Convert2Diamond")
 		List<BookingDTO> dtoList = new ArrayList<BookingDTO>();
 		bookings.forEach(
 					booking -> {
