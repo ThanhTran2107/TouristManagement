@@ -1,19 +1,18 @@
 import { useState } from "react";
 import UserProfileService from "../../Services/UserProfileService";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   
-  function nav(){
-    navigate('/editProfile')
+  function nav() {
+    navigate('/editProfile');
   }
+
   const [Profile, setProfile] = useState("");
   
-
   let userId = sessionStorage.getItem("userId");
   console.log(userId);
 
@@ -22,10 +21,9 @@ const UserProfile = () => {
       .then((response) => {
         console.log("User Profile: ", response.data);
         setProfile(response.data);
-        // console.log(Profile);
       })
       .catch((error) => {
-        console.log("Something went wrong", error);
+        console.log("Something Went Wrong", error);
       });
   }
 
@@ -34,114 +32,91 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <div style={{height:"100vh" , backgroundColor:"#ddbdf5cc"}} >
-    <div style={{ paddingTop : "20vh"}}>
-      <div className="container-fluid" style={Styles.divStyle}>
-        
-        <div style={{ padding: "15px", width: "100%" }}>
-        <div className="col-12 row">
+    <div style={Styles.container}>
+      <div style={Styles.profileContainer}>
+        <div className="row" style={Styles.header}>
           <div className="col-6">
-          <span style={{ fontFamily: "inherit",fontWeight: 500,fontSize : "30px"}}>{"User Profile"} </span>
+            <h2 style={Styles.title}>User Profile</h2>
           </div>
-
-          <div className="col-6 plr-0" style={{textAlign : "right"}}>
-          <button className="btn btn-outline-primary" style={Styles.buttonStyle} onClick={nav}>Edit</button>
+          <div className="col-6" style={{ textAlign: "right" }}>
+            <button className="btn btn-outline-primary" style={Styles.buttonStyle} onClick={nav}><b>Edit</b></button>
           </div>
         </div>
-
-          <hr />
-          <div className="col-12 row">
-            <div className="col-6">
-            <span
-            style={{
-              display: "flex",justifyContent: "left",alignItems: "left",paddingTop : "10px"
-            }}
-          >
-            <span style={{ fontFamily: "inherit" , fontSize:"17px", fontWeight:"bold"}}>
-              First Name: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.firstName}
-            </span>
-          </span>
-
-          <span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px",fontWeight:"bold" }}>
-              Last Name: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.lastName}
-            </span>
-          </span>
-
-          <span style={{display: "flex",justifyContent: "left",alignItems: "left",paddingTop : "10px" }}>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px",fontWeight:"bold"}}>
-              Email: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.email}
-            </span>
-          </span>
-
-          <span style={{display: "flex",justifyContent: "left",alignItems: "left",paddingTop : "10px"}} >
-            <span style={{ fontFamily: "inherit" , fontSize:"17px",fontWeight:"bold"}}>
-              dob: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.dob}
-            </span>
-          </span>
-          <span
-            style={{display: "flex",justifyContent: "left",alignItems: "left",paddingTop : "10px"}}
-          >
-            <span style={{ fontFamily: "inherit" , fontSize:"17px",fontWeight:"bold"}}>
-              phone no: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.phoneNo}
-            </span>
-          </span>
-          <span
-            style={{display: "flex",justifyContent: "left",alignItems: "left",paddingTop : "10px"
-            }}
-          >
-            <span style={{ fontFamily: "inherit" , fontSize:"17px",fontWeight:"bold"}}>
-              Address: &nbsp;
-            </span>
-            <span style={{ fontFamily: "inherit" , fontSize:"17px"}}>
-              {Profile.address}
-            </span>
-          </span>
-            </div>
+        
+        <hr />
+        
+        <div className="row">
+          <div className="col-12">
+            <ProfileDetail label="First Name" value={Profile.firstName} />
+            <ProfileDetail label="Last Name" value={Profile.lastName} />
+            <ProfileDetail label="Email" value={Profile.email} />
+            <ProfileDetail label="Date of Birth" value={Profile.dob} />
+            <ProfileDetail label="Phone No" value={Profile.phoneNo} />
+            <ProfileDetail label="Address" value={Profile.address} />
           </div>
-          
         </div>
-      </div>
       </div>
     </div>
   );
 };
-const Styles = {
-  divStyle: {
-    backgroundColor: "#ffff",
-    borderStyle: "thin",
-    width: "30%",
-    display: "flex",
-    marginTop: "5vh",
-    borderRadius: "4px",
-    padding: "20px",
-    //boxShadow: "2px 2px 30px 2px #6B61FF",
-    border: "1px solid rgba(0, 0, 0, 0.125)"
-  },
-  buttonStyle:{
-           
-    marginTop:10,
-    position:"relative",
-    justifyContent:'center', alignItems:'center', height: '50vh',
-    width: '8vw',
-    height:40,
-    borderRadius: 2}
 
-}
+const ProfileDetail = ({ label, value }) => {
+  return (
+    <div style={Styles.profileRow}>
+      <span style={Styles.profileLabel}>{label}:</span>
+      <span style={Styles.profileValue}>{value}</span>
+    </div>
+  );
+};
+
+const Styles = {
+  container: {
+    backgroundColor: "#f5f5f5",
+    minHeight: "100vh",
+    paddingTop: "15vh",  // Tăng paddingTop để dịch xuống dưới
+  },
+  profileContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: "8px",
+    padding: "20px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    maxWidth: "800px",
+    margin: "0 auto",
+  },
+  header: {
+    marginBottom: "20px",
+  },
+  title: {
+    fontSize: "30px",
+    fontWeight: "600",
+    fontFamily: "'Arial', sans-serif",
+  },
+  buttonStyle: {
+    fontSize: "16px",
+    padding: "8px 16px",
+    borderRadius: "5px",
+    border: "1px solid #007bff",
+    color: "#007bff",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  },
+  profileRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "15px",
+    fontSize: "18px",
+  },
+  profileLabel: {
+    fontWeight: "bold",
+    fontSize: "18px",
+    color: "#333",
+  },
+  profileValue: {
+    fontSize: "18px",
+    color: "#555",
+  }
+};
+
 
 export default UserProfile;

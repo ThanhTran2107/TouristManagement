@@ -36,37 +36,37 @@ export const SignUp = () => {
 
   function valid(data, confirmPassword) {
     if (data.email.length === 0) {
-      toast.error("Please enter email");
+      toast.error("Please Enter Email");
     }
     else if (data.password.length === 0) {
-      toast.error("Please enter password");
+      toast.error("Please Enter Password");
     }
-    else if (data.password.length < 6 || data.password.length > 10) {
-      toast.error("password length should be between 6 to 10");
+    else if (data.password.length < 6 || data.password.length > 15) {
+      toast.error("Password Length Should Be Between 6 to 15");
     }
     else if (!checkPasswordComplexity(data.password)) {
-      toast.error("password must be alphanumeric");
+      toast.error("Password Must Contain At Least A Lowercase Letter, Uppercase Letter, number and Special Character");
     }
     else if (data.password !== confirmPassword) {
-      toast.error("password and confirm password should match");
+      toast.error("Password And Confirm Password Must Match");
     }
     else if (data.role.length === 0) {
-      toast.error("choose role between admin and user");
+      toast.error("Choose Role Between Admin And User");
     }
     else if (data.firstName.length === 0) {
-      toast.error("Please enter first name");
+      toast.error("Please Enter First Name");
     }
     else if (data.lastName.length === 0) {
-      toast.error("Please enter last name");
+      toast.error("Please Enter Last Name");
     }
     else if (data.dob.length === 0) {
-      toast.error("choose dob");
+      toast.error("Please Enter Date Of Birth");
     }
     else if (data.address.length === 0) {
-      toast.error("Please enter address");
+      toast.error("Please Enter Address");
     }
     else if (data.phoneNo.length === 0) {
-      toast.error("Please enter phone no");
+      toast.error("Please Enter Phone Number");
     }
     else {
       return true;
@@ -79,7 +79,7 @@ export const SignUp = () => {
     if (valid(state, confirmPassword)) {
       UserServices.createUser(state)
         .then(response => {
-          console.log("User added successfully", response.data);
+          console.log("User Added Successfully", response.data);
           toast.success("User Added successfully!")
           window.alert("User Added successfully!")
 
@@ -90,7 +90,7 @@ export const SignUp = () => {
         })
         .catch(error => {
           toast.error("ENTER DATA PROPERLY !!!!")
-          console.log('something went wrong', error);
+          console.log('Something Went Wrong', error);
         })
     }
   }
@@ -105,7 +105,7 @@ export const SignUp = () => {
         <div style={styles.container}>
 
           <div>
-            <h2 style={styles.SignupText}><b>SignUp</b></h2>
+            <h2 style={styles.SignupText}><b>Sign Up</b></h2>
           </div>
 
           <div className="mb-3 ">
@@ -137,9 +137,16 @@ export const SignUp = () => {
 
           <div className="mb-3">
             <label>Role</label>
-            <input onChange={handleInputChange} className='form-control'
-              type='text' placeholder="Role" name="role" value={state.role}
-            />
+            <select 
+              onChange={handleInputChange} 
+              className='form-control' 
+              name="role" 
+              value={state.role}
+            >
+              <option value="">Role</option>
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
           </div>
 
           <div className="mb-3">
@@ -157,7 +164,7 @@ export const SignUp = () => {
           </div>
 
           <div className="mb-3">
-            <label>date Of Birth</label>
+            <label>Date Of Birth</label>
             <input onChange={handleInputChange} className='form-control'
               type='date' placeholder="Date Of Birth" name="dob" value={state.dob}
             />
@@ -171,18 +178,18 @@ export const SignUp = () => {
           </div>
 
           <div className="mb-3">
-            <label>Phone No</label>
+            <label>Phone Number</label>
             <input onChange={handleInputChange} className='form-control'
               type='number' placeholder="Phone Number" name="phoneNo" value={state.phoneNo}
             />
           </div>
 
           <div style={{ marginTop: 20, marginLeft: 10 }}>
-            <i>Already have an account? </i><Link to='/signIn'>Login here</Link>
+            <i>Already have an account? </i><Link to='/signIn'>Login</Link>
           </div >
 
           <div className='mb-3' style={{ marginTop: 15 }}>
-            <button style={styles.signupButton} >Signup</button>
+            <button style={styles.signupButton} >Sign up</button>
           </div>
         </div>
       </form>

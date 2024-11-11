@@ -23,8 +23,8 @@ export const Home = () => {
           <figcaption className="centered" style={{ position: "absolute", bottom: "50vh", left: "40vw" }}>
             <div style={{ color: "crimson" }}>
               <p style={{ fontFamily: "Lucida Handwriting, Cursive ", color: "#2C3639" }}>
-                <h3>Welcome To<h2>SAFARI TOURS !</h2> </h3>
-                <p><h4>Explore.  Dream.  Discover.</h4></p>
+                <h3>Welcome To<h2>SGU Travel !</h2> </h3>
+                <p><h4>Your journey begins here at SGU</h4></p>
               </p>
             </div>
           </figcaption>

@@ -16,28 +16,29 @@ export const SignIn = (props) => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    document.title = "Safari || signIn";
+    document.title = "signIn";
   }, [])
 
   function checkPasswordComplexity(pwd) {
-
     var regularExpression = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
     var valid = regularExpression.test(pwd);
     return valid;
   }
+
   function valid(data) {
     if (data.email.length === 0) {
-      toast.error("Please enter email");
+      toast.error("Please Enter Email");
     }
     else if (data.password.length === 0) {
-      toast.error("Please enter password");
+      toast.error("Please Enter Password");
     }
-    else if (data.password.length < 6 || data.password.length > 10) {
-      toast.error("password length should be between 6 to 10");
+    else if (data.password.length < 6 || data.password.length > 15) {
+      toast.error("Password Length Should Be Between 6 to 15");
     }
     else if (!checkPasswordComplexity(data.password)) {
-      toast.error("password must be alphanumeric");
+      toast.error("Password Must Contain At Least A Lowercase Letter, Uppercase Letter, number and Special Character");
     }
+  
     else {
       return true;
     }
@@ -67,6 +68,7 @@ export const SignIn = (props) => {
             sessionStorage["role"] = result.role;
             sessionStorage["email"] = result.email;
             sessionStorage["firstName"] = result.firstName;
+            sessionStorage["lastName"] = result.lastName;
 
 
 
@@ -78,7 +80,7 @@ export const SignIn = (props) => {
 
             } else if (response.data.role == "ADMIN") {
               console.log(response.data);
-              swal("Success", "Admin Logged In Successfully\n Admin Username : " + response.data.email + "", "success");
+              swal("Success", "ADMIN Logged In Successfully\n Admin Username : " + response.data.email + "", "success");
               navigate('/admin')
               window.location.reload();
             }
@@ -129,7 +131,7 @@ export const SignIn = (props) => {
           </div>
 
           <div style={{ marginTop: 20, marginLeft: 10 }}>
-            <i>Do not have an account? </i><Link to='/signup'>Resister Here!</Link><br />
+            <i>Do not have an account? </i><Link to='/signup'>Sign Up</Link><br />
             {/* <Link to='/forgot-password'>Forgot Password?</Link> */}
           </div >
 

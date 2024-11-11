@@ -6,12 +6,13 @@ import swal from 'sweetalert';
 //import safari from '../images/s1.png';
 
 //const logo= require("../images/brandLogo.png")
-const logo2 = require("../images/logo.png")
+const logo2 = require("../images/logo.png");
 const user = sessionStorage.getItem("userId");
-const uID = user ?? ' '
+const uID = user ?? ' ';
 
 const role = sessionStorage.getItem("role");
-const name = sessionStorage.getItem("firstName");
+const firstName = sessionStorage.getItem("firstName");
+const lastName = sessionStorage.getItem('lastName');
 
 export default class Navbar extends Component {
     constructor() {
@@ -27,6 +28,7 @@ export default class Navbar extends Component {
         sessionStorage.removeItem("role");
         sessionStorage.removeItem("email");
         sessionStorage.removeItem("firstName");
+        sessionStorage.removeItem("lastName");
 
         window.location.href = "http://localhost:3000";
         toast.success("Logged out Successfully!! Visit Again!!");
@@ -64,7 +66,7 @@ export default class Navbar extends Component {
                                 {role === 'USER' ? <Link className="nav-link text-dark" to={'/userProfile'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Profile</h5></Link> : ' '}
                             </li>
                             <li className="nav-item ">
-                                {uID === ' ' ? <Link className="nav-link text-dark" to={'/signUp'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Register</h5></Link> : ' '}
+                                {uID === ' ' ? <Link className="nav-link text-dark" to={'/signUp'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Sign Up</h5></Link> : ' '}
                             </li>
 
                             <li className="nav-item">
@@ -80,8 +82,8 @@ export default class Navbar extends Component {
                             </li>
 
                             <li className="nav-item">
-                                {role === 'USER' ? <Link className="nav-link text-dark" to={'/getBookedTours'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>BookedTours</h5></Link>
-                                    : role === 'ADMIN' ? <Link className="nav-link text-dark" to={'/getallbookings'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>BookedTours</h5></Link> : ''}
+                                {role === 'USER' ? <Link className="nav-link text-dark" to={'/getBookedTours'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Booked Tours</h5></Link>
+                                    : role === 'ADMIN' ? <Link className="nav-link text-dark" to={'/getallbookings'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Booked Tours</h5></Link> : ''}
 
                             </li>
 
@@ -96,14 +98,14 @@ export default class Navbar extends Component {
                             </li>
 
                             <li className="nav-item">
-                                {role === 'ADMIN' ? <Link className="nav-link text-dark" to={'/search'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>SearchTour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5></Link>
-                                    : <Link className="nav-link text-dark" to={'/gettours'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>SearchTour&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5></Link>}
+                                {role === 'ADMIN' ? <Link className="nav-link text-dark" to={'/search'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Search&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5></Link>
+                                    : <Link className="nav-link text-dark" to={'/gettours'} style={{ color: "#1B2430", fontFamily: "Uchen, serif" }}><h5>Search&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5></Link>}
                             </li>
 
 
 
 
-                            {uID === ' ' ? ' ' : <h5 style={{ marginTop: "8px", marginLeft: "2vw", fontFamily: "Georgia, serif", color: "#143F6B" }}> &nbsp;&nbsp;&nbsp;&nbsp;<b>Welcome,&nbsp;{name}</b> </h5>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            {uID === ' ' ? ' ' : <h5 style={{ marginTop: "8px", marginLeft: "2vw", fontFamily: "Georgia, serif", color: "#143F6B" }}> &nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;{firstName} {lastName}</b> </h5>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                             {uID === ' ' ? ' ' : <Link className="btn btn-danger" onClick={this.logout} to={'/'} type="submit" style={{ height: "5.5vh", }} > Logout </Link>}
 
