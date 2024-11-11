@@ -60,7 +60,6 @@ public class BookingController {
 		return new ResponseEntity<List<BookingDTO>>(bookingDto,HttpStatus.OK);
 		
 	}
-	// for getting the booking by tour date
 	
 	@GetMapping("/getbyDate/{startdate}/{lastdate}")
 	public ResponseEntity<List<BookingDTO>> getBookingsByDuration(LocalDate startdate, LocalDate lastdate){

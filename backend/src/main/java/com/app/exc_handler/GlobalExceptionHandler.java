@@ -13,10 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.app.dto.ApiResponse;
 
-@RestControllerAdvice // MANDATORY annotation to tell SC , following is the global exc handler class
-						// to intercept exceptions in all rest controllers
-//@RestControllerAdvice = @ControllerAdvice + @ResponseEntity
-
+@RestControllerAdvice 
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

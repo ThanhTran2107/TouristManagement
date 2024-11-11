@@ -58,7 +58,6 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(getUser, HttpStatus.OK);
 	}
 
-	// for checking purpose only
 	@GetMapping("/getall")
 	public ResponseEntity<List<UserDTO>> getAllUser() {
 		List<UserDTO> getUsers = this.userService.getAllUsers();

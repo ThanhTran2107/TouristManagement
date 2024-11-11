@@ -14,7 +14,6 @@ public class Application {
 		System.out.println("TOURIST MANAGEMENT RUNNING SUCCESSFULLY");
 	}
 
-	// configure model mapper bean , with STRICT mapping instructions
 	@Bean
 	public ModelMapper mapper() {
 		ModelMapper modelMapper = new ModelMapper();
