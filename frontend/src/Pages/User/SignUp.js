@@ -45,7 +45,7 @@ export const SignUp = () => {
       toast.error("Password Length Should Be Between 6 to 15");
     }
     else if (!checkPasswordComplexity(data.password)) {
-      toast.error("Password Must Contain At Least A Lowercase Letter, Uppercase Letter, number and Special Character");
+      toast.error("Password Must Contain At Least A Number And Special Character");
     }
     else if (data.password !== confirmPassword) {
       toast.error("Password And Confirm Password Must Match");
@@ -99,7 +99,7 @@ export const SignUp = () => {
 
 
   return (
-    <div style={{ background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`, height: "100vh" }} ><br />
+    <div style={{ background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`, height: "155vh" }} ><br />
 
       <form onSubmit={handleSignUp}>
         <div style={styles.container}>
