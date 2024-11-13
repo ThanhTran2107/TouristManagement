@@ -10,6 +10,7 @@ export const SignIn = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,12 +63,12 @@ export const SignIn = (props) => {
             window.location.reload();
           }
         } else {
-          toast.error('Invalid credentials');
+          toast.error('Invalid Credentials');
         }
       }
     } catch (error) {
       console.log("invalid");
-      toast.error("Invalid credentials!!");
+      toast.error("Invalid Credentials!!");
     }
   }
 
@@ -78,7 +79,12 @@ export const SignIn = (props) => {
 
         <div className="mb-3">
           <label>Email</label>
-          <input onChange={(event) => setEmail(event.target.value)} className='form-control' type='email' placeholder="Email" />
+          <input 
+            onChange={(event) => setEmail(event.target.value)} 
+            className='form-control' 
+            type='email' 
+            placeholder="Email" 
+          />
         </div>
 
         <div className='mb-3'>
@@ -105,15 +111,25 @@ export const SignIn = (props) => {
         </div>
 
         <div style={styles.linkContainer}>
-          <Link to='/signup' style={styles.link}>Don't have an account?</Link>
-          <Link to='/forgot-password' style={styles.link}>Forgot password?</Link>
+          <LinkWithHover to='/signup'>Don't have an account?</LinkWithHover>
+          <LinkWithHover to='/forgot-password'>Forgot password?</LinkWithHover>
         </div>
 
         <div className='mb-3' style={{ marginTop: 15 }}>
-          <button style={styles.signupButton}>Login</button>
+          <button 
+            style={{ 
+              ...styles.signinButton, 
+              ...(isHovered ? styles.signinButtonHover : {})
+            }} 
+            onMouseEnter={() => setIsHovered(true)} 
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={handleLogin}
+          >
+            <b>Login</b>
+          </button>
         </div>
       </form>
-      </div>
+    </div>
   );
 }
 
@@ -127,7 +143,7 @@ const styles = {
   },
   form: {
     borderColor: "crimson",
-    width: 400, // Tăng chiều rộng khung
+    width: 400,
     borderRadius: 20,
     padding: "30px",
     backgroundColor: "white",
@@ -139,26 +155,48 @@ const styles = {
     fontFamily: 'Signika Negative',
     marginBottom: 20,
   },
-  signupButton: {
+  signinButton: {
     position: 'relative',
     width: '100%',
     height: 40,
-    backgroundColor: '#BC012E',
+    backgroundColor: '#e02c18',
     color: 'white',
     borderRadius: 15,
     border: 'none',
-    transition: 'background-color 0.3s ease',
+    transition: 'background-color 0.3s ease, color 0.3s ease',
+  },
+  signinButtonHover: {
+    backgroundColor: '#892318',
   },
   linkContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     marginTop: 20,
+    color: 'blue',
   },
   link: {
     textDecoration: 'none',
-    color: '#BC012E',
+    color: 'blue',
     transition: 'color 0.3s ease',
+  },
+  linkHover: {
+    color: 'green',
   },
 }
 
-export default SignIn;    
+const LinkWithHover = ({ to, children }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Link
+      to={to}
+      style={{ ...styles.link, ...(isHovered ? styles.linkHover : {}) }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {children}
+    </Link>
+  );
+};
+
+export default SignIn;

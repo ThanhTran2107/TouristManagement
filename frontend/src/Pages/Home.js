@@ -177,7 +177,7 @@ export const Home = () => {
           <h4 style={{ fontFamily: "Cookie, Cursive ", color: "white" }}>Quick Links</h4><br />
           <Link to='/' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }} >Home </Link><br />
           <Link to='/userTourTable' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }}>Tours </Link><br />
-          <Link to='/feedback' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }}>feedback</Link><br />
+          <Link to='/feedback' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }}>Feedback</Link><br />
           <Link to='/faq' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }}>FAQs</Link><br />
           <Link to='/contactus' style={{ fontFamily: 'Nunito', color: "white", textDecoration: "none" }}>ContactUs</Link>
 
@@ -185,8 +185,8 @@ export const Home = () => {
 
         <span style={{ width: "20vw", position: "relative", marginTop: "6vh", textAlign: "center" }}>
           <h4 style={{ fontFamily: "Cookie, Cursive ", color: "white" }}>Contact Us</h4><br />
-          <h6 style={{ fontFamily: 'Nunito', textAlign: "center", color: "white" }}><img src={mailicon} style={{ height: "5vh" }}></img> safariTours@gmail.com</h6>
-          <h6 style={{ fontFamily: 'Nunito', textAlign: "center ", color: "white" }}><img src={callicon} style={{ height: "5vh" }}></img> 9876543210</h6>
+          <h6 style={{ fontFamily: 'Nunito', textAlign: "center", color: "white" }}><img src={mailicon} style={{ height: "5vh" }}></img> sgutravel@gmail.com</h6>
+          <h6 style={{ fontFamily: 'Nunito', textAlign: "center ", color: "white" }}><img src={callicon} style={{ height: "5vh" }}></img> 0917.339.863</h6>
 
         </span>
 
