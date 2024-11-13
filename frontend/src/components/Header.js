@@ -62,7 +62,7 @@ export default class Navbar extends Component {
                                 {role === 'ADMIN' ? <Link className="nav-link text-white" to={'/userProfile'} style={{ color: "#ffffff", fontWeight: "bold", fontFamily: "Uchen, serif" }}><h5>Profile</h5></Link> : ' '}
                             </li>
                             <li className="nav-item">
-                                {uID === ' ' ? <Link className="nav-link text-white" to={'/signUp'} style={{ color: "#ffffff", fontWeight: "bold", fontFamily: "Uchen, serif" }}><h5>Sign Up</h5></Link> : ' '}
+                                {uID === ' ' ? <Link className="nav-link text-white" to={'/signUp'} style={{ color: "#ffffff", fontWeight: "bold", fontFamily: "Uchen, serif" }}><h5>Sign up</h5></Link> : ' '}
                             </li>
 
                             <li className="nav-item">
