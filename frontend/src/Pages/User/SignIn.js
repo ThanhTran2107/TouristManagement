@@ -111,8 +111,8 @@ export const SignIn = (props) => {
         </div>
 
         <div style={styles.linkContainer}>
-          <LinkWithHover to='/signup'>Don't have an account?</LinkWithHover>
-          <LinkWithHover to='/forgot-password'>Forgot password?</LinkWithHover>
+          <LinkWithHover to='/signup'><i>Don't have an account ?</i></LinkWithHover>
+          <LinkWithHover to='/forgotpassword'><i>Forgot password ?</i></LinkWithHover>
         </div>
 
         <div className='mb-3' style={{ marginTop: 15 }}>
@@ -123,7 +123,7 @@ export const SignIn = (props) => {
             }} 
             onMouseEnter={() => setIsHovered(true)} 
             onMouseLeave={() => setIsHovered(false)}
-            onClick={handleLogin}
+            type="submit"
           >
             <b>Login</b>
           </button>

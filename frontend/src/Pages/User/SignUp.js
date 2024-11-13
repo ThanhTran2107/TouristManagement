@@ -199,8 +199,8 @@ export const SignUp = () => {
           </div>
 
           <div style={{ marginTop: 20, marginLeft: 10 }}>
-            <i>Already have an account? </i>
-            <LinkWithHover to='/signIn'>Login</LinkWithHover>
+              Already have an account ?
+            <LinkWithHover to='/signIn'><i> Login</i></LinkWithHover>
           </div>
 
           <div className='mb-3' style={{ marginTop: 15 }}>

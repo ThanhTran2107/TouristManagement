@@ -25,6 +25,7 @@ import AddTourist from "./Pages/Booking/AddTourist";
 import GetBookedTours from "./Pages/User/GetBookedTours";
 import GetAllBookedTours from "./Pages/Admin/GetAllBookedTours";
 import GetFeedback from "./Pages/Admin/GetFeedback";
+import ForgotPassword from "./Pages/User/ForgotPassword";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path="/getFeedback" element={<GetFeedback />} />
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/signUp" element={<SignUp />} />
+          <Route path="/forgotpassword" element={<ForgotPassword/>}/>
 
           {/* user functionality */}
           <Route path="/userProfile" exact element={<UserProfile />} />

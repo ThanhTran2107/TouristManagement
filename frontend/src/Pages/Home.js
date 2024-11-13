@@ -163,8 +163,12 @@ export const Home = () => {
 
           </p>
 
-            The main purpose of “SAFARI TOURS ” is to provide a convenient way for a customer to book a tour.
-            As everyone can observe that the Internet users are increasing day by day and considering this fact, the main objective of our web based application “Infinity travels” is to facilitate the offline customer online and to provide them a feasible and smooth online travel booking experience as customers shouldn't spend their precious time in markets trying to find out best deal.Our objective is to make strong relationship with customers so that they can enjoy the holiday of their dreams.
+          At <b>SGU Travel</b>, we believe that every journey is a memorable adventure, and our mission is to turn your travel dreams into reality. 
+          With the ever-increasing number of internet users, we have developed the web application to provide customers with 
+          a seamless and convenient online tour booking experience. Instead of spending precious time searching for the best deals in the market, 
+          you can now explore a wide array of exciting tour options from the comfort of your home with just a few clicks. We are committed to 
+          building strong relationships with our customers, ensuring that you enjoy the most wonderful holidays you truly deserve. Let SGU Travel 
+          be your trusted partner in every step of your journey around VietNam !
           </p>
         </span>
       </div><br></br><br />
