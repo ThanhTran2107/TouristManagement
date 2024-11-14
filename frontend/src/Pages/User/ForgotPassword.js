@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; 
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,6 +9,7 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
@@ -42,11 +43,12 @@ const ForgotPassword = () => {
     try {
       const result = resetPassword(email, password);
       toast.success(result);
-      // Reset form after successful password reset
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       setIsResetting(false);
+      
+      navigate('/signIn'); 
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -57,13 +59,13 @@ const ForgotPassword = () => {
   const checkEmailExists = (email) => {
     const storedEmails = JSON.parse(localStorage.getItem('email')) || [];
     return storedEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
-};
+  };
+
   const resetPassword = (email, newPassword) => {
-    // Simulate password reset in the session storage
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
     const userIndex = storedUsers.findIndex(user => user.email === email);
     if (userIndex !== -1) {
-      storedUsers[userIndex].password = newPassword; // Update password
+      storedUsers[userIndex].password = newPassword;
       localStorage.setItem('users', JSON.stringify(storedUsers));
       return "Password has been reset successfully";
     } else {
@@ -108,7 +110,7 @@ const ForgotPassword = () => {
                 {isResetting && (
                   <form onSubmit={handlePasswordSubmit} className="mt-4">
                     <div className="form-group">
-                      <label htmlFor="password" style={styles.labelNewPassword}>New Password</label>
+                      <label htmlFor="password" style={styles .labelNewPassword}>New Password</label>
                       <input
                         type="password"
                         className="form-control"
@@ -129,7 +131,7 @@ const ForgotPassword = () => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
- />
+                      />
                     </div>
                     <button 
                       type="submit" 

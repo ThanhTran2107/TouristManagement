@@ -62,13 +62,17 @@ export const SignUp = () => {
     if (valid(state, confirmPassword)) {
         try {
             const response = await UserServices.createUser (state);
-            console.log("User  Added Successfully", response.data);
-            toast.success("User  Added successfully!");
+            console.log("User Added Successfully", response.data);
+            toast.success("User Added successfully!");
 
-            // Lưu email và password vào localStorage
-            registerUser (state.email, state.password);
+            registerUser (state.email, state.password, {
+                firstName: state.firstName,
+                lastName: state.lastName,
+                dob: state.dob,
+                address: state.address,
+                phoneNo: state.phoneNo
+            });
 
-            // Reset trạng thái form
             setState({ email: "", password: "", role: "", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
             setConfirmPassword("");
 
