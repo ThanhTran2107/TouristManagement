@@ -9,26 +9,23 @@ const ForgotPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
-  const [token, setToken] = useState('');
-  const [isHoveredConfirm, setIsHoveredConfirm] = useState(false);
-  const [isHoveredReset, setIsHoveredReset] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
     try {
-      const result = await sendResetNotify(email);
-      toast.success(result);
-      setIsResetting(true);
+      const exists = checkEmailExists(email);
+      if (exists) {
+        setIsResetting(true);
+      } else {
+        toast.error("Email does not exist");
+      }
     } catch (error) {
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
-  
-  
 
   const handlePasswordSubmit = async (event) => {
     event.preventDefault();
@@ -42,33 +39,36 @@ const ForgotPassword = () => {
     }
 
     setLoading(true);
-    console.log("Loading before password reset:", loading); // Kiểm tra giá trị loading
-
     try {
-      const result = await resetPassword(token, password);
+      const result = resetPassword(email, password);
       toast.success(result);
+      // Reset form after successful password reset
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setIsResetting(false);
     } catch (error) {
       toast.error(error.message);
     } finally {
       setLoading(false);
-      console.log("Loading after password reset:", loading); // Kiểm tra giá trị loading
     }
   };
 
-  const sendResetNotify = async (email) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("Email Available To Reset");
-      }, 1000);
-    });
-  };
-
-  const resetPassword = async (token, newPassword) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("Password has been reset successfully");
-      }, 1000);
-    });
+  const checkEmailExists = (email) => {
+    const storedEmails = JSON.parse(localStorage.getItem('email')) || [];
+    return storedEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
+};
+  const resetPassword = (email, newPassword) => {
+    // Simulate password reset in the session storage
+    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+    const userIndex = storedUsers.findIndex(user => user.email === email);
+    if (userIndex !== -1) {
+      storedUsers[userIndex].password = newPassword; // Update password
+      localStorage.setItem('users', JSON.stringify(storedUsers));
+      return "Password has been reset successfully";
+    } else {
+      throw new Error("User  not found");
+    }
   };
 
   return (
@@ -98,13 +98,7 @@ const ForgotPassword = () => {
                   <button 
                     type="submit" 
                     className="btn btn-block mt-3" 
-                    style={{ 
-                      ...styles.button, 
-                      backgroundColor: isHoveredConfirm ? '#892318' : '#e02c18', 
-                      color: 'white' 
-                    }} 
-                    onMouseEnter={() => setIsHoveredConfirm(true)} 
-                    onMouseLeave={() => setIsHoveredConfirm(false)} 
+                    style={styles.button} 
                     disabled={loading}
                   >
                     <b>{loading ? 'Sending...' : 'Confirm'}</b>
@@ -126,7 +120,7 @@ const ForgotPassword = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label htmlFor="confirmPassword" style={styles.labelConfirmPassworđ}>Confirm Password</label>
+                      <label htmlFor="confirmPassword" style={styles.labelConfirmPassword}>Confirm Password</label>
                       <input
                         type="password"
                         className="form-control"
@@ -135,18 +129,12 @@ const ForgotPassword = () => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
-                      />
+ />
                     </div>
                     <button 
                       type="submit" 
                       className="btn btn-block mt-3" 
-                      style={{ 
-                        ...styles.button, 
-                        backgroundColor: isHoveredReset ? '#892318' : '#e02c18', 
-                        color: 'white' 
-                      }} 
-                      onMouseEnter={() => setIsHoveredReset(true)} 
-                      onMouseLeave={() => setIsHoveredReset(false)} 
+                      style={styles.button} 
                       disabled={loading}
                     >
                       <b>{loading ? 'Resetting...' : 'Reset'}</b>
@@ -157,12 +145,7 @@ const ForgotPassword = () => {
                 <div className="text-center mt-3">
                   <Link 
                     to="/signIn" 
-                    style={{ 
-                      ...styles.link, 
-                      color: isHovered ? styles.linkHover.color : styles.link.color 
-                    }}
-                    onMouseEnter={() => setIsHovered(true)} 
-                    onMouseLeave={() => setIsHovered(false)} 
+                    style={styles.link}
                   >
                     <i>Back to login?</i>
                   </Link>
@@ -197,6 +180,8 @@ const styles = {
   },
   button: {
     border: 'none',
+    backgroundColor: '#e02c18',
+    color: 'white',
   },
   label: {
     marginBottom: '5px',
@@ -204,17 +189,14 @@ const styles = {
   labelNewPassword: {
     marginBottom: '5px',
   },
-  labelConfirmPassworđ: {
+  labelConfirmPassword: {
     marginBottom: '5px',
     marginTop: '15px',
   },
   link: {
     textDecoration: 'none',
     transition: 'color 0.3s ease',
-    color: 'blue', // Màu mặc định
-  },
-  linkHover: {
-    color: 'green', // Màu khi hover
+    color: 'blue',
   },
 };
 

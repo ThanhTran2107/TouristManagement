@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserServices from '../../Services/UserServices';
-
+import { registerUser } from '../../Services/utils';
+ 
 export const SignUp = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -59,23 +60,25 @@ export const SignUp = () => {
     event.preventDefault();
 
     if (valid(state, confirmPassword)) {
-      UserServices.createUser (state)
-        .then(response => {
-          console.log("User  Added Successfully", response.data);
-          toast.success("User  Added successfully!");
-          window.alert("User  Added successfully!");
+        try {
+            const response = await UserServices.createUser (state);
+            console.log("User  Added Successfully", response.data);
+            toast.success("User  Added successfully!");
 
-          setState({ email: "", password: "", role: "", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
-          setConfirmPassword("");
+            // Lưu email và password vào localStorage
+            registerUser (state.email, state.password);
 
-          navigate('/signIn');
-        })
-        .catch(error => {
-          toast.error("ENTER DATA PROPERLY !!!!");
-          console.log('Something Went Wrong', error);
-        });
+            // Reset trạng thái form
+            setState({ email: "", password: "", role: "", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
+            setConfirmPassword("");
+
+            navigate('/signIn');
+        } catch (error) {
+            toast.error("ENTER DATA PROPERLY !!!!");
+            console.log('Something Went Wrong', error);
+        }
     }
-  }
+}
 
   return (
     <div style={{ background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`, height: "155vh" }}><br />
@@ -273,4 +276,4 @@ const LinkWithHover = ({ to, children }) => {
   );
 };
 
-export default SignUp;    
+export default SignUp;     
