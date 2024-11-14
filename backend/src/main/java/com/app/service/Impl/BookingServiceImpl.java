@@ -20,7 +20,7 @@ import com.app.entities.User;
 import com.app.repository.BookingRepositry;
 import com.app.repository.TourDetailsRepository;
 import com.app.repository.TouristRepository;
-import com.app.repository.UserRepositry;
+import com.app.repository.UserRepository;
 import com.app.service.BookingService;
 
 import jakarta.transaction.Transactional;
@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
 	BookingRepositry  bookingRepo;
 
 	@Autowired
-	UserRepositry userRepo;
+	UserRepository userRepo;
 	@Autowired
 	TourDetailsRepository tourRepo;
 	@Autowired

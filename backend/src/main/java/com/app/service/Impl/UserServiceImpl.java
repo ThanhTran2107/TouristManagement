@@ -3,7 +3,6 @@ package com.app.service.Impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.app.custom_exceptions.ResourceNotFoundException;
 import com.app.dto.UserDTO;
 import com.app.entities.User;
-import com.app.repository.UserRepositry;
+import com.app.repository.UserRepository;
 import com.app.service.UserService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	ModelMapper modelMapper;
 	@Autowired
-	UserRepositry userRepositry;
+	UserRepository userRepositry;
 
 	@Override
 	public UserDTO createUser(UserDTO userdto) {

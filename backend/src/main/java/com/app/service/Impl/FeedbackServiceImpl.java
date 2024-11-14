@@ -14,7 +14,7 @@ import com.app.dto.FeedbackDTO;
 import com.app.entities.Feedback;
 import com.app.entities.User;
 import com.app.repository.FeedbackRepositry;
-import com.app.repository.UserRepositry;
+import com.app.repository.UserRepository;
 import com.app.service.FeedbackService;
 
 @Service
@@ -25,7 +25,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 	@Autowired
 	FeedbackRepositry feedbackRepositry;
 	@Autowired
-	UserRepositry userRepo;
+	UserRepository userRepo;
 
 	
 
