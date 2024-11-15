@@ -28,12 +28,14 @@ public class TourDetailsController {
 	TourDetailsService tourDetailsService;
 
 	@PostMapping("/create")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<TourDetailsDTO> saveTourDetails(@RequestBody TourDetailsDTO tourDetailsDTO) {
 		TourDetailsDTO savedTourDetails = this.tourDetailsService.saveTourDetails(tourDetailsDTO);
 		return new ResponseEntity<TourDetailsDTO>(savedTourDetails, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/update/{tourDetailId}")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<TourDetailsDTO> updateTourDetails(@RequestBody TourDetailsDTO tourDetailsDTO,
 			@PathVariable Long tourDetailId) {
 		TourDetailsDTO updatedTourDetails = this.tourDetailsService.updateTourDetails(tourDetailsDTO, tourDetailId);
@@ -41,18 +43,21 @@ public class TourDetailsController {
 	}
 
 	@GetMapping("/get/{tourDetailId}")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<TourDetailsDTO> getTourDetailsById(@PathVariable Long tourDetailId) {
 		TourDetailsDTO tourDetails = this.tourDetailsService.getTourDetailsById(tourDetailId);
 		return new ResponseEntity<TourDetailsDTO>(tourDetails, HttpStatus.OK);
 	}
 
 	@GetMapping("/getall")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<List<TourDetailsDTO>> getAllToursDetails() {
 		List<TourDetailsDTO> allTourDetails = this.tourDetailsService.getAllToursDetails();
 		return new ResponseEntity<List<TourDetailsDTO>>(allTourDetails, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/delete/{tourDetailId}")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<ApiResponse> deleteTourDetailsById(@PathVariable Long tourDetailId) {
 		this.tourDetailsService.deleteTourDetailsById(tourDetailId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("Tour Detail is deleted sucessfully", true),
@@ -60,24 +65,28 @@ public class TourDetailsController {
 	}
 
 	@GetMapping("/getbydestination/{destination}")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<List<TourDetailsDTO>> getTourDetailsByDestination(@PathVariable String destination) {
 		List<TourDetailsDTO> tourDetailsList = this.tourDetailsService.getToursByDestination(destination);
 		return new ResponseEntity<List<TourDetailsDTO>>(tourDetailsList, HttpStatus.OK);
 	}
 	
 	@GetMapping("/getbybudget")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<List<TourDetailsDTO>> getTourDetailsByBudget() {
 		List<TourDetailsDTO> tourDetailsList = this.tourDetailsService.findTourByBudget();
 		return new ResponseEntity<List<TourDetailsDTO>>(tourDetailsList, HttpStatus.OK);
 	}
 	
 	@GetMapping("/getbyduration")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<List<TourDetailsDTO>> getTourDetailsByDuration() {
 		List<TourDetailsDTO> tourDetailsList = this.tourDetailsService.findTourByDuration();
 		return new ResponseEntity<List<TourDetailsDTO>>(tourDetailsList, HttpStatus.OK);
 	}
 
 	@GetMapping("/getBytourtpe/{tourtype}")
+	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<List<TourDetailsDTO>> getTourDetailsByTourType(@PathVariable String tourtype) {
 		List<TourDetailsDTO> tourDetailsList = this.tourDetailsService.getToursByTourType(TourTypeEnum.valueOf(tourtype));
 		return new ResponseEntity<List<TourDetailsDTO>>(tourDetailsList, HttpStatus.OK);

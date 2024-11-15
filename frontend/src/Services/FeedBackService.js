@@ -9,6 +9,10 @@ class FeedBackService {
     getAllFeedBacks() {
         return axios.get(TOUR_API + '/getall');
     }
+
+    deleteFeedBack(feedbackId) {
+        return axios.delete(TOUR_API + '/delete/' + feedbackId); 
+    }
 }
 
-export default new FeedBackService;
+export default new FeedBackService();

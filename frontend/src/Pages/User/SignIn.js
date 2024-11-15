@@ -27,8 +27,8 @@ export const SignIn = (props) => {
       toast.error("Please Enter Email");
     } else if (data.password.length === 0) {
       toast.error("Please Enter Password");
-    } else if (data.password.length < 6 || data.password.length > 15) {
-      toast.error("Password Length Should Be Between 6 to 15");
+    } else if (data.password.length < 6 || data.password.length > 20) {
+      toast.error("Password Length Should Be Between 6 to 20");
     } else if (!checkPasswordComplexity(data.password)) {
       toast.error("Password Must Contain At Least A Number And Special Character");
     } else {

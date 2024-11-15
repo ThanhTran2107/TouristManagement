@@ -20,6 +20,7 @@ import com.app.service.FeedbackService;
 
 @RestController
 @RequestMapping("/feedback")
+@SuppressWarnings("Convert2Diamond")
 @CrossOrigin(origins="http://localhost:3000")
 public class FeedbackController {
 	@Autowired
@@ -33,8 +34,8 @@ public class FeedbackController {
 
 	@DeleteMapping("/delete/{feedbackId}")
 	public ResponseEntity<ApiResponse> deleteFeedback(@PathVariable Long feedbackId) {
-		this.feedbackService.deletefeedbackById(feedbackId);
-		return new ResponseEntity<ApiResponse>(new ApiResponse("Feedback is deleted sucessfully", true), HttpStatus.OK);
+    	this.feedbackService.deletefeedbackById(feedbackId);
+    	return new ResponseEntity<ApiResponse>(new ApiResponse("Feedback is deleted successfully", true), HttpStatus.OK);
 	}
 
 

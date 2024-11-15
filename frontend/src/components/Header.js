@@ -79,7 +79,7 @@ export default class Navbar extends Component {
                             </li>
 
                             <li className="nav-item">
-                                {role === 'USER' || uID === ' ' ? <Link className="nav-link text-white" to={'/feedback'} style={{ color: "#ffffff", fontWeight: "bold", fontFamily: "Uchen, serif" }}><h5>Feedback</h5></Link> : ''}
+                                {role === 'USER' ? <Link className="nav-link text-white" to={'/feedback'} style={{ color: "#ffffff", fontWeight: "bold", fontFamily: "Uchen, serif" }}><h5>Feedback</h5></Link> : ''}
                             </li>
 
                             <li className="nav-item">

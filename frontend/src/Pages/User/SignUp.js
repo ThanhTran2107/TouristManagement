@@ -2,13 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserServices from '../../Services/UserServices';
-import { registerUser } from '../../Services/utils';
- 
+import { registerUser  } from '../../Services/utils';
+
 export const SignUp = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [state, setState] = useState({
-    email: "", password: "", role: "", firstName: "", lastName: "", dob: "", address: "", phoneNo: ""
+    email: "", 
+    password: "", 
+    role: "USER", // Đặt mặc định là USER
+    firstName: "", 
+    lastName: "", 
+    dob: "", 
+    address: "", 
+    phoneNo: ""
   });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isHovered, setIsHovered] = useState(false);
@@ -33,8 +40,8 @@ export const SignUp = () => {
       toast.error("Please Enter Email");
     } else if (data.password.length === 0) {
       toast.error("Please Enter Password");
-    } else if (data.password.length < 6 || data.password.length > 15) {
-      toast.error("Password Length Should Be Between 6 to 15");
+    } else if (data.password.length < 6 || data.password.length > 20) {
+      toast.error("Password Length Should Be Between 6 to 20");
     } else if (!checkPasswordComplexity(data.password)) {
       toast.error("Password Must Contain At Least A Number And Special Character");
     } else if (data.password !== confirmPassword) {
@@ -62,8 +69,8 @@ export const SignUp = () => {
     if (valid(state, confirmPassword)) {
         try {
             const response = await UserServices.createUser (state);
-            console.log("User Added Successfully", response.data);
-            toast.success("User Added successfully!");
+            console.log("User  Added Successfully", response.data);
+            toast.success("User  Added successfully!");
 
             registerUser (state.email, state.password, {
                 firstName: state.firstName,
@@ -73,7 +80,8 @@ export const SignUp = () => {
                 phoneNo: state.phoneNo
             });
 
-            setState({ email: "", password: "", role: "", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
+            // Reset trạng thái form
+            setState({ email: "", password: "", role: "USER", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
             setConfirmPassword("");
 
             navigate('/signIn');
@@ -133,16 +141,14 @@ export const SignUp = () => {
 
           <div className="mb-3">
             <label>Role</label>
-            <select 
-              onChange={handleInputChange} 
+            <input 
               className='form-control' 
+              type='text' 
+              placeholder="Role" 
               name="role" 
-              value={state.role}
-            >
-              <option value="">Role</option>
-              <option value="USER">USER</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
+              value={state.role} 
+              readOnly 
+            />
           </div>
 
           <div className="mb-3">
@@ -280,4 +286,4 @@ const LinkWithHover = ({ to, children }) => {
   );
 };
 
-export default SignUp;     
+export default SignUp;

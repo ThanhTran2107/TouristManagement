@@ -15,7 +15,6 @@ import lombok.ToString;
 public class FeedbackDTO {
 	private Long feedbackId;
 	private String comment;
-//	private Long userId;
 	private String email;
 	private String firstName;
 	private Integer rating;

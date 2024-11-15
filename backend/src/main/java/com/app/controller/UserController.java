@@ -22,6 +22,7 @@ import com.app.service.UserService;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins="http://localhost:3000")
+@SuppressWarnings("Convert2Diamond")
 public class UserController {
 
 	@Autowired

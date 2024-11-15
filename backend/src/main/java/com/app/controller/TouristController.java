@@ -19,6 +19,7 @@ import com.app.service.TouristService;
 @RestController
 @RequestMapping("/tourist")
 @CrossOrigin(origins="http://localhost:3000")
+@SuppressWarnings("Convert2Diamond")
 public class TouristController {
 	@Autowired
 	TouristService touristService;

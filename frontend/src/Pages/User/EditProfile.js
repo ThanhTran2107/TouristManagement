@@ -59,14 +59,12 @@ const EditProfile = () => {
               const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
               const userIndex = storedUsers.findIndex(user => user.email === email);
               if(userIndex){
-                storedUsers[userIndex].email = email;
                 storedUsers[userIndex].password = password;
               }
               localStorage.setItem('users', JSON.stringify(storedUsers));
             }
             
             navigate('/userProfile');
-            window.location.reload();
           })
           .catch((error) => {
             console.log("Something went wrong", error);
@@ -100,7 +98,8 @@ const EditProfile = () => {
   }, []);
 
   return (
-    <div className="form-group" style={{ paddingTop: 90, height: "850px", position: "relative", background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)` }}>
+    <div className="form-group" style={{ paddingTop: 90, height: "850px", position: "relative", 
+                                            background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)` }}>
       <form onSubmit={updateProfile}>
         <div style={styles.container}>
           <div>
@@ -139,6 +138,7 @@ const EditProfile = () => {
               className="form-control"
               type="email"
               placeholder="Enter your email"
+              readOnly
             />
           </div>
 
@@ -149,16 +149,16 @@ const EditProfile = () => {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="form-control"
-                type={showPassword ? "text" : "password"} // Hiển thị mật khẩu hoặc ẩn mật khẩu
+                type={showPassword ? "text" : "password"} 
                 placeholder="Enter your password"
               />
               <div className="input-group-append">
                 <button
                   type="button"
                   className="btn btn-outline-secondary"
-                  onClick={() => setShowPassword(!showPassword)} // Chuyển đổi trạng thái hiển thị mật khẩu
+                  onClick={() => setShowPassword(!showPassword)} 
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Hiển thị biểu tượng tương ứng */}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />} 
                 </button>
               </div>
             </div>

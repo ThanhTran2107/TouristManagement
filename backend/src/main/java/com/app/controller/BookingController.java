@@ -21,6 +21,7 @@ import com.app.service.BookingService;
 
 @RestController
 @RequestMapping("/booking")
+@SuppressWarnings("Convert2Diamond")
 @CrossOrigin(origins="http://localhost:3000")
 public class BookingController {
 	@Autowired
