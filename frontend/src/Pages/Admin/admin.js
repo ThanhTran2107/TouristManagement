@@ -21,7 +21,7 @@ const Admin = () => {
           <Card
             image={account_management}
             title="Accounts"
-            link="/manageAccounts"
+            link="/accounts"
           />
           <Card
             image={tourPic}
@@ -55,6 +55,7 @@ const Card = ({ image, title, link }) => {
         style={{
           ...Styles.buttonStyle,
           backgroundColor: isHovered ? "#892318" : Styles.buttonStyle.backgroundColor,
+          transform: isHovered ? "scale(1.05)" : "scale(1)", // Thêm hiệu ứng phóng to khi hover
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

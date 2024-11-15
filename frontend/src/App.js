@@ -26,6 +26,7 @@ import GetBookedTours from "./Pages/User/GetBookedTours";
 import GetAllBookedTours from "./Pages/Admin/GetAllBookedTours";
 import GetFeedback from "./Pages/Admin/GetFeedback";
 import ForgotPassword from "./Pages/User/ForgotPassword";
+import AccountManagement from "./Pages/Admin/AccountManagement";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
@@ -63,7 +64,8 @@ function App() {
           <Route path="/getallbookings" element={<GetAllBookedTours />} />
           <Route path="/searchbydestination/:destination" element={<SearchByDestination />} />
           <Route path="/searchByBudget" element={<SearchByBudget />} />
-          
+          <Route path="/accounts" element={<AccountManagement/>}/>
+
         </Routes>
         <ToastContainer position="top-center" autoClose={3000} />
       </Router>
