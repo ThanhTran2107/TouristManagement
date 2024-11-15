@@ -81,7 +81,7 @@ const Styles = {
     maxWidth: "1200px",
   },
   cardStyle: {
-    position: "relative", // Để có thể căn chỉnh biểu tượng dấu "X"
+    position: "relative",
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#F7ECDE",
@@ -97,7 +97,7 @@ const Styles = {
     position: "absolute",
     top: "10px",
     right: "10px",
-    width: "20px", // Kích thước của biểu tượng
+    width: "20px", 
     cursor: "pointer",
   },
   cardBody: {

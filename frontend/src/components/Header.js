@@ -93,7 +93,7 @@ export default class Navbar extends Component {
 
 
 
-                            {uID === ' ' ? '' : <h5 style={{ marginTop: "8px", marginLeft: "2vw", fontFamily: "Georgia, serif", color: "#143F6B" }}> <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{firstName} {lastName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> </h5>}
+                            {uID === ' ' ? '' : <h5 style={{ marginTop: "8px", marginLeft: "2vw", fontFamily: "Georgia, serif", color: "#143F6B" }}> <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome, {firstName} {lastName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b> </h5>}
 
                             {uID === ' ' ? '' : (<button className="logout-btn" onClick={this.logout}><b>Logout</b></button>)}
 

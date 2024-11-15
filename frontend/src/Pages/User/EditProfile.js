@@ -54,7 +54,7 @@ const EditProfile = () => {
             sessionStorage.setItem("phoneNo", phoneNo);
             sessionStorage.setItem("address", address);
             
-
+  
             if (exists) {
               const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
               const userIndex = storedUsers.findIndex(user => user.email === email);
@@ -63,8 +63,9 @@ const EditProfile = () => {
               }
               localStorage.setItem('users', JSON.stringify(storedUsers));
             }
-            
             navigate('/userProfile');
+            window.location.reload(); 
+
           })
           .catch((error) => {
             console.log("Something went wrong", error);

@@ -189,7 +189,7 @@ export const Home = () => {
 
         <span style={{ width: "20vw", position: "relative", marginTop: "6vh", textAlign: "center" }}>
           <h4 style={{ fontFamily: "Cookie, Cursive ", color: "white" }}>Contact Us</h4><br />
-          <h6 style={{ fontFamily: 'Nunito', textAlign: "center", color: "white" }}><img src={mailicon} style={{ height: "5vh" }}></img> sgutravel@gmail.com</h6>
+          <h6 style={{ fontFamily: 'Nunito', textAlign: "center", color: "white" }}><img src={mailicon} style={{ height: "5vh" }}></img> sgutravel2107@gmail.com</h6>
           <h6 style={{ fontFamily: 'Nunito', textAlign: "center ", color: "white" }}><img src={callicon} style={{ height: "5vh" }}></img> 0917.339.863</h6>
 
         </span>
