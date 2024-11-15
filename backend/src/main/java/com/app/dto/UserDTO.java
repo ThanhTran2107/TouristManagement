@@ -24,5 +24,5 @@ public class UserDTO {
 	private String lastName;
 	private LocalDate dob;
 	private String address;
-	private Long phoneNo;
+	private String phoneNo;
 }

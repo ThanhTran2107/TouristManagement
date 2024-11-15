@@ -63,8 +63,8 @@ public class User {
 	private String address;
 
 	@Column(name = "phone_no", nullable = false)
-	// Validation is not working @Length(min = 9, max = 11)
-	private Long phoneNo;
+	@Pattern(regexp = "^[0-9]{9,11}$", message = "Phone number must be between 9 and 11 digits")
+	private String phoneNo;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Feedback> feedbackList;

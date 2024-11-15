@@ -1,26 +1,49 @@
 import React, { useState, useEffect } from "react";
 import AccountService from "../../Services/AccountService"; // Nhập đối tượng AccountService
 import searchIcon from "../../images/search-icon.png"; // Nhập hình ảnh kính lúp
+import refreshIcon from "../../images/refresh.png"; // Nhập hình ảnh icon refresh
 
 const AccountManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [accounts, setAccounts] = useState([]);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await AccountService.getAllUsers(); // Gọi phương thức getAllUsers
+      setAccounts(response.data); // Lưu dữ liệu vào state
+      setFilteredAccounts(response.data); // Cập nhật danh sách tài khoản đã lọc
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      try {
-        const response = await AccountService.getAllUsers(); // Gọi phương thức getAllUsers
-        setAccounts(response.data); // Lưu dữ liệu vào state
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-      }
-    };
-
-    fetchAccounts();
+    fetchAccounts(); // Gọi hàm fetchAccounts khi component được mount
   }, []);
 
+  useEffect(() => {
+    handleSearch(); // Gọi hàm handleSearch khi searchTerm thay đổi
+  }, [searchTerm]);
+
   const handleSearch = () => {
-    alert(`Searching for: ${searchTerm}`);
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = accounts.filter((account) => {
+      return (
+        account.firstName.toLowerCase().includes(lowercasedFilter) ||
+        account.lastName.toLowerCase().includes(lowercasedFilter) ||
+        account.email.toLowerCase().includes(lowercasedFilter) ||
+        account.phoneNo.toString().includes(searchTerm) || // Convert phoneNo to string and use includes()
+        account.address.toLowerCase().includes(lowercasedFilter) ||
+        account.dob.toLowerCase().includes(lowercasedFilter)
+      );
+    });
+    setFilteredAccounts(filteredData);
+  };
+
+  const handleRefresh = () => {
+    fetchAccounts(); 
+    setSearchTerm(""); // Reset search term
   };
 
   return (
@@ -37,6 +60,9 @@ const AccountManagement = () => {
         <button onClick={handleSearch} style={Styles.searchButton}>
           <img src={searchIcon} alt="Search" style={Styles.icon} />
         </button>
+        <button onClick={handleRefresh} style={Styles.refreshButton}>
+          <img src={refreshIcon} alt="Refresh" style={Styles.icon} />
+        </button>
       </div>
       <table style={Styles.table}>
         <thead>
@@ -52,10 +78,10 @@ const AccountManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {accounts.length > 0 ? (
-            accounts.map((account, index) => ( // Thêm index vào đây
+          {filteredAccounts.length > 0 ? (
+            filteredAccounts.map((account, index) => (
               <tr key={account.id} style={Styles.row}>
-                <td style={Styles.td}>{index + 1}</td> {/* Sử dụng index + 1 để hiển thị ID */}
+                <td style={Styles.td}>{index + 1}</td>
                 <td style={Styles.td}>{account.firstName}</td>
                 <td style={Styles.td}>{account.lastName}</td>
                 <td style={Styles.td}>{account.email}</td>
@@ -67,7 +93,7 @@ const AccountManagement = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="8" style={Styles.td}>No accounts found</td>
+              <td colSpan="8" style={Styles.td}> No accounts found</td>
             </tr>
           )}
         </tbody>
@@ -110,8 +136,17 @@ const Styles = {
     backgroundColor: "transparent",
     cursor: "pointer",
   },
+  refreshButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    marginLeft: "5px",
+  },
   icon: {
-    width: "25 px",
+    width: "25px",
     height: "25px",
   },
   table: {

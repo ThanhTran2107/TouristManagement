@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `travel_and_tourism_management` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `travel_and_tourism_management`;
+CREATE DATABASE  IF NOT EXISTS `tourist_management` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `tourist_management`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: travel_and_tourism_management
+-- Host: 127.0.0.1    Database: tourist_management
 -- ------------------------------------------------------
 -- Server version	8.0.39
 
@@ -37,7 +37,7 @@ CREATE TABLE `booking` (
   KEY `FK7udbel7q86k041591kj6lfmvw` (`user_id`),
   CONSTRAINT `FK7udbel7q86k041591kj6lfmvw` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `FKhavlcxrs7dfxpgrr2w3jfgsg3` FOREIGN KEY (`tour_id`) REFERENCES `tour_details` (`tour_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,6 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (3,'2023-03-10','PAYMENT_SUCCESSFUL',1,25000,1,1),(4,'2023-03-12','PAYMENT_SUCCESSFUL',1,25000,1,1),(6,'2023-03-12','PAYMENT_SUCCESSFUL',1,12000,2,1),(9,'2023-03-12','PAYMENT_SUCCESSFUL',2,60002,1,17),(10,'2024-11-09','PAYMENT_SUCCESSFUL',1,100000,3,20);
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -67,7 +66,7 @@ CREATE TABLE `feedback` (
   PRIMARY KEY (`feedback_id`),
   KEY `FKpwwmhguqianghvi1wohmtsm8l` (`user_id`),
   CONSTRAINT `FKpwwmhguqianghvi1wohmtsm8l` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +75,7 @@ CREATE TABLE `feedback` (
 
 LOCK TABLES `feedback` WRITE;
 /*!40000 ALTER TABLE `feedback` DISABLE KEYS */;
-INSERT INTO `feedback` VALUES (1,'Good','ajay@gmail.com','ajay',5,1),(2,' very good','Mohsin@gmail.com','mohsin',5,1);
+INSERT INTO `feedback` VALUES (3,' So beautiful honey','thanhcnttmcpe@gmail.com','Thanh Tran',5,65),(4,'I gonna get back again','thanhcnttmcpe@gmail.com','Thanh Tran',5,65),(8,'good','thanhuser@gmail.com','Thanh',5,63),(9,'Wow so fantastic','thanhuser@gmail.com','Thanh',5,63),(10,'this is the first time I use it hah, it makes me feel gud','thanhuser@gmail.com','Thanh',5,63);
 /*!40000 ALTER TABLE `feedback` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +109,7 @@ CREATE TABLE `tour_details` (
 
 LOCK TABLES `tour_details` WRITE;
 /*!40000 ALTER TABLE `tour_details` DISABLE KEYS */;
-INSERT INTO `tour_details` VALUES (1,'Snow Rafting, treking etc',30001,'Kashmir',18,'Mumbai','You can visit beautiful Kashmir','2023-04-05','Explore Kashmir','2023-03-30','DOMESTIC','TRAIN'),(2,'Treking',4000,'Pune',46,'Pune','We see Forts in Pune region','2023-03-31','Historical Pune','2023-03-30','HOLIDAY','BUS'),(3,'Skuba Diving, F1 Racing, Golf',100000,'Dubai',18,'Pune','You can visit Luxurious Dubai','2023-05-26','Palm Jumeirah Dubai','2023-04-26','INTERNATIONAL','FLIGHT');
+INSERT INTO `tour_details` VALUES (1,'Snow Rafting, treking etc',30000,'Kashmir',17,'Mumbai','You can visit beautiful Kashmir','2023-04-05','Explore Kashmir','2023-03-30','DOMESTIC','TRAIN'),(2,'Treking',40000,'Pune',46,'Pune','We see Forts in Pune region','2023-03-31','Historical Pune','2023-03-30','HOLIDAY','BUS'),(3,'Skuba Diving, F1 Racing, Golf',100000,'Dubai',16,'Pune','You can visit Luxurious Dubai','2023-05-26','Palm Jumeirah Dubai','2023-04-26','INTERNATIONAL','FLIGHT');
 /*!40000 ALTER TABLE `tour_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +130,7 @@ CREATE TABLE `tourist` (
   PRIMARY KEY (`tourist_id`),
   KEY `FKegiqgndkbel8rlanb6mk661i9` (`booking_id`),
   CONSTRAINT `FKegiqgndkbel8rlanb6mk661i9` FOREIGN KEY (`booking_id`) REFERENCES `booking` (`booking_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +139,6 @@ CREATE TABLE `tourist` (
 
 LOCK TABLES `tourist` WRITE;
 /*!40000 ALTER TABLE `tourist` DISABLE KEYS */;
-INSERT INTO `tourist` VALUES (2,26,'AADHAR_CARD','12341324134','Harshit ',3),(3,23,'AADHAR_CARD','2311222','Sunny sharma',4),(5,25,'AADHAR_CARD','12341324134','Ajay Khade',6),(9,24,'PAN_CARD','1341234141234','Pranav Dhanawade',9),(10,22,'DRIVING_LICENSE','060203000811','Thanh',10);
 /*!40000 ALTER TABLE `tourist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,11 +157,12 @@ CREATE TABLE `users` (
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `phone_no` bigint NOT NULL,
+  `phone_no` varchar(20) DEFAULT NULL,
   `role` enum('ADMIN','USER') DEFAULT NULL,
+  `reset_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +171,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Kolhapur','1994-10-01','ajay@gmail.com','Ajay','Khade','Ajay@123',7744965911,'USER'),(3,'Gaya','1997-04-16','Mohsin@gmail.com','Mohsin','Khan','Mohsin@123',8158931704,'USER'),(7,'Gorambe','2022-12-13','Digvijay@gmail.com','Digvijay','Savant','Digvijay@1',7744965911,'ADMIN'),(11,'Sangrul','1994-10-01','ajay12@gmail.com','Ajay','Khade','Ajay@123',7744965911,'ADMIN'),(13,'old pune','2023-03-01','ganesh@gmail.com','ganesh','mane','ganesh@123',9874563209,'USER'),(14,'sangrul','2023-03-09','mahesh@gmail.com','mahesh','kamble','Mahesh@123',7896541229,'ADMIN'),(15,'kolhapur','2023-03-01','ajaykhade11@gmail.com','ajay','khade','Ajay@123',9876543210,'ADMIN'),(16,'junnar','1997-10-13','gaurang@gmail.com','gaurang','thorve','Gaurang@1',9876543210,'USER'),(17,'Dubai','1998-11-26','pranav@gmail.com','Pranav','Dhanawade','Pranav@123',7744965911,'USER'),(18,'Dubai','1998-11-26','pranav12@gmail.com','Pranav','Dhanawade','Pranav@123',7744965911,'ADMIN'),(19,'286, Thống Nhất','2003-07-21','thanhcnttmcpe@gmail.com','Trần','Thanh','thanh@123',917339863,'ADMIN'),(20,'198/13C, Tôn Đản, P8, Q4','2003-07-21','b4r@gmail.com','Thanh','Tran','b4r@123',11111111111,'USER');
+INSERT INTO `users` VALUES (63,'286, Thống Nhất','2003-02-01','thanhuser@gmail.com','Thanh','Tran','thanhuser@123','98777499394','USER',NULL),(64,'286, Thống Nhất','2003-12-31','sgutravel@gmail.com','SGU','Travel','sgutravel@123','917339863','ADMIN',NULL),(65,'286, Thống Nhất','2003-07-21','thanhcnttmcpe@gmail.com','Thanh','Tran','thanh@12345','917339863','USER',NULL),(66,'319/1 Nguyễn Công Trứ, Quận 1','2003-07-07','lekhanhtram@gmail.com','Tram','Le','lekhanhtram@123','797967886','USER',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -185,4 +184,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-11  8:42:42
+-- Dump completed on 2024-11-16  1:33:33
