@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `tourist_management` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `tourist_management`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: tourist_management
@@ -162,7 +160,7 @@ CREATE TABLE `users` (
   `reset_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +169,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (63,'286, Thống Nhất','2003-02-01','thanhuser@gmail.com','Thanh','Tran','thanhuser@123','98777499394','USER',NULL),(64,'286, Thống Nhất','2003-12-31','sgutravel@gmail.com','SGU','Travel','sgutravel@123','917339863','ADMIN',NULL),(65,'286, Thống Nhất','2003-07-21','thanhcnttmcpe@gmail.com','Thanh','Tran','thanh@12345','917339863','USER',NULL),(66,'319/1 Nguyễn Công Trứ, Quận 1','2003-07-07','lekhanhtram@gmail.com','Tram','Le','lekhanhtram@123','797967886','USER',NULL);
+INSERT INTO `users` VALUES (63,'286, Thống Nhất','2003-02-01','thanhuser@gmail.com','Thanh','Tran','thanhuser@123','98777499394','USER',NULL),(64,'286, Thống Nhất','2003-12-31','sgutravel@gmail.com','SGU','Travel','sgutravel@123','917339863','ADMIN',NULL),(65,'286, Thống Nhất','2003-07-21','thanhcnttmcpe@gmail.com','Thanh','Tran','thanh@12345','917339863','USER',NULL),(66,'319/1 Nguyễn Công Trứ, Quận 1','2003-07-07','lekhanhtram@gmail.com','Tram','Le','lekhanhtram@123','797967886','USER',NULL),(67,'123 Main St, Springfield, USA','1990-01-15','johndoe@gmail.com','John','Doe','johndoe@123','912345678','USER',NULL),(68,'456 Elm St, Springfield, USA','1992-02-20','janesmith@gmail.com','Jane','Smith','janesmith@123','912345679','USER',NULL),(69,'789 Oak St, Springfield, USA','1988-03-25','michaeljohnson@gmail.com','Michael','Johnson','michaeljohnson@123','912345680','USER',NULL),(70,'321 Pine St, Springfield, USA','1995-04-30','emilybrown@gmail.com','Emily','Brown','emilybrown@123','912345681','USER',NULL),(71,'654 Maple St, Springfield, USA','1985-05-05','davidwilson@gmail.com','David','Wilson','davidwilson@123','912345682','USER',NULL),(72,'987 Cedar St, Springfield, USA','1993-06-10','sarahjones@gmail.com','Sarah','Jones','sarahjones@123','912345683','USER',NULL),(73,'159 Birch St, Springfield, USA','1991-07-15','chrismiller@gmail.com','Chris','Miller','chrismiller@123','912345684','USER',NULL),(74,'753 Spruce St, Springfield, USA','1989-08-20','jessicadavis@gmail.com','Jessica','Davis','jessicadavis@123','912345685','USER',NULL),(75,'852 Fir St, Springfield, USA','1994-09-25','danielgarcia@gmail.com','Daniel','Garcia','danielgarcia@123','912345686','USER',NULL),(76,'369 Willow St, Springfield, USA','1990-10-30','lauramartinez@gmail.com','Laura','Martinez','lauramartinez@123','912345687','USER',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -184,4 +182,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-16  1:33:33
+-- Dump completed on 2024-11-16  1:53:56
