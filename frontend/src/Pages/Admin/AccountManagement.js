@@ -7,12 +7,13 @@ const AccountManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
+  const [roleFilter, setRoleFilter] = useState("USER"); // Khởi tạo với USER
 
   const fetchAccounts = async () => {
     try {
       const response = await AccountService.getAllUsers(); // Gọi phương thức getAllUsers
       setAccounts(response.data); // Lưu dữ liệu vào state
-      setFilteredAccounts(response.data); // Cập nhật danh sách tài khoản đã lọc
+      setFilteredAccounts(response.data.filter(account => account.role === "USER")); // Chỉ hiển thị tài khoản USER ban đầu
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
@@ -23,20 +24,22 @@ const AccountManagement = () => {
   }, []);
 
   useEffect(() => {
-    handleSearch(); // Gọi hàm handleSearch khi searchTerm thay đổi
-  }, [searchTerm]);
+    handleSearch(); // Gọi hàm handleSearch khi searchTerm hoặc roleFilter thay đổi
+  }, [searchTerm, roleFilter]);
 
   const handleSearch = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = accounts.filter((account) => {
-      return (
+      const matchesRole = roleFilter === "ALL" || account.role === roleFilter; // Kiểm tra vai trò
+      const matchesSearchTerm =
         account.firstName.toLowerCase().includes(lowercasedFilter) ||
         account.lastName.toLowerCase().includes(lowercasedFilter) ||
         account.email.toLowerCase().includes(lowercasedFilter) ||
         account.phoneNo.toString().includes(searchTerm) || // Convert phoneNo to string and use includes()
         account.address.toLowerCase().includes(lowercasedFilter) ||
-        account.dob.toLowerCase().includes(lowercasedFilter)
-      );
+        account.dob.toLowerCase().includes(lowercasedFilter);
+
+      return matchesRole && matchesSearchTerm; // Chỉ hiển thị tài khoản nếu cả hai điều kiện đều đúng
     });
     setFilteredAccounts(filteredData);
   };
@@ -44,6 +47,7 @@ const AccountManagement = () => {
   const handleRefresh = () => {
     fetchAccounts(); 
     setSearchTerm(""); // Reset search term
+    setRoleFilter("USER"); // Reset role filter to default
   };
 
   return (
@@ -57,6 +61,17 @@ const AccountManagement = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={Styles.searchInput}
         />
+        <select
+          value={roleFilter}
+          onChange={(e) => {
+            setRoleFilter(e.target.value);
+            handleSearch(); // Gọi hàm handleSearch khi thay đổi vai trò
+          }}
+          style={Styles.roleSelect}
+        >
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
         <button onClick={handleSearch} style={Styles.searchButton}>
           <img src={searchIcon} alt="Search" style={Styles.icon} />
         </button>
@@ -81,7 +96,7 @@ const AccountManagement = () => {
           {filteredAccounts.length > 0 ? (
             filteredAccounts.map((account, index) => (
               <tr key={account.id} style={Styles.row}>
-                <td style={Styles.td}>{index + 1}</td>
+                <td style={Styles.td}>{index +  1}</td>
                 <td style={Styles.td}>{account.firstName}</td>
                 <td style={Styles.td}>{account.lastName}</td>
                 <td style={Styles.td}>{account.email}</td>
@@ -127,6 +142,14 @@ const Styles = {
     marginRight: "2px",
     width: "250px",
     outline: "none",
+  },
+  roleSelect: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginRight: "5px",
   },
   searchButton: {
     marginTop: "10px",
