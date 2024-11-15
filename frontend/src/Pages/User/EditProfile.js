@@ -24,6 +24,11 @@ const EditProfile = () => {
     return regularExpression.test(pwd);
   }
 
+  const checkEmailExists = (email) => {
+    const storedEmails = JSON.parse(localStorage.getItem('email')) || [];
+    return storedEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
+  };
+
   const updateProfile = (e) => {
     e.preventDefault();
     if (phoneNo.length < 10 || phoneNo.length > 10) {
@@ -44,9 +49,21 @@ const EditProfile = () => {
             sessionStorage.setItem("firstName", firstName);
             sessionStorage.setItem("lastName", lastName);
             sessionStorage.setItem("email", email);
+            const exists = checkEmailExists(email);
             sessionStorage.setItem("dob", dob);
             sessionStorage.setItem("phoneNo", phoneNo);
             sessionStorage.setItem("address", address);
+            
+
+            if (exists) {
+              const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+              const userIndex = storedUsers.findIndex(user => user.email === email);
+              if(userIndex){
+                storedUsers[userIndex].email = email;
+                storedUsers[userIndex].password = password;
+              }
+              localStorage.setItem('users', JSON.stringify(storedUsers));
+            }
             
             navigate('/userProfile');
             window.location.reload();
