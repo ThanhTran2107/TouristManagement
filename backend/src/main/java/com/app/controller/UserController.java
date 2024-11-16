@@ -49,7 +49,6 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(updateUser, HttpStatus.OK);
 	}
 
-	// Cập nhật phương thức để sử dụng email
     @PutMapping("/updaterole")
     public ResponseEntity<UserDTO> updateUserRole(@RequestBody UpdateRoleRequest updateRoleRequest) {
         UserDTO updatedUser = this.userService.updateUserRole(updateRoleRequest.getEmail(), updateRoleRequest.getRole());
