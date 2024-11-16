@@ -3,6 +3,7 @@ package com.app.service;
 import java.util.List;
 
 import com.app.dto.UserDTO;
+import com.app.entities.Role;
 
 public interface UserService {
 	UserDTO createUser(UserDTO user);
@@ -16,4 +17,6 @@ public interface UserService {
 	List<UserDTO> getAllUsers();
 
 	void deleteUserById(Long ID);
+
+	UserDTO updateUserRole(String mail, Role newRole);
 }

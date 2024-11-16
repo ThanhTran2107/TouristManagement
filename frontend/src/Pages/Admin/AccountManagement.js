@@ -1,53 +1,73 @@
 import React, { useState, useEffect } from "react";
-import AccountService from "../../Services/AccountService"; // Nhập đối tượng AccountService
-import searchIcon from "../../images/search-icon.png"; // Nhập hình ảnh kính lúp
-import refreshIcon from "../../images/refresh.png"; // Nhập hình ảnh icon refresh
+import AccountService from "../../Services/AccountService";
+import searchIcon from "../../images/search-icon.png";
+import refreshIcon from "../../images/refresh.png";
 
 const AccountManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [filteredAccounts, setFilteredAccounts] = useState([]);
-  const [roleFilter, setRoleFilter] = useState("USER"); // Khởi tạo với USER
+  const [roleFilter, setRoleFilter] = useState("USER");
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [newRole, setNewRole] = useState("USER");
 
   const fetchAccounts = async () => {
     try {
-      const response = await AccountService.getAllUsers(); // Gọi phương thức getAllUsers
-      setAccounts(response.data); // Lưu dữ liệu vào state
-      setFilteredAccounts(response.data.filter(account => account.role === "USER")); // Chỉ hiển thị tài khoản USER ban đầu
+      const response = await AccountService.getAllUsers();
+      setAccounts(response.data);
+      setFilteredAccounts(response.data.filter(account => account.role === "USER"));
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
   };
 
   useEffect(() => {
-    fetchAccounts(); // Gọi hàm fetchAccounts khi component được mount
+    fetchAccounts();
   }, []);
 
   useEffect(() => {
-    handleSearch(); // Gọi hàm handleSearch khi searchTerm hoặc roleFilter thay đổi
+    handleSearch();
   }, [searchTerm, roleFilter]);
 
   const handleSearch = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = accounts.filter((account) => {
-      const matchesRole = roleFilter === "ALL" || account.role === roleFilter; // Kiểm tra vai trò
+      const matchesRole = roleFilter === "ALL" || account.role === roleFilter;
       const matchesSearchTerm =
         account.firstName.toLowerCase().includes(lowercasedFilter) ||
         account.lastName.toLowerCase().includes(lowercasedFilter) ||
         account.email.toLowerCase().includes(lowercasedFilter) ||
-        account.phoneNo.toString().includes(searchTerm) || // Convert phoneNo to string and use includes()
+        account.phoneNo.toString().includes(searchTerm) ||
         account.address.toLowerCase().includes(lowercasedFilter) ||
         account.dob.toLowerCase().includes(lowercasedFilter);
 
-      return matchesRole && matchesSearchTerm; // Chỉ hiển thị tài khoản nếu cả hai điều kiện đều đúng
+      return matchesRole && matchesSearchTerm;
     });
     setFilteredAccounts(filteredData);
   };
 
   const handleRefresh = () => {
     fetchAccounts(); 
-    setSearchTerm(""); // Reset search term
-    setRoleFilter("USER"); // Reset role filter to default
+    setSearchTerm("");
+    setRoleFilter("USER");
+  };
+
+  const handleRowDoubleClick = (account) => {
+    setSelectedAccount(account);
+    setNewRole(account.role);
+  };
+
+  const handleRoleChange = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await AccountService.updateUserRole(selectedAccount.email, newRole);
+      console.log("Response from API:", response.data);
+      fetchAccounts();
+      setRoleFilter("USER");
+      setSelectedAccount(null);
+    } catch (error) {
+      console.error("Error updating role:", error);
+    }
   };
 
   return (
@@ -61,23 +81,29 @@ const AccountManagement = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={Styles.searchInput}
         />
+        <button
+          style={Styles.searchButton}
+          onClick={handleSearch}
+        >
+          <img src={searchIcon} alt="Search" style={Styles.icon} />
+        </button>
+        <button
+          style={Styles.refreshButton}
+          onClick={handleRefresh}
+        >
+          <img src={refreshIcon} alt="Refresh" style={Styles.icon} />
+        </button>
         <select
           value={roleFilter}
           onChange={(e) => {
             setRoleFilter(e.target.value);
-            handleSearch(); // Gọi hàm handleSearch khi thay đổi vai trò
+            handleSearch();
           }}
-          style={Styles.roleSelect}
+          style={Styles.cbxRole}
         >
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>
-        <button onClick={handleSearch} style={Styles.searchButton}>
-          <img src={searchIcon} alt="Search" style={Styles.icon} />
-        </button>
-        <button onClick={handleRefresh} style={Styles.refreshButton}>
-          <img src={refreshIcon} alt="Refresh" style={Styles.icon} />
-        </button>
       </div>
       <table style={Styles.table}>
         <thead>
@@ -95,11 +121,15 @@ const AccountManagement = () => {
         <tbody>
           {filteredAccounts.length > 0 ? (
             filteredAccounts.map((account, index) => (
-              <tr key={account.id} style={Styles.row}>
-                <td style={Styles.td}>{index +  1}</td>
+              <tr
+                key={account.id}
+                style={Styles.row}
+                onDoubleClick={() => handleRowDoubleClick(account)}
+              >
+                <td style={Styles.td}>{index + 1}</td>
                 <td style={Styles.td}>{account.firstName}</td>
                 <td style={Styles.td}>{account.lastName}</td>
-                <td style={Styles.td}>{account.email}</td>
+                <td style={Styles.td}>{account .email}</td>
                 <td style={Styles.td}>{account.dob}</td>
                 <td style={Styles.td}>{account.address}</td>
                 <td style={Styles.td}>{account.phoneNo}</td>
@@ -108,11 +138,39 @@ const AccountManagement = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="8" style={Styles.td}> No accounts found</td>
+              <td colSpan="8" style={Styles.td}>No accounts found</td>
             </tr>
           )}
         </tbody>
       </table>
+      {selectedAccount && (
+        <div style={Styles.modal}>
+          <h3><b>Change Role for {selectedAccount.firstName} {selectedAccount.lastName}</b></h3>
+          <form onSubmit={handleRoleChange}>
+            <select value={newRole} onChange={(e) => setNewRole(e.target.value)} style={Styles.roleSelect}>
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+            <button
+              type="submit"
+              style={Styles.submitButton}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "green"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
+            >
+              Submit
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedAccount(null)}
+              style={Styles.cancelButton}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
@@ -130,7 +188,6 @@ const Styles = {
   },
   searchContainer: {
     display: "flex",
-    justifyContent: "flex-start",
     marginBottom: "10px",
   },
   searchInput: {
@@ -149,7 +206,19 @@ const Styles = {
     fontSize: "1rem",
     border: "1px solid #ddd",
     borderRadius: "10px",
-    marginRight: "5px",
+    marginRight: "10px",
+    width: "200px",
+    outline: "none",
+  },
+  cbxRole: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginLeft: "935px",
+    width: "200px",
+    outline: "none",
   },
   searchButton: {
     marginTop: "10px",
@@ -158,6 +227,7 @@ const Styles = {
     border: "none",
     backgroundColor: "transparent",
     cursor: "pointer",
+    transition: "background-color 0.3s, transform 0.3s",
   },
   refreshButton: {
     marginTop: "10px",
@@ -167,6 +237,7 @@ const Styles = {
     backgroundColor: "transparent",
     cursor: "pointer",
     marginLeft: "5px",
+    transition: "background-color 0.3s, transform 0.3s",
   },
   icon: {
     width: "25px",
@@ -190,6 +261,43 @@ const Styles = {
   },
   row: {
     transition: "background-color 0.3s",
+    cursor: "pointer",
+  },
+  modal: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fff",
+    padding: "20px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+    zIndex: 1000,
+    borderRadius: "20px",
+  },
+  submitButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  cancelButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#e02c18",
+    color: "white",
+    borderRadius: "5px",
+    cursor: "pointer",
+    marginLeft: "10px",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
   },
 };
 

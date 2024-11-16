@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.app.entities.Role;
 
 import com.app.custom_exceptions.ResourceNotFoundException;
 import com.app.dto.UserDTO;
@@ -74,5 +75,19 @@ public class UserServiceImpl implements UserService {
 		User user = this.userRepositry.findByEmailAndPassword(email, password).orElseThrow(()-> new ResourceNotFoundException("User", "email", email));
 		
 		return this.modelMapper.map(user, UserDTO.class);
+	}
+
+    @Override
+	public UserDTO updateUserRole(String email, Role newRole) {
+    // Tìm người dùng theo email
+		User user = this.userRepositry.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("User ", "email", email));
+
+		// Cập nhật vai trò
+		user.setRole(newRole); // Giả sử bạn có phương thức setRole trong User
+		User updatedUser  = this.userRepositry.save(user); // Lưu thay đổi
+
+    return this.modelMapper.map(updatedUser , UserDTO.class); // Trả về UserDTO đã cập nhật
+
 	}
 }

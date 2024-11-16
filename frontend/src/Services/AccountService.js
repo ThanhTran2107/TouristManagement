@@ -6,6 +6,9 @@ class AccountService {
    getAllUsers() {
       return axios.get(URL + '/getall');
    }
+   updateUserRole(email, newRole) {
+      return axios.put(URL + '/updaterole', { email, role: newRole });
+   }
 }
 
 export default new AccountService();

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.app.dto.ApiResponse;
+import com.app.dto.UpdateRoleRequest;
 import com.app.dto.UserDTO;
 import com.app.dto.UserLoginDTO;
 import com.app.service.UserService;
@@ -47,6 +49,14 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(updateUser, HttpStatus.OK);
 	}
 
+	// Cập nhật phương thức để sử dụng email
+    @PutMapping("/updaterole")
+    public ResponseEntity<UserDTO> updateUserRole(@RequestBody UpdateRoleRequest updateRoleRequest) {
+        UserDTO updatedUser = this.userService.updateUserRole(updateRoleRequest.getEmail(), updateRoleRequest.getRole());
+        return new ResponseEntity<UserDTO>(updatedUser, HttpStatus.OK);
+    }
+
+
 	@DeleteMapping("/delete/{userId}")
 	public ResponseEntity<ApiResponse> deleteUser( @PathVariable Long userId) {
 		this.userService.deleteUserById(userId);
@@ -64,4 +74,5 @@ public class UserController {
 		List<UserDTO> getUsers = this.userService.getAllUsers();
 		return new ResponseEntity<List<UserDTO>>(getUsers, HttpStatus.OK);
 	}
+
 }
