@@ -18,5 +18,7 @@ public interface UserService {
 
 	void deleteUserById(Long ID);
 
-	UserDTO updateUserRole(String mail, Role newRole);
+	UserDTO updateUserRole(String email, Role newRole);
+
+	UserDTO deleteUserByEmail(String email);
 }

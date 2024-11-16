@@ -8,7 +8,6 @@ public class UpdateRoleRequest {
 
     // Constructor mặc định
     public UpdateRoleRequest() {}
-
     // Getters và Setters
     public String getEmail() {
         return email;

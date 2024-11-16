@@ -9,6 +9,9 @@ class AccountService {
    updateUserRole(email, newRole) {
       return axios.put(URL + '/updaterole', { email, role: newRole });
    }
+   deleteUserByEmai(email){
+      return axios.delete(URL + '/deleteUserByEmail', { params: { email }});
+   }
 }
 
 export default new AccountService();

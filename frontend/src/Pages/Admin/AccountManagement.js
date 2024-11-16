@@ -77,7 +77,7 @@ const AccountManagement = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await AccountService.deleteAccountByEmail(accountToDelete.email);
+      await AccountService.deleteUserByEmai(accountToDelete.email);
       fetchAccounts();
       setShowDeleteModal(false);
       setAccountToDelete(null);

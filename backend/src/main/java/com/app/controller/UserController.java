@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.dto.ApiResponse;
@@ -60,6 +61,12 @@ public class UserController {
 	public ResponseEntity<ApiResponse> deleteUser( @PathVariable Long userId) {
 		this.userService.deleteUserById(userId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("User is deleted sucessfully", true), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/deleteUserByEmail")
+	public ResponseEntity<UserDTO> deleteUserByEmail(@RequestParam String email) {
+		UserDTO deletedUser  = this.userService.deleteUserByEmail(email);
+		return new ResponseEntity<UserDTO>(deletedUser , HttpStatus.OK);
 	}
 
 	@GetMapping("/get/{userId}")
