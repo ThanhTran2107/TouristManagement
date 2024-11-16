@@ -10,12 +10,13 @@ const AccountManagement = () => {
   const [roleFilter, setRoleFilter] = useState("USER");
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [newRole, setNewRole] = useState("USER");
+  const [selectedRowId, setSelectedRowId] = useState(null); 
 
   const fetchAccounts = async () => {
     try {
       const response = await AccountService.getAllUsers();
       setAccounts(response.data);
-      setFilteredAccounts(response.data.filter(account => account.role === "USER"));
+      setFilteredAccounts(response.data.filter(account => account.role === roleFilter));
     } catch (error) {
       console.error("Error fetching accounts:", error);
     }
@@ -23,11 +24,11 @@ const AccountManagement = () => {
 
   useEffect(() => {
     fetchAccounts();
-  }, []);
+  }, [roleFilter]);
 
   useEffect(() => {
     handleSearch();
-  }, [searchTerm, roleFilter]);
+  }, [searchTerm, accounts]);
 
   const handleSearch = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
@@ -52,9 +53,10 @@ const AccountManagement = () => {
     setRoleFilter("USER");
   };
 
-  const handleRowDoubleClick = (account) => {
+  const handleRowClick = (account) => {
     setSelectedAccount(account);
     setNewRole(account.role);
+    setSelectedRowId(account.id);
   };
 
   const handleRoleChange = async (e) => {
@@ -63,8 +65,8 @@ const AccountManagement = () => {
       const response = await AccountService.updateUserRole(selectedAccount.email, newRole);
       console.log("Response from API:", response.data);
       fetchAccounts();
-      setRoleFilter("USER");
       setSelectedAccount(null);
+      setSelectedRowId(null); 
     } catch (error) {
       console.error("Error updating role:", error);
     }
@@ -111,7 +113,7 @@ const AccountManagement = () => {
             <th style={Styles.th}>ID</th>
             <th style={Styles.th}>First Name</th>
             <th style={Styles.th}>Last Name</th>
-            <th style={Styles.th}>Email</th>
+            <th style={Styles.th}>Email</ th>
             <th style={Styles.th}>Date of Birth</th>
             <th style={Styles.th}>Address</th>
             <th style={Styles.th}>Phone Number</th>
@@ -123,13 +125,16 @@ const AccountManagement = () => {
             filteredAccounts.map((account, index) => (
               <tr
                 key={account.id}
-                style={Styles.row}
-                onDoubleClick={() => handleRowDoubleClick(account)}
+                style={{
+                  ...Styles.row,
+                  backgroundColor: selectedRowId === account.id ? '#d1e7dd' : 'transparent',
+                }}
+                onClick={() => handleRowClick(account)} 
               >
                 <td style={Styles.td}>{index + 1}</td>
                 <td style={Styles.td}>{account.firstName}</td>
                 <td style={Styles.td}>{account.lastName}</td>
-                <td style={Styles.td}>{account .email}</td>
+                <td style={Styles.td}>{account.email}</td>
                 <td style={Styles.td}>{account.dob}</td>
                 <td style={Styles.td}>{account.address}</td>
                 <td style={Styles.td}>{account.phoneNo}</td>
@@ -144,32 +149,38 @@ const AccountManagement = () => {
         </tbody>
       </table>
       {selectedAccount && (
-        <div style={Styles.modal}>
-          <h3><b>Change Role for {selectedAccount.firstName} {selectedAccount.lastName}</b></h3>
-          <form onSubmit={handleRoleChange}>
-            <select value={newRole} onChange={(e) => setNewRole(e.target.value)} style={Styles.roleSelect}>
-              <option value="USER">USER</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
-            <button
-              type="submit"
-              style={Styles.submitButton}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "green"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
-            >
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedAccount(null)}
-              style={Styles.cancelButton}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
-            >
-              Cancel
-            </button>
-          </form>
-        </div>
+        <>
+          <div style={Styles.overlay} />
+          <div style={Styles.modal}>
+            <h3><b>Change Role for {selectedAccount.firstName} {selectedAccount.lastName}</b></h3>
+            <form onSubmit={handleRoleChange}>
+              <select value={newRole} onChange={(e) => setNewRole(e.target.value)} style={Styles.roleSelect}>
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+              <button
+                type="submit"
+                style={Styles.submitButton}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "green"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedAccount(null);
+                  setSelectedRowId(null);
+                }}
+                style={Styles.cancelButton}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </>
       )}
     </div>
   );
@@ -273,6 +284,15 @@ const Styles = {
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
     zIndex: 1000,
     borderRadius: "20px",
+  },
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
   },
   submitButton: {
     marginTop: "10px",
