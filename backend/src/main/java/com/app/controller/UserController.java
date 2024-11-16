@@ -75,6 +75,21 @@ public class UserController {
 		return new ResponseEntity<UserDTO>(getUser, HttpStatus.OK);
 	}
 
+	@GetMapping("/getemail")
+	public ResponseEntity<String> checkEmailExist(@RequestParam String email) {
+		UserDTO getEmail = this.userService.getUserByEmail(email);
+		if (getEmail == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email does not exist"); // Email không tồn tại
+		}
+		return ResponseEntity.ok("Email exists"); // Email tồn tại
+	}
+
+	@GetMapping("/getuser")
+	public ResponseEntity<UserDTO> getPasswordByEmail(@RequestParam String email) {
+		UserDTO getUser = this.userService.getUserByEmail(email);
+		return new ResponseEntity<UserDTO>(getUser, HttpStatus.OK);
+	}
+
 	@GetMapping("/getall")
 	public ResponseEntity<List<UserDTO>> getAllUser() {
 		List<UserDTO> getUsers = this.userService.getAllUsers();

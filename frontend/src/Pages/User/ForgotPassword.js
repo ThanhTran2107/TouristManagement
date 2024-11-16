@@ -1,38 +1,36 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link } from 'react-router-dom'; 
 import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ForgotPasswordService from '../../Services/ForgotPasswordService';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
+    
     try {
-      const exists = checkEmailExists(email);
-      if (exists) {
-        const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = storedUsers.findIndex(user => user.email === email);
-        toast("Your password is " + storedUsers[userIndex].password);
-        setIsResetting(true);
-      } else {
-        toast.error("Email does not exist");
-      }
+        const response = await ForgotPasswordService.checkEmailExist(email);
+        if (response.status === 200) {
+            const userResponse = await ForgotPasswordService.getPasswordByEmail(email);
+            const password = userResponse.data.password; 
+            toast.success("Your Password : " + password);
+            console.log("Email exists");
+        } else {
+            // Email không tồn tại
+            toast.error("Email does not exist!"); // Hiển thị thông báo lỗi
+            console.error("Email does not exist");
+        }
     } catch (error) {
-      toast.error(error.message);
+        // Xử lý lỗi
+        toast.error("An error occurred while checking the email."); // Hiển thị thông báo lỗi
+        console.error("Error:", error.response ? error.response.data : error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
-
-  const checkEmailExists = (email) => {
-    const storedEmails = JSON.parse(localStorage.getItem('email')) || [];
-    return storedEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
   };
 
   return (
@@ -112,13 +110,6 @@ const styles = {
   },
   label: {
     marginBottom: '5px',
-  },
-  labelNewPassword: {
-    marginBottom: '5px',
-  },
-  labelConfirmPassword: {
-    marginBottom: '5px',
-    marginTop: '15px',
   },
   link: {
     textDecoration: 'none',

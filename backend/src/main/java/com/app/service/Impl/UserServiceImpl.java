@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.app.entities.Role;
 
 import com.app.custom_exceptions.ResourceNotFoundException;
 import com.app.dto.UserDTO;
+import com.app.entities.Role;
 import com.app.entities.User;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
@@ -75,6 +75,12 @@ public class UserServiceImpl implements UserService {
 		User user = this.userRepository.findByEmailAndPassword(email, password).orElseThrow(()-> new ResourceNotFoundException("User", "email", email));
 		
 		return this.modelMapper.map(user, UserDTO.class);
+	}
+
+	@Override
+	public UserDTO getUserByEmail(String email) {
+		User user = this.userRepository.findByEmail(email).orElse(null); // Trả về null nếu không tìm thấy
+		return user != null ? this.modelMapper.map(user, UserDTO.class) : null; // Trả về null nếu không tìm thấy
 	}
 
     @Override

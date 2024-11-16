@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import UserServices from '../../Services/UserServices';
-import { registerUser  } from '../../Services/utils';
 
 export const SignUp = () => {
   const [error, setError] = useState(null);
@@ -10,7 +9,7 @@ export const SignUp = () => {
   const [state, setState] = useState({
     email: "", 
     password: "", 
-    role: "USER", // Đặt mặc định là USER
+    role: "USER", 
     firstName: "", 
     lastName: "", 
     dob: "", 
@@ -71,16 +70,6 @@ export const SignUp = () => {
             const response = await UserServices.createUser (state);
             console.log("User  Added Successfully", response.data);
             toast.success("User  Added successfully!");
-
-            registerUser (state.email, state.password, {
-                firstName: state.firstName,
-                lastName: state.lastName,
-                dob: state.dob,
-                address: state.address,
-                phoneNo: state.phoneNo
-            });
-
-            // Reset trạng thái form
             setState({ email: "", password: "", role: "USER", firstName: "", lastName: "", dob: "", address: "", phoneNo: "" });
             setConfirmPassword("");
 

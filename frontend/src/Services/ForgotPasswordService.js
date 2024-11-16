@@ -1,10 +1,16 @@
 import axios from 'axios';
+const URL = "http://localhost:9090/user";
 
 const ForgotPasswordService = {
-  sendResetLink: async (email) => {
-    const response = await axios.post('/api/forgotpassword', { email });
-    return response.data.message; // Giả sử API trả về một thông điệp
+  
+  checkEmailExist(email) {
+    return axios.get(URL + '/getemail', { params: { email } });
+  },
+
+  getPasswordByEmail(email) {
+    return axios.get(URL + '/getuser', { params: { email } });
   }
+
 };
 
 export default ForgotPasswordService;

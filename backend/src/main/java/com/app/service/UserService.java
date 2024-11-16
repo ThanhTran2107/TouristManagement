@@ -21,4 +21,6 @@ public interface UserService {
 	UserDTO updateUserRole(String email, Role newRole);
 
 	UserDTO deleteUserByEmail(String email);
+
+	UserDTO getUserByEmail(String email);
 }
