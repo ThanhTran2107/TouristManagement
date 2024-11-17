@@ -1,3 +1,14 @@
 .corosel-images {
     height: 800px;
 }
+
+.outline {
+    color: white; 
+    text-shadow: 
+        -1px -1px 0 black,
+        5px -1px 0 black,
+        -1px 1px 0 black,
+        5px 1px 0 black; 
+    font-family: 'Lucida Handwriting', cursive; 
+    font-size: 2.5rem; 
+}
