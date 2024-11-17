@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserProfileService from "../../Services/UserProfileService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -14,72 +14,84 @@ const EditProfile = () => {
   const [dob, setDob] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [address, setAddress] = useState("");
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   let userId = sessionStorage.getItem("userId");
-  console.log(userId);
 
-  function checkPasswordComplexity(pwd) {
-    var regularExpression = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
+  const checkPasswordComplexity = (pwd) => {
+    const regularExpression =
+      /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
     return regularExpression.test(pwd);
-  }
+  };
 
   const checkEmailExists = (email) => {
-    const storedEmails = JSON.parse(localStorage.getItem('email')) || [];
-    return storedEmails.map(e => e.toLowerCase()).includes(email.toLowerCase());
+    const storedEmails = JSON.parse(localStorage.getItem("email")) || [];
+    return storedEmails
+      .map((e) => e.toLowerCase())
+      .includes(email.toLowerCase());
   };
 
   const updateProfile = (e) => {
     e.preventDefault();
-    if (phoneNo.length < 10 || phoneNo.length > 10) {
+    if (phoneNo.length !== 10) {
       toast.error("Mobile no. should be of length 10");
     } else if (address.length < 5 || address.length > 50) {
-      toast.error('Address must be of min 5 characters and of max 50 characters');
-    } else if (!checkPasswordComplexity(password)) { 
-      toast.error("Password Must Contain At Least A Number And Special Character");
+      toast.error(
+        "Address must be of min 5 characters and of max 50 characters"
+      );
+    } else if (!checkPasswordComplexity(password)) {
+      toast.error(
+        "Password Must Contain At Least A Number And Special Character"
+      );
     } else {
-      const profile = { firstName, lastName, password, email, dob, phoneNo, address };
-  
+      const profile = {
+        firstName,
+        lastName,
+        password,
+        email,
+        dob,
+        phoneNo,
+        address,
+      };
+
       if (userId) {
         UserProfileService.editProfile(profile, userId)
           .then((response) => {
-            console.log("User  Profile updated successfully: ", response.data);
             toast.success("Profile updated successfully");
-  
             sessionStorage.setItem("firstName", firstName);
             sessionStorage.setItem("lastName", lastName);
             sessionStorage.setItem("email", email);
-            const exists = checkEmailExists(email);
             sessionStorage.setItem("dob", dob);
             sessionStorage.setItem("phoneNo", phoneNo);
             sessionStorage.setItem("address", address);
-            
-  
+
+            const exists = checkEmailExists(email);
             if (exists) {
-              const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-              const userIndex = storedUsers.findIndex(user => user.email === email);
-              if(userIndex){
+              const storedUsers =
+                JSON.parse(localStorage.getItem("users")) || [];
+              const userIndex = storedUsers.findIndex(
+                (user) => user.email === email
+              );
+              if (userIndex !== -1) {
                 storedUsers[userIndex].password = password;
               }
-              localStorage.setItem('users', JSON.stringify(storedUsers));
+              localStorage.setItem("users", JSON.stringify(storedUsers));
             }
-            navigate('/userProfile');
-            window.location.reload(); 
-
+            navigate("/userProfile");
+            window.location.reload();
           })
           .catch((error) => {
-            console.log("Something went wrong", error);
             toast.error("Something went wrong");
           });
       }
     }
   };
 
-  function init() {
+  const init = () => {
     if (userId) {
-      UserProfileService.getPersonalDetailsByUser (userId)
+      UserProfileService.getPersonalDetailsByUser(userId)
         .then((response) => {
-          console.log(response.data);
           setFirstName(response.data.firstName);
           setLastName(response.data.lastName);
           setEmail(response.data.email);
@@ -89,25 +101,22 @@ const EditProfile = () => {
           setAddress(response.data.address);
         })
         .catch((error) => {
-          console.log('Something went wrong', error);
+          console.log("Something went wrong", error);
         });
     }
-  }
+  };
 
   useEffect(() => {
     init();
   }, []);
 
   return (
-    <div className="form-group" style={{ paddingTop: 90, height: "850px", position: "relative", 
-                                            background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)` }}>
+    <div className="form-group" style={styles.formGroup}>
       <form onSubmit={updateProfile}>
         <div style={styles.container}>
-          <div>
-            <h2 style={styles.SignupText}>
-              <b>Update Profile</b>
-            </h2>
-          </div>
+          <h2 style={styles.SignupText}>
+            <b>Update Profile</b>
+          </h2>
 
           <div className="mb-3">
             <label>First Name</label>
@@ -150,16 +159,16 @@ const EditProfile = () => {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="form-control"
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
               />
               <div className="input-group-append">
                 <button
                   type="button"
                   className="btn btn-outline-secondary"
-                  onClick={() => setShowPassword(!showPassword)} 
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />} 
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
             </div>
@@ -199,7 +208,15 @@ const EditProfile = () => {
           </div>
 
           <div className="mb-3" style={{ marginTop: 15 }}>
-            <button type="submit" style={styles.Button}>
+            <button
+              type="submit"
+              style={{
+                ...styles.Button,
+                ...(isHovered ? styles.ButtonHover : {}),
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
               Update
             </button>
           </div>
@@ -210,10 +227,16 @@ const EditProfile = () => {
 };
 
 const styles = {
+  formGroup: {
+    paddingTop: 90,
+    height: "850px",
+    position: "relative",
+    background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)`,
+  },
   container: {
     borderColor: "crimson",
     width: 400,
-    height: 720,  
+    height: 720,
     margin: "auto",
     marginTop: "1vw",
     borderRadius: 20,
@@ -224,17 +247,23 @@ const styles = {
     position: "relative",
     width: "100%",
     height: 40,
-    backgroundColor: "#BC012E",
+    backgroundColor: "#e02c18",
     color: "white",
     borderRadius: 15,
     border: "none",
-    marginTop: 20, 
+    marginTop: 20,
+    cursor: "pointer",
+    transition: "background-color 0.3s, transform 0.3s",
+    fontWeight: "bold",
+  },
+  ButtonHover: {
+    backgroundColor: "#892318",
   },
   SignupText: {
     textAlign: "center",
     color: "#022831",
     fontFamily: "Signika Negative",
-    fontStyle: " sans-serif;",
+    fontStyle: "sans-serif",
     marginTop: 10,
   },
 };
