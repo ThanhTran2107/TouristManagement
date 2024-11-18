@@ -4,15 +4,15 @@ import TourServices from "../../Services/TourServices";
 const homeIcon = require("../../images/homeIcon.png");
 const people = require("../../images/people.png");
 const transport = require("../../images/transport.png");
-const searchIcon = require("../../images/search-icon.png"); 
-const refreshIcon = require("../../images/refresh.png"); 
+const searchIcon = require("../../images/search-icon.png");
+const refreshIcon = require("../../images/refresh.png");
 
 const UserTourTable = () => {
   const [Tours, setTours] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); 
-  const [bookingAmountFilter, setBookingAmountFilter] = useState(""); 
-  const [tourTypeFilter, setTourTypeFilter] = useState(""); 
-  const [startDate, setStartDate] = useState(""); 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [bookingAmountFilter, setBookingAmountFilter] = useState("");
+  const [tourTypeFilter, setTourTypeFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
   const user = sessionStorage.getItem("userId");
   const uID = user ?? " ";
 
@@ -33,10 +33,10 @@ const UserTourTable = () => {
 
   const handleRefresh = () => {
     init();
-    setSearchTerm(""); 
-    setBookingAmountFilter(""); 
-    setTourTypeFilter(""); 
-    setStartDate(""); 
+    setSearchTerm("");
+    setBookingAmountFilter("");
+    setTourTypeFilter("");
+    setStartDate("");
   };
 
   const filteredTours = Tours.filter((tour) => {
@@ -56,14 +56,14 @@ const UserTourTable = () => {
                 ? bookingAmount >= 4000000 && bookingAmount <= 5000000
                 : bookingAmountFilter === "Greater than 5.000.000"
                   ? bookingAmount > 5000000
-                  : true; 
+                  : true;
 
     const tourTypeCondition =
       tourTypeFilter === "International"
         ? tour.tourType === "INTERNATIONAL"
         : tourTypeFilter === "Domestic"
           ? tour.tourType === "DOMESTIC"
-          : true; 
+          : true;
 
     const startDateCondition = startDate
       ? new Date(tour.tourStartDate) >= new Date(startDate)
@@ -74,7 +74,9 @@ const UserTourTable = () => {
         tour.maxSeats.toString().includes(lowerCaseSearchTerm) ||
         tour.transportationMode.toLowerCase().includes(lowerCaseSearchTerm) ||
         tour.tourType.toLowerCase().includes(lowerCaseSearchTerm) ||
-        bookingAmount.toString().includes(lowerCaseSearchTerm)) &&
+        bookingAmount.toString().includes(lowerCaseSearchTerm) ||
+        tour.destination.toLowerCase().includes(lowerCaseSearchTerm) ||
+        tour.tourName.toLowerCase().includes(lowerCaseSearchTerm)) &&
       bookingAmountCondition &&
       tourTypeCondition &&
       startDateCondition
@@ -141,12 +143,12 @@ const UserTourTable = () => {
           const endDate = new Date(tour.tourEndDate);
           const duration = Math.ceil(
             (endDate - startDate + 1) / (1000 * 60 * 60 * 24)
-          ); 
+          );
 
           return (
             <div key={tour.tourId} style={styles.cardContainer}>
               <div style={styles.card}>
-                <h4 style={styles.cardTitle}>{tour.tourName} Package</h4>
+                <h4 style={styles.cardTitle}>{tour.tourName}</h4>
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
                 </p>
@@ -169,7 +171,10 @@ const UserTourTable = () => {
                   Start Date: <b>{tour.tourStartDate}</b> | End Date:{" "}
                   <b>{tour.tourEndDate}</b>
                 </p>
-                <h2 style={styles.price}>{tour.bookingAmount} VND /-</h2>
+                <h2 style={styles.price}>
+                  {new Intl.NumberFormat("vi-VN").format(tour.bookingAmount)}{" "}
+                  VND /-
+                </h2>{" "}
                 <h6 style={styles.perPerson}>per person</h6>
                 {uID !== " " && (
                   <Link
@@ -181,10 +186,10 @@ const UserTourTable = () => {
                     }}
                     style={styles.buttonStyle}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#892318"; 
+                      e.currentTarget.style.backgroundColor = "#892318";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#e02c18"; 
+                      e.currentTarget.style.backgroundColor = "#e02c18";
                     }}
                   >
                     <b>Book</b>
@@ -215,8 +220,8 @@ const styles = {
   searchContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-end", 
-    marginBottom: "20px",
+    justifyContent: "flex-end",
+    marginBottom: "20 px",
   },
   searchInput: {
     padding: "10px",
@@ -294,12 +299,15 @@ const styles = {
     marginRight: "5px",
   },
   cardActivities: {
+    marginTop: "7px",
     fontFamily: "Uchen, serif",
+    fontSize: "1.1em",
     color: "#2980B9",
   },
   cardDetails: {
     fontFamily: "Uchen, serif",
     color: "#7E7474",
+    fontSize: "1.1em",
   },
   price: {
     fontSize: "1.5em",

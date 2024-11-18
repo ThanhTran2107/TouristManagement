@@ -195,8 +195,6 @@ const AddTour = () => {
                     <option>--Choose tour type--</option>
                     <option>INTERNATIONAL</option>
                     <option>DOMESTIC</option>
-                    <option>HOLIDAY</option>
-                    <option>ACTIVITIES</option>
                   </select>
                 </div>
 
@@ -208,7 +206,7 @@ const AddTour = () => {
                     name="activities"
                     value={activities}
                     onChange={(e) => setActivities(e.target.value)}
-                    rows="1" // Tăng số dòng ở đây
+                    rows="2" // Tăng số dòng ở đây
                     style={{ resize: "vertical" }} // Cho phép người dùng thay đổi kích thước
                   />
                 </div>

@@ -75,105 +75,243 @@ const EditTour = () => {
     }, [])
 
     return (
-        <div>
-            <div className="container" style={{ position: "relative", background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`, height: "150vh", maxWidth: "100%" }} >
-                <div className="row">
-                    <div className="col"></div>
-                    <div className="col">
-                        <form onSubmit={updateTour}>
-                            <div style={Styles.divStyle}>
+      <div>
+        <div
+          className="container"
+          style={{
+            position: "relative",
+            background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`,
+            height: "150vh",
+            maxWidth: "100%",
+          }}
+        >
+          <div className="row">
+            <div className="col"></div>
+            <div className="col">
+              <form onSubmit={updateTour}>
+                <div style={Styles.divStyle}>
+                  <h2 style={Styles.tourText}>
+                    <b>Update Tour</b>
+                  </h2>
 
-                                <h2 style={Styles.tourText}><b>Update Tour</b></h2>
+                  <div className="mb-3">
+                    <label
+                      for="exampleFormControlInput1"
+                      className="form-label"
+                      styles={{ marginTop: 10 }}
+                    >
+                      Tour name :{" "}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="form-control"
+                      id="exampleFormControlInput1"
+                      name="tourName"
+                      value={tourName}
+                      onChange={(e) => setTourName(e.target.value)}
+                    />
+                  </div>
 
-                                <div className="mb-3">
-                                    <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 10 }}>Tour name : </label>
-                                    <input type="text" required className="form-control" id="exampleFormControlInput1" name="tourName" value={tourName}
-                                        onChange={(e) => setTourName(e.target.value)}
-                                    />
-                                </div>
-
-                                <div style={{ display: "flex" }}>
-                                    <div className="mb-3" style={{ padding: "5px" }}>
-                                        <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Source : </label>
-                                        <input type="text" required className="form-control" id="exampleFormControlInput1" name="source" value={source}
-                                            onChange={(e) => setSource(e.target.value)} />
-                                    </div>
-
-                                    <div className="mb-3" style={{ padding: "5px" }}>
-                                        <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Destination : </label>
-                                        <input type="text" required className="form-control" id="exampleFormControlInput1" name="destination" value={destination} onChange={(e) => setDestination(e.target.value)} />
-                                    </div>
-                                </div>
-
-                                <div style={{ display: "flex" }}>
-                                    <div className="mb-3" style={{ padding: "5px" }}>
-                                        <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Start Date : </label>
-                                        <input type="date" required className="form-control" id="exampleFormControlInput1" name="tourStartDate" value={tourStartDate} onChange={(e) => setTourStartDate(e.target.value)} />
-                                    </div>
-
-                                    <div className="mb-3" style={{ padding: "5px" }}>
-                                        <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>End Date : </label>
-                                        <input type="date" required className="form-control" id="exampleFormControlInput1" name="tourEndDate" value={tourEndDate} onChange={(e) => setTourEndDate(e.target.value)} />
-                                    </div>
-                                </div>
-
-                                <div className="mb-3">
-                                    <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Seats Available : </label>
-                                    <input type="number" required className="form-control" id="exampleFormControlInput1" name="maxSeats" value={maxSeats} onChange={(e) => setMaxSeats(e.target.value)} />
-                                </div>
-
-                                <div style={{ display: "flex" }}>
-                                    <label>Services</label> &nbsp;&nbsp;&nbsp;
-                                    <select name='mode'
-                                        value={transportationMode}
-                                        onChange={(e) => setTransportationMode(e.target.value)} style={{ maxWidth: "200px" }}>
-
-                                        <option>--Choose Transport--</option>
-                                        <option>BUS</option>
-                                        <option >TRAIN</option>
-                                        <option>PLANE</option>
-                                        <option>BOAT</option>
-                                    </select>
-                                </div>
-                                <br></br>
-                                <div style={{ display: "flex" }}>
-                                    <label>Types</label> &nbsp;&nbsp;&nbsp;
-                                    <select name='tourType' value={tourType}
-                                        onChange={(e) => setTourType(e.target.value)} style={{ maxWidth: "200px" }}>
-
-                                        <option>--Choose tour type--</option>
-                                        <option>INTERNATIONAL</option>
-                                        <option>DOMESTIC</option>
-                                    </select>
-                                </div>
-
-                                <div className="mb-3" style={{ padding: "5px" }}>
-                                    <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Activities : </label>
-                                    <input type="text" required className="form-control" id="exampleFormControlInput1" name="activities" value={activities} onChange={(e) => setActivities(e.target.value)} />
-                                </div>
-
-                                <div className="mb-3" style={{ padding: "5px" }}>
-                                    <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Tour Details : </label>
-                                    <input type="text" required className="form-control" id="exampleFormControlInput1" name="tourDetailInfo" value={tourDetailInfo} onChange={(e) => setTourDetailInfo(e.target.value)} />
-                                </div>
-
-                                <div className="mb-3" style={{ marginTop: "20px" }}>
-                                    <label for="exampleFormControlInput1" className="form-label" styles={{ marginTop: 8 }}>Booking Amount : </label>
-                                    <input type="number" required className="form-control" id="exampleFormControlInput1" name="bookingAmount" value={bookingAmount} onChange={(e) => setBookingAmount(e.target.value)} />
-                                </div>
-
-
-                                <div className='mb-3' style={{ marginTop: 20 }}>
-                                    <button style={Styles.buttonStyle} type="submit" >Update</button>
-                                </div>
-
-                            </div></form>
+                  <div style={{ display: "flex" }}>
+                    <div className="mb-3" style={{ padding: "5px" }}>
+                      <label
+                        for="exampleFormControlInput1"
+                        className="form-label"
+                        styles={{ marginTop: 8 }}
+                      >
+                        Source :{" "}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        className="form-control"
+                        id="exampleFormControlInput1"
+                        name="source"
+                        value={source}
+                        onChange={(e) => setSource(e.target.value)}
+                      />
                     </div>
-                    <div className="col"></div>
+
+                    <div className="mb-3" style={{ padding: "5px" }}>
+                      <label
+                        for="exampleFormControlInput1"
+                        className="form-label"
+                        styles={{ marginTop: 8 }}
+                      >
+                        Destination :{" "}
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        className="form-control"
+                        id="exampleFormControlInput1"
+                        name="destination"
+                        value={destination}
+                        onChange={(e) => setDestination(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex" }}>
+                    <div className="mb-3" style={{ padding: "5px" }}>
+                      <label
+                        for="exampleFormControlInput1"
+                        className="form-label"
+                        styles={{ marginTop: 8 }}
+                      >
+                        Start Date :{" "}
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        className="form-control"
+                        id="exampleFormControlInput1"
+                        name="tourStartDate"
+                        value={tourStartDate}
+                        onChange={(e) => setTourStartDate(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="mb-3" style={{ padding: "5px" }}>
+                      <label
+                        for="exampleFormControlInput1"
+                        className="form-label"
+                        styles={{ marginTop: 8 }}
+                      >
+                        End Date :{" "}
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        className="form-control"
+                        id="exampleFormControlInput1"
+                        name="tourEndDate"
+                        value={tourEndDate}
+                        onChange={(e) => setTourEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <label
+                      for="exampleFormControlInput1"
+                      className="form-label"
+                      styles={{ marginTop: 8 }}
+                    >
+                      Seats Available :{" "}
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      className="form-control"
+                      id="exampleFormControlInput1"
+                      name="maxSeats"
+                      value={maxSeats}
+                      onChange={(e) => setMaxSeats(e.target.value)}
+                    />
+                  </div>
+
+                  <div style={{ display: "flex" }}>
+                    <label>Services</label> &nbsp;&nbsp;&nbsp;
+                    <select
+                      name="mode"
+                      value={transportationMode}
+                      onChange={(e) => setTransportationMode(e.target.value)}
+                      style={{ maxWidth: "200px" }}
+                    >
+                      <option>--Choose Transportation--</option>
+                      <option>BUS</option>
+                      <option>TRAIN</option>
+                      <option>PLANE</option>
+                      <option>BOAT</option>
+                    </select>
+                  </div>
+                  <br></br>
+                  <div style={{ display: "flex" }}>
+                    <label>Types</label> &nbsp;&nbsp;&nbsp;
+                    <select
+                      name="tourType"
+                      value={tourType}
+                      onChange={(e) => setTourType(e.target.value)}
+                      style={{ maxWidth: "200px" }}
+                    >
+                      <option>--Choose tour type--</option>
+                      <option>INTERNATIONAL</option>
+                      <option>DOMESTIC</option>
+                    </select>
+                  </div>
+
+                  <div className="mb-3" style={{ padding: "5px" }}>
+                    <label
+                      for="exampleFormControlInput1"
+                      className="form-label"
+                      styles={{ marginTop: 8 }}
+                    >
+                      Activities :{" "}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="form-control"
+                      id="exampleFormControlInput1"
+                      name="activities"
+                      value={activities}
+                      onChange={(e) => setActivities(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3" style={{ padding: "5px" }}>
+                    <label
+                      for="exampleFormControlInput1"
+                      className="form-label"
+                      styles={{ marginTop: 8 }}
+                    >
+                      Tour Details :{" "}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="form-control"
+                      id="exampleFormControlInput1"
+                      name="tourDetailInfo"
+                      value={tourDetailInfo}
+                      onChange={(e) => setTourDetailInfo(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3" style={{ marginTop: "20px" }}>
+                    <label
+                      for="exampleFormControlInput1"
+                      className="form-label"
+                      styles={{ marginTop: 8 }}
+                    >
+                      Booking Amount :{" "}
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      className="form-control"
+                      id="exampleFormControlInput1"
+                      name="bookingAmount"
+                      value={bookingAmount}
+                      onChange={(e) => setBookingAmount(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3" style={{ marginTop: 20 }}>
+                    <button style={Styles.buttonStyle} type="submit">
+                      Update
+                    </button>
+                  </div>
                 </div>
+              </form>
             </div>
+            <div className="col"></div>
+          </div>
         </div>
-    )
+      </div>
+    );
 
 }
 
