@@ -278,7 +278,7 @@ const Styles = {
     height: 40,
     backgroundColor: "#e02c18",
     color: "white",
-    borderRadius: 15,
+    borderRadius: 10,
     border: "none",
     transition: "background-color 0.3s, transform 0.3s",
   },

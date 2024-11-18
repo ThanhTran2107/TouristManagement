@@ -90,7 +90,7 @@ const UserTourTable = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>
-        <b></b>
+        <b>Book Tours</b>
       </h1>
       <div style={styles.searchContainer}>
         <input
@@ -221,7 +221,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    marginBottom: "20 px",
+    marginBottom: "5px",
   },
   searchInput: {
     padding: "10px",
@@ -323,7 +323,7 @@ const styles = {
     padding: "10px 20px",
     backgroundColor: "#e02c18",
     color: "white",
-    borderRadius: "5px",
+    borderRadius: "10px",
     textDecoration: "none",
     transition: "background-color 0.3s ease, transform 0.2s",
   },

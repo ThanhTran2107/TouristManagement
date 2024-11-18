@@ -304,7 +304,7 @@ const styles = {
     padding: "10px 20px",
     backgroundColor: "#e02c18",
     color: "white",
-    borderRadius: "5px",
+    borderRadius: "10px",
     border: "none",
     textDecoration: "none",
     transition: "background-color 0.3s ease, transform 0.2s",
@@ -314,7 +314,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    marginBottom: "20px",
+    marginBottom: "5px",
   },
   searchInput: {
     padding: "10px",

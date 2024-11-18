@@ -18,26 +18,10 @@ const Admin = () => {
     >
       <div style={Styles.container}>
         <div style={Styles.cardContainer}>
-          <Card
-            image={account_management}
-            title="Accounts"
-            link="/accounts"
-          />
-          <Card
-            image={tourPic}
-            title="Tour List"
-            link="/tourTable"
-          />
-          <Card
-            image={addTourPic}
-            title="Add Tour"
-            link="/addTour"
-          />
-          <Card
-            image={bookPic}
-            title="Bookings"
-            link="/bookingDetails"
-          />
+          <Card image={account_management} title="Accounts" link="/accounts" />
+          <Card image={tourPic} title="Tour List" link="/tourTable" />
+          <Card image={addTourPic} title="Add Tour" link="/addTour" />
+          <Card image={bookPic} title="Confirmation" link="/bookingDetails" />
         </div>
       </div>
     </div>
