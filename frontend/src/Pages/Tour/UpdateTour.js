@@ -131,7 +131,8 @@ const EditTour = () => {
                                         <option>--Choose Transport--</option>
                                         <option>BUS</option>
                                         <option >TRAIN</option>
-                                        <option>FLIGHT</option>
+                                        <option>PLANE</option>
+                                        <option>BOAT</option>
                                     </select>
                                 </div>
                                 <br></br>
@@ -142,9 +143,7 @@ const EditTour = () => {
 
                                         <option>--Choose tour type--</option>
                                         <option>INTERNATIONAL</option>
-                                        <option >DOMESTIC</option>
-                                        <option>HOLIDAY</option>
-                                        <option>ACTIVITIES</option>
+                                        <option>DOMESTIC</option>
                                     </select>
                                 </div>
 

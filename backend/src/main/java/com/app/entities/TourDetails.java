@@ -36,42 +36,42 @@ public class TourDetails {
 	private Long tourId;
 
 	@Column(name = "tour_name", nullable = false)
-	@Length(min = 2, max = 30, message = "Invalid length of the tour name")
+	@Length(min = 2, max = 1000, message = "Invalid length of the tour name")
 	private String tourName;
 
 	@Column(name = "source", nullable = false)
 	@NonNull
-	@Length(min = 2, max = 30, message = "Invalid length of the source")
+	@Length(min = 2, max = 1000, message = "Invalid length of the source")
 	private String source;
 	
 	@Column(name = "destination", nullable = false)
 	@NonNull
-	@Length(min = 2, max = 30, message = "Invalid length of the destination")
+	@Length(min = 2, max = 1000, message = "Invalid length of the destination")
 	private String destination;
 
 	@NonNull
-	@Length(min = 2, max = 30, message = "Invalid length of the tour name")
+	@Length(min = 2, max = 1000, message = "Invalid length of the activities")
 	private String activities;
-	
+
 	@Column(name = "booking_amount", nullable = false)
 	@Min(value = 0, message = "The value must be positive")
 	private Double bookingAmount;
-	
+
 	@Column(name = "tour_detail_info")
-	@Length(min = 2, max = 50, message = "Invalid length of the tour description")
+	@Length(min = 2, max = 1000, message = "Invalid length of the tour description")
 	private String tourDetailInfo;
-	
+
 	@Column(name = "tour_start_date", nullable = false)
 	private LocalDate tourStartDate;
 
 	@Column(name = "tour_end_date", nullable = false)
 	// tour end date must be after tour start date validation required
 	private LocalDate tourEndDate;
-	
+
 	@Column(name = "max_seats")
 	@Min(value = 0)
 	private Integer maxSeats;
-	
+
 	@Column(name = "transportation_mode")
 	@Enumerated(EnumType.STRING)
 	private TransportationMode transportationMode;
