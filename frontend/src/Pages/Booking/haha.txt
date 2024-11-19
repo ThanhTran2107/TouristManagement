@@ -122,12 +122,13 @@ const AddTourist = () => {
               fontSize: "1.5em",
               textAlign: "center",
               marginBottom: "10px",
+              marginTop: "10px",
               fontWeight: "bold",
-              background: "#d5d0cd",
+              background: "#FCF6F5FF",
               borderRadius: "5px",
-              padding: "15px",
+              boxShadow: "1px 0px 4px 3px #DBDBDB",
+              padding: "10px",
               position: "relative",
-              width: "709px",
             }}
           >
             <b>Customer Information</b>
@@ -147,7 +148,6 @@ const AddTourist = () => {
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "15px",
-                    
                   }}
                 >
                   <div className="form-inline" style={divStyle.div}>
@@ -236,9 +236,14 @@ const AddTourist = () => {
             </form>
           </div>
         </div>
+
+
         <div style={styles.transactionContainer}>
-          {/* Transaction details will be added here later */}
+
         </div>
+
+
+        <div style={styles.divider}></div>
         <div style={styles.tourInfoContainer}>
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>{tourInfo.tourName || "N/A"}</h3>
@@ -267,73 +272,32 @@ const AddTourist = () => {
             <h5 style={styles.cardDetails}>
               Tour Type: <b>{tourInfo.tourType || "N/A"}</b>
             </h5>
-            <h5 style={styles.cardDetails}>
+            <h5
+            style={styles.cardDetails}>
               Tour Details: <b>{tourInfo.tourDetailInfo || "N/A"}</b>
             </h5>
             <p>
-              Start Date: <b>{tourInfo.tourStartDate || "N/A"}</b> | End Date:{" "}
-              <b>{tourInfo.tourEndDate || "N/A"}</b>
+              Start Date: <b>{tourInfo.tourStartDate || "N/A"}</b> | End Date: <b>{tourInfo.tourEndDate || "N/A"}</b>
             </p>
-            <div
-              style={{ borderTop: "2px solid black", margin: "10px 0" }}
-            ></div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "20px",
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: "Uchen, serif",
-                  fontSize: "1.5em",
-                  margin: "0",
-                  marginRight: "10px",
-                }}
-              >
+            <div style={{ borderTop: "2px solid black", margin: "10px 0" }}></div>
+            <div style={{ display: "flex", alignItems: "center", marginTop: "20px" }}>
+              <p style={{ fontFamily: "Uchen, serif", fontSize: "1.5em", margin: "0", marginRight: "10px" }}>
                 <b>Total Amounts: </b>
               </p>
               <h2 style={styles.price}>
                 {new Intl.NumberFormat("vi-VN").format(tourAmount * count)} VND
               </h2>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "10px",
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: "Uchen, serif",
-                  fontSize: "1.5em",
-                  margin: "0",
-                  marginRight: "10px",
-                }}
-              >
+            <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+              <p style={{ fontFamily: "Uchen, serif", fontSize: "1.5em", margin: "0", marginRight: "10px" }}>
                 <b>Number of Tourists:</b>
               </p>
               <h4 style={{ margin: "0", color: "#C0392B", fontWeight: "bold" }}>
                 {count}
               </h4>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "10px",
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: "Uchen, serif",
-                  fontSize: "1.5em",
-                  margin: "0",
-                  marginRight: "10px",
-                }}
-              >
+            <div style={{ display: "flex", alignItems: "center", marginTop: "10px" }}>
+              <p style={{ fontFamily: "Uchen, serif", fontSize: "1.5em", margin: "0", marginRight: "10px" }}>
                 <b>Number of Seats Available:</b>
               </p>
               <h4 style={{ margin: "0", color: "#C0392B", fontWeight: "bold" }}>
@@ -343,38 +307,27 @@ const AddTourist = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "20px", marginRight: "45px" }}
-      >
+      <div style={styles.divider1}></div>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
         <button
           className="btn btn-primary"
           type="button"
           onClick={() => addFormFields()}
-          style={{
-            ...buttonStyle.button,
-            ...(isHoveredAdd ? buttonStyle.buttonHover : {}),
-          }}
+          style={{ ...buttonStyle.button, ...(isHoveredAdd ? buttonStyle.buttonHover : {}) }}
           onMouseEnter={() => setIsHoveredAdd(true)}
           onMouseLeave={() => setIsHoveredAdd(false)}
         >
-          <h5>
-            <b>Add</b>
-          </h5>
+          <h5><b>Add</b></h5>
         </button>
         <button
           className="btn btn-primary"
           type="submit"
           onClick={handleSubmit}
-          style={{
-            ...buttonStyle.button,
-            ...(isHoveredBook ? buttonStyle.buttonHover : {}),
-          }}
+          style={{ ...buttonStyle.button, ...(isHoveredBook ? buttonStyle.buttonHover : {}) }}
           onMouseEnter={() => setIsHoveredBook(true)}
           onMouseLeave={() => setIsHoveredBook(false)}
         >
-          <h5>
-            <b>Book</b>
-          </h5>
+          <h5><b>Book</b></h5>
         </button>
       </div>
     </div>
@@ -392,13 +345,8 @@ const styles = {
     flexDirection: "column",
     flex: 1,
     marginRight: "20px",
-    marginTop: "10px",
-    height: "455px",
     position: "relative",
-    backgroundColor: "#FCF6F5FF", // Màu nền của formContainer
-    borderRadius: "12px",
   },
-  
   deleteButton: {
     position: "absolute",
     top: "10px",
@@ -412,7 +360,12 @@ const styles = {
     flex: 1,
     marginLeft: "20px",
   },
-  
+  divider: {
+    width: "2px",
+    backgroundColor: "#ccc",
+    height: "100%",
+    margin: "0 20px",
+  },
   card: {
     backgroundColor: "#F7ECDE",
     borderRadius: "10px",
@@ -420,7 +373,6 @@ const styles = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     transition: "transform 0.2s",
     minHeight: "400px",
-    width: "750px",
   },
   cardTitle: {
     fontFamily: "Uchen, serif",
@@ -454,14 +406,21 @@ const styles = {
   perPerson: {
     color: "#7E7474",
   },
+  divider: {
+    width: "15px",
+    backgroundColor: "white",
+    height: "480px",
+    margin: "0 20px",
+    borderRadius: "10px",
+  },
 };
 
 const divStyle = {
   div: {
     flexDirection: "column",
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    justifyContent: "flex-start", // Căn chỉnh về phía bên trái
+    alignItems: "flex-start", // Căn chỉnh về phía bên trái
     height: "385px",
     width: "270px",
     borderRadius: "5px",
@@ -477,16 +436,16 @@ const divStyle = {
   },
   input: {
     width: "100%",
-    padding: "5px",
-    height: "35px",
+    padding: "5px", // Giảm padding để giảm chiều cao
+    height: "35px", // Thêm chiều cao cụ thể
     borderRadius: "5px",
     border: "1px solid #ccc",
     transition: "border-color 0.3s",
   },
   select: {
     width: "193px",
-    padding: "5px",
-    height: "35px",
+    padding: "5px", // Giảm padding để giảm chiều cao
+    height: "35px", // Thêm chiều cao cụ thể
     borderRadius: "5px",
     border: "1px solid #ccc",
     transition: "border-color 0.3s",
