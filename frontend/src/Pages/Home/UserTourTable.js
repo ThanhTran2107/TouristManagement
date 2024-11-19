@@ -183,6 +183,17 @@ const UserTourTable = () => {
                       select: tour.tourId,
                       amt: tour.bookingAmount,
                       seat: tour.maxSeats,
+                      tourInfo: {
+                        tourName: tour.tourName,
+                        source: tour.source,
+                        destination: tour.destination,
+                        tourStartDate: tour.tourStartDate,
+                        tourEndDate: tour.tourEndDate,
+                        tourDetailInfo: tour.tourDetailInfo,
+                        tourActivities: tour.activities,
+                        tourType: tour.tourType,
+                        tourTransportation: tour.transportationMode,
+                      },
                     }}
                     style={styles.buttonStyle}
                     onMouseEnter={(e) => {

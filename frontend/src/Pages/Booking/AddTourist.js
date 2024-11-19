@@ -1,248 +1,483 @@
-import React, { useState } from 'react'
-//import './css/addPassenger.css'
-import { useLocation, useNavigate } from 'react-router-dom'
-import swal from 'sweetalert';
-//import 'react-datepicker/dist/react-datepicker.css'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { Link } from 'react-router-dom';
-
-
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+import axios from "axios";
+import { toast } from "react-toastify";
+import closeIcon from "../../images/close-icon.png";
+const homeIcon = require("../../images/homeIcon.png");
+const people = require("../../images/people.png");
+const transport = require("../../images/transport.png");
 
 const AddTourist = () => {
-	const location = useLocation();
-	let seats = location.state.seat;
+  const location = useLocation();
+  const user = sessionStorage.getItem("userId");
+  const navigate = useNavigate();
+  const [isHoveredAdd, setIsHoveredAdd] = useState(false);
+  const [isHoveredBook, setIsHoveredBook] = useState(false);
+  const [showScroll, setShowScroll] = useState(false); // State để kiểm soát việc hiển thị thanh cuộn
 
-	const [count, setCount] = useState(1)
-	const [seat, setSeat] = useState(seats)
+  const seats = location.state?.seat || 0;
+  const tourId = location.state?.select;
+  const tourAmount = location.state?.amt;
+  const tourInfo = location.state?.tourInfo || {};
 
-	const user = sessionStorage.getItem("userId");
-	console.log(user)
+  const [count, setCount] = useState(1);
+  const [seat, setSeat] = useState(seats);
 
-	const navigate = useNavigate()
+  const currentDate = new Date();
+  const today = currentDate.toISOString().split("T")[0];
 
-	//const {id}=useParams();
+  const [formValues, setFormValues] = useState([
+    { touristName: "", age: "", idProof: "", idProofNo: "" },
+  ]);
 
-	let tourId = location.state.select;
-	let tourAmount = location.state.amt;
+  const handleChange = (i, e) => {
+    let newFormValues = [...formValues];
+    newFormValues[i][e.target.name] = e.target.value;
+    setFormValues(newFormValues);
+  };
 
+  const addFormFields = () => {
+    if (seat > 0) {
+      setFormValues([
+        ...formValues,
+        { touristName: "", age: "", idProof: "", idProofNo: "" },
+      ]);
+      setCount(count + 1);
+      setSeat(seat - 1);
+      setShowScroll(true); // Hiển thị thanh cuộn khi thêm trường
+    } else {
+      toast.error("No more seats available to add.");
+    }
+  };
 
-	//let selectedTrain = location.state.select;
+  const removeFormFields = (i) => {
+    let newFormValues = [...formValues];
+    newFormValues.splice(i, 1);
+    setFormValues(newFormValues);
+    setCount(count - 1);
+    setSeat(seat + 1);
+    if (newFormValues.length === 0) {
+      setShowScroll(false); // Ẩn thanh cuộn nếu không còn trường nào
+    }
+  };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const requestObject = {
+      bookingDto: {
+        bookingDate: today,
+        totalAmount: tourAmount * count,
+        paymentStatus: "PAYMENT_SUCCESSFUL",
+        seatCount: count,
+      },
+      touristDtoList: formValues,
+    };
 
-	var currentDate = new Date();
+    axios
+      .post(
+        `http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,
+        requestObject
+      )
+      .then((response) => {
+        const result = response.data;
+        if (result["status"] === "error") {
+          toast.error("Something went wrong. Please check");
+        } else {
+          swal(
+            "Success",
+            `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
+            "success"
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
 
-	console.log("date: " + currentDate)
+  return (
+    <div
+      style={{
+        background: `linear-gradient(to right, #B4AEE8 , #EFEFEF, #93329E )`,
+        height: "100vh",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        className="text-center"
+        style={{ padding: "20px", fontFamily: "Georgia, serif" }}
+      ></div>
+      <br />
+      <div style={styles.container}>
+        <div style={styles.formContainer}>
+          <h2
+            style={{
+              fontSize: "1.5em ",
+              textAlign: "center",
+              marginBottom: "10px",
+              marginTop: "10px",
+              fontWeight: "bold",
+              background: "#FCF6F5FF",
+              borderRadius: "5px",
+              boxShadow: "1px 0px 4px 3px #DBDBDB",
+              padding: "10px",
+              position: "relative",
+            }}
+          >
+            <b>Customer Information</b>
+          </h2>
+          <div
+            style={{
+              maxHeight: showScroll ? "385px" : "400px",
+              overflowY: showScroll ? "scroll" : "hidden",
+            }}
+          >
+            <form onSubmit={handleSubmit}>
+              {formValues.map((element, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div className="form-inline" style={divStyle.div}>
+                    {index > 0 && (
+                      <button
+                        style={styles.deleteButton}
+                        onClick={() => removeFormFields(index)}
+                      >
+                        <img
+                          src={closeIcon}
+                          alt="Delete"
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      </button>
+                    )}
+                    <div style={divStyle.inputContainer}>
+                      <label>
+                        <b>Name</b>
+                      </label>
+                      <input
+                        type="text"
+                        name="touristName"
+                        value={element.touristName || ""}
+                        required
+                        onChange={(e) => handleChange(index, e)}
+                        style={divStyle.input}
+                      />
+                    </div>
+                    <div style={divStyle.inputContainer}>
+                      <label>
+                        <b>Age</b>
+                      </label>
+                      <input
+                        type="number"
+                        name="age"
+                        value={element.age || ""}
+                        onChange={(e) => handleChange(index, e)}
+                        style={divStyle.input}
+                      />
+                    </div>
+                    <div style={divStyle.inputContainer}>
+                      <label>
+                        <b>ID Proof</b>
+                      </label>
+                      <select
+                        name="idProof"
+                        value={element.idProof}
+                        onChange={(e) => handleChange(index, e)}
+                        style={divStyle.select}
+                      >
+                        <option>--please Choose ID--</option>
+                        <option>AADHAR_CARD</option>
+                        <option>DRIVING_LICENSE</option>
+                        <option>PAN_CARD</option>
+                      </select>
+                    </div>
+                    <div style={divStyle.inputContainer}>
+                      <label>
+                        <b>ID Number</b>
+                      </label>
+                      <input
+                        type="text"
+                        name="idProofNo"
+                        value={element.idProofNo || ""}
+                        onChange={(e) => handleChange(index, e)}
+                        style={divStyle.input}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <br />
+            </form>
+          </div>
+        </div>
+        <div style={styles.divider}></div>
+        <div style={styles.tourInfoContainer}>
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>{tourInfo.tourName || "N/A"}</h3>
+            <p style={styles.cardSubtitle}>
+              {tourInfo.source || "N/A"} to {tourInfo.destination || "N/A"}
+            </p>
+            <p>
+              <img src={homeIcon} alt="home icon" style={styles.icon} />
+              {Math.ceil(
+                (new Date(tourInfo.tourEndDate) -
+                  new Date(tourInfo.tourStartDate) +
+                  1) /
+                  (1000 * 60 * 60 * 24)
+              )}
+              days
+              {" - "}
+              <img src={people} alt="people icon" style={styles.icon} />
+              {seats} seats
+              {" - "}
+              <img src={transport} alt="transport icon" style={styles.icon} />
+              {tourInfo.tourTransportation || "N/A"}
+            </p>
+            <h5 style={styles.cardActivities}>
+              Activities: <b>{tourInfo.tourActivities || "N/A"}</b>
+            </h5>
+            <h5 style={styles.cardDetails}>
+              Tour Type: <b>{tourInfo.tourType || "N/A"}</b>
+            </h5>
+            <h5 style={styles.cardDetails}>
+              Tour Details: <b>{tourInfo.tourDetailInfo || "N/A"}</b>
+            </h5>
+            <p>
+              Start Date: <b>{tourInfo.tourStartDate || "N/A"}</b> | End Date:{" "}
+              <b>{tourInfo.tourEndDate || "N/A"}</ b>
+            </p>
+            <div
+              style={{ borderTop: "2px solid black", margin: "10px 0" }}
+            ></div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "Uchen, serif",
+                  fontSize: "1.5em",
+                  margin: "0",
+                  marginRight: "10px",
+                }}
+              >
+                <b>Total Amounts: </b>
+              </p>
+              <h2 style={styles.price}>
+                {new Intl.NumberFormat("vi-VN").format(tourAmount * count)} VND
+              </h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "Uchen, serif",
+                  fontSize: "1.5em",
+                  margin: "0",
+                  marginRight: "10px",
+                }}
+              >
+                <b>Number of Tourists:</b>
+              </p>
+              <h4 style={{ margin: "0", color: "#C0392B", fontWeight: "bold" }}>
+                {count}
+              </h4>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "Uchen, serif",
+                  fontSize: "1.5em",
+                  margin: "0",
+                  marginRight: "10px",
+                }}
+              >
+                <b>Number of Seats Available:</b>
+              </p>
+              <h4 style={{ margin: "0", color: "#C0392B", fontWeight: "bold" }}>
+                {seat}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
+      >
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={() => addFormFields()}
+          style={{
+            ...buttonStyle.button,
+            ...(isHoveredAdd ? buttonStyle.buttonHover : {}),
+          }}
+          onMouseEnter={() => setIsHoveredAdd(true)}
+          onMouseLeave={() => setIsHoveredAdd(false)}
+        >
+          <h5>Add</h5>
+        </button>
+        <button
+          className="btn btn-primary"
+          type="submit"
+          onClick={handleSubmit}
+          style={{
+            ...buttonStyle.button,
+            ...(isHoveredBook ? buttonStyle.buttonHover : {}),
+          }}
+          onMouseEnter={() => setIsHoveredBook(true)}
+          onMouseLeave={() => setIsHoveredBook(false)}
+        >
+          <h5>Book</h5>
+        </button>
+      </div>
+    </div>
+  );
+};
 
-	var date = currentDate.getDate();
-	console.log("date: " + date)
-
-	var month = currentDate.getMonth();
-	console.log("month: " + month)
-
-	var year = currentDate.getFullYear();
-	console.log("year: " + year)
-
-	if (date < 10) {
-		if (month < 9) {
-
-			var today = year + "-0" + (month + 1) + "-0" + date;
-		}
-		else {
-			var today = year + "-" + (month + 1) + "-0" + date;
-
-		}
-	}
-
-	else {
-		if (month < 9)
-			var today = year + "-0" + (month + 1) + "-" + date;
-
-		else {
-			var today = year + "-" + (month + 1) + "-" + date;
-		}
-	}
-
-	const [formValues, setFormValues] = useState([
-		{ touristName: '', age: '', idProof: '', idProofNo: '' },
-	])
-
-	let handleChange = (i, e) => {
-		let newFormValues = [...formValues]
-		newFormValues[i][e.target.name] = e.target.value
-		setFormValues(newFormValues)
-	}
-
-	let addFormFields = () => {
-		setFormValues([
-			...formValues,
-			{ touristName: '', age: '', idProof: '', idProofNo: '' },
-		])
-		setCount(count + 1)
-		if (seat != 0)
-			setSeat(seat - 1);
-	}
-
-	let removeFormFields = (i) => {
-		let newFormValues = [...formValues]
-		newFormValues.splice(i, 1)
-		setFormValues(newFormValues)
-		setCount(count - 1)
-		setSeat(seat + 1);
-	}
-
-	let handleSubmit = (event) => {
-		event.preventDefault()
-		//alert(JSON.stringify(formValues))
-		if (formValues.touristName === '')
-			// alert("please enter name");
-			console.log(JSON.stringify(requestObject))
-		axios
-			.post('http://localhost:9090/booking/createBooking/tour/' + tourId + '/user/' + user, requestObject)
-			//.post('http://localhost:9090/api/book/user/2/train/' + selectedTrain + '/addBooking/', requestObject)
-			//.post('http://localhost:9090/api/passenger/addPassenger', formValues)
-			.then((response) => {
-				// get the data returned by server
-				const result = response.data
-
-				// check if user's authentication is successfull
-				if (result['status'] === 'error') {
-					toast.error('Something went wrong. Please check')
-				} else {
-
-					console.log(result)
-					swal("Success", "Tour Booked Successfully\n Booking ID : " + result.bookingId + "", "success");
-
-					//navigate('/userTourTable')
-				}
-			})
-			.catch((error) => {
-				console.log('error')
-				console.log(error)
-			})
-
-	}
-
-	const requestObject = {
-		"bookingDto": {
-			"bookingDate": today,
-			"totalAmount": tourAmount * count,
-			"paymentStatus": "PAYMENT_SUCCESSFUL",
-			"seatCount": count
-		},
-		"touristDtoList": formValues
-	}
-
-
-	return (
-		<div style={{ background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)`, height: "1000px" }}>
-			<div className="text-center" style={{ padding: "20px", fontFamily: "Georgia, serif" }}><h2><b>Add Tourists Here..</b></h2></div>
-			<div className="text-center" style={{ padding: "10px" }}><h4>No of Tourists = {count}</h4></div>
-			<div className="text-center" style={{ padding: "10px" }}><h4>No of Seats Available = {seat - 1}</h4></div>
-			<br />
-			<form onSubmit={handleSubmit}>
-				{formValues.map((element, index) => (
-					<div className='form-inline' key={index} style={divStyle.div}>
-						<label><b>Name</b></label>&nbsp;&nbsp;&nbsp;
-						<input
-							type='text'
-							name='touristName'
-							value={element.touristName || ''} required
-							onChange={(e) => handleChange(index, e)}
-
-						/>&nbsp;&nbsp;&nbsp;&nbsp;
-
-						<label><b>Age</b></label>&nbsp;&nbsp;&nbsp;
-						<input
-							type='number'
-							name='age'
-							value={element.age || ''}
-							onChange={(e) => handleChange(index, e)}
-						/>&nbsp;&nbsp;&nbsp;&nbsp;
-
-						<label><b>ID Proof</b></label> &nbsp;&nbsp;&nbsp;
-						<select name='idProof'
-							value={element.idProof}
-							onChange={(e) => handleChange(index, e)} style={{ width: "200px" }}>
-
-							<option>--please Choose ID--</option>
-							<option>AADHAR_CARD</option>
-							<option >DRIVING_LICENSE</option>
-							<option>PAN_CARD</option>
-						</select>&nbsp;&nbsp;&nbsp;&nbsp;
-
-						<label><b>ID Number</b></label>&nbsp;&nbsp;&nbsp;
-						<input
-							type='text'
-							name='idProofNo'
-							value={element.idProofNo || ''}
-							onChange={(e) => handleChange(index, e)}
-						/>
-
-						{index ? (
-							<button
-								type='button'
-								className='btn btn-danger'
-								onClick={() => removeFormFields(index)} style={{ marginLeft: "2vw" }}>
-								Remove
-							</button>
-						) : null}
-					</div>
-				))}
-				<br />
-				<div className='button-section ' style={{ marginLeft: "40vw" }}>
-					<button
-						className='btn btn-primary'
-						type='button'
-						onClick={() => addFormFields()}
-						style={buttonStyle.button}
-					>
-						<h5>Add</h5>
-					</button>
-					<Link
-						className='btn btn-primary'
-
-						onClick={(e) => handleSubmit(e)}
-						style={buttonStyle.button}
-						state={{ select1: count }}
-						to={`/userTourTable`}>
-						<h5>Book</h5>
-					</Link>
-				</div>
-			</form>
-			<br /><br />
-			<div className="text-center" style={{ padding: "10px" }}><h4>Total Amount = {tourAmount * count}</h4></div>
-		</div>
-	)
-}
 const styles = {
-	container: {
-		padding: 40,
-		marginTop: 60,
-		backgroundColor: "#B1B2FF"
-	},
-}
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    padding: "20px",
+  },
+  formContainer: {
+    flexDirection: "column",
+    flex: 1,
+    marginRight: "20px",
+    position: "relative",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+  },
+  tourInfoContainer: {
+    marginTop: "10px",
+    flex: 1,
+    marginLeft: "20px",
+  },
+  divider: {
+    width: "2px",
+    backgroundColor: "#ccc",
+    height: "100%",
+    margin: "0 20px",
+  },
+  card: {
+    backgroundColor: "#F7ECDE",
+    borderRadius: "10px",
+    padding: "20px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    transition: "transform 0.2s",
+    minHeight: "400px",
+  },
+  cardTitle: {
+    fontFamily: "Uchen, serif",
+    fontSize: "1.5em",
+    color: "#2C3E50",
+  },
+  cardSubtitle: {
+    fontSize: "1.2em",
+    color: "#34495E",
+  },
+  icon: {
+    marginRight: "5px",
+  },
+  cardActivities: {
+    marginTop: "7px",
+    fontFamily: "Uchen, serif",
+    fontSize: "1.1em",
+    color: "#2980B9",
+  },
+  cardDetails: {
+    fontFamily: "Uchen, serif",
+    color: "#7E7474",
+    fontSize: "1.1em",
+  },
+  price: {
+    fontSize: "1.5em",
+    color: "#C0392B",
+    margin: "10px 0",
+    fontWeight: "bold",
+  },
+  perPerson: {
+    color: "#7E7474",
+  },
+};
 
 const divStyle = {
-	div: {
-		height: "9vh",
-		width: "90%",
-		boxShadow: "1px 0px 4px 3px #DBDBDB",
-		borderRadius: "10px",
-		padding: "20px",
-		marginLeft: "10vw",
-		backgroundColor: "#FCF6F5FF"
-	},
-}
+  div: {
+    flexDirection: "column",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "auto",
+    width: "100%",
+    boxShadow: "1px 0px 4px 3px #DBDBDB",
+    borderRadius: "10px",
+    padding: "20px",
+    marginLeft: "0",
+    backgroundColor: "#FCF6F5FF",
+  },
+  inputContainer: {
+    flex: 1,
+    margin: "0 10px",
+  },
+  input: {
+    width: "100%",
+    padding: "5px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  select: {
+    width: "100%",
+    padding: "5px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+};
 
 const buttonStyle = {
-	button: {
-		marginRight: "25px",
-		width: "100px",
-		padding: "7px",
-		borderRadius: "10px"
-	},
-}
+  button: {
+    marginTop: "20px",
+    marginRight: "25px",
+    marginLeft: "30px",
+    width: "100px",
+    padding: "7px",
+    borderRadius: "10px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  },
+  buttonHover: {
+    backgroundColor: "green",
+  },
+};
 
-
-export default AddTourist
+export default AddTourist;
