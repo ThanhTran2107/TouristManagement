@@ -15,7 +15,6 @@ const AddTourist = () => {
   const [isHoveredAdd, setIsHoveredAdd] = useState(false);
   const [isHoveredBook, setIsHoveredBook] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
-
   const seats = location.state?.seat || 0;
   const tourId = location.state?.select;
   const tourAmount = location.state?.amt;
@@ -23,6 +22,7 @@ const AddTourist = () => {
 
   const [count, setCount] = useState(1);
   const [seat, setSeat] = useState(seats);
+  const [paymentMethod, setPaymentMethod] = useState("direct"); // Trạng thái cho phương thức thanh toán
 
   const currentDate = new Date();
   const today = currentDate.toISOString().split("T")[0];
@@ -68,6 +68,10 @@ const AddTourist = () => {
     }
   };
 
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(e.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const requestObject = {
@@ -76,6 +80,7 @@ const AddTourist = () => {
         totalAmount: tourAmount * count,
         paymentStatus: "PAYMENT_SUCCESSFUL",
         seatCount: count,
+        paymentMethod: paymentMethod, // Thêm phương thức thanh toán vào request
       },
       touristDtoList: formValues,
     };
@@ -134,9 +139,36 @@ const AddTourist = () => {
           </h2>
           <div
             style={{
-              maxHeight: showScroll ? "385px" : "400px",
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "10px",
+            }}
+          >
+            <label style={{ marginRight: "10px" }}>
+              <input
+                type="radio"
+                value="direct"
+                checked={paymentMethod === "direct"}
+                onChange={handlePaymentMethodChange}
+              />{" "}
+              <b>Direct Payment</b>
+            </label>
+            <label style={{ marginLeft: "20px", marginRight: "70px" }}>
+              <input
+                type="radio"
+                value="card"
+                checked={paymentMethod === "card"}
+                onChange={handlePaymentMethodChange}
+              />{" "}
+              <b>Card Payment</b>
+            </label>
+          </div>
+          <div
+            style={{
+              maxHeight: showScroll ? "400px" : "400px",
               maxWidth: showScroll ? "270px" : "400px",
               overflowY: showScroll ? "scroll" : "hidden",
+              marginTop: "-50px", // Adjusted margin to align with checkboxes
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -147,7 +179,6 @@ const AddTourist = () => {
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "15px",
-                    
                   }}
                 >
                   <div className="form-inline" style={divStyle.div}>
@@ -232,13 +263,10 @@ const AddTourist = () => {
                   </div>
                 </div>
               ))}
-              <br />
             </form>
           </div>
         </div>
-        <div style={styles.transactionContainer}>
-          {/* Transaction details will be added here later */}
-        </div>
+      
         <div style={styles.tourInfoContainer}>
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>{tourInfo.tourName || "N/A"}</h3>
@@ -246,7 +274,7 @@ const AddTourist = () => {
               {tourInfo.source || "N/A"} to {tourInfo.destination || "N/A"}
             </p>
             <p>
-              <img src={homeIcon} alt="home icon" style={styles.icon} />
+              <img src={homeIcon} alt=" home icon" style={styles.icon} />
               {Math.ceil(
                 (new Date(tourInfo.tourEndDate) -
                   new Date(tourInfo.tourStartDate) +
@@ -344,7 +372,12 @@ const AddTourist = () => {
         </div>
       </div>
       <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "20px", marginRight: "45px" }}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "20px",
+          marginRight: "45px",
+        }}
       >
         <button
           className="btn btn-primary"
@@ -398,7 +431,7 @@ const styles = {
     backgroundColor: "#FCF6F5FF", // Màu nền của formContainer
     borderRadius: "12px",
   },
-  
+
   deleteButton: {
     position: "absolute",
     top: "10px",
@@ -412,7 +445,7 @@ const styles = {
     flex: 1,
     marginLeft: "20px",
   },
-  
+
   card: {
     backgroundColor: "#F7ECDE",
     borderRadius: "10px",
@@ -466,7 +499,6 @@ const divStyle = {
     width: "270px",
     borderRadius: "5px",
     padding: "20px",
-    marginLeft: "0",
     backgroundColor: "#FCF6F5FF",
   },
   inputContainer: {
