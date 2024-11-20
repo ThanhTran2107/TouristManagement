@@ -141,27 +141,26 @@ const AddTourist = () => {
     };
 
     axios
-      .post(
-        `http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,
-        requestObject
-      )
-      .then((response) => {
-        const result = response.data;
-        if (result["status"] === "error") {
-          toast.error("Something went wrong. Please check");
-        } else {
-          swal(
-            "Success",
-            `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
-            "success"
-          );
-          navigate("/getBookedTours");
-        }
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  };
+  .post(
+    `http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,
+    requestObject
+  )
+  .then((response) => {
+    const result = response.data;
+    if (result["status"] === "error") {
+      toast.error("Something went wrong. Please check");
+    } else {
+      swal(
+        "Success",
+        `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
+        "success"
+      );
+      navigate("/getBookedTours");
+    }
+  })
+  .catch((error) => {
+    console.log("error", error);
+  });
 
   return (
     <div
@@ -237,7 +236,7 @@ const AddTourist = () => {
                   style={{
                     position: "absolute",
                     top: "80px",
-                    left: "58%",
+                    left: "57%",
                     transform: "translateX(-50%)",
                     transform: "translateY(400%)",
                     fontSize: "1.6em",
@@ -530,6 +529,7 @@ const AddTourist = () => {
     </div>
   );
 };
+}
 
 const styles = {
   container: {
@@ -587,7 +587,7 @@ const styles = {
     fontFamily: "Uchen, serif",
     fontSize: "1.1em",
     color: "#2980B9",
-  },
+ },
   cardDetails: {
     fontFamily: "Uchen, serif",
     color: "#7E7474",
