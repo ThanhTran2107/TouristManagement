@@ -37,9 +37,9 @@ const Card = () => {
                 className="card-text"
                 style={{ fontFamily: "Signika Negative" }}
               >
-                Paragliding is the recreational and competitive adventure sport
-                of flying parachutes with design modifications that enhance
-                their gliding capabilities.
+                Paragliding offers a breathtaking view of Vietnam's stunning
+                landscapes. Popular spots include Doi Bu, Da Lat, and Mu Cang
+                Chai.
               </p>
             </div>
           </div>
@@ -55,10 +55,10 @@ const Card = () => {
             }}
           >
             <img
-              src={sports2}
+              src="https://wetrek.vn/pic/service/1d2aef33-0460-4f2a-94f9-76b4508f7872.jpg.ashx?w=1200"
               alt="..."
               className="card-img-top"
-              style={{ borderRadius: "50%" }}
+              style={{ borderRadius: "50%", width: "260px", height: "260px" }}
             />
 
             <div
@@ -66,15 +66,15 @@ const Card = () => {
               style={{ justifyContent: "center", alignItems: "center" }}
             >
               <h5 className="card-title" style={{ fontFamily: "Nunito" }}>
-                <strong>BUNGEE JUMPING</strong>
+                <strong>Trekking</strong>
               </h5>
               <p
                 className="card-text"
                 style={{ fontFamily: "Signika Negative" }}
               >
-                Bungee jumping is a sport wherein the jumper usually falls from
-                a great height while attached to a rubber cable.Bungy jumping,
-                often known as Bungy lumping.
+                Discover Vietnam's diverse landscapes through trekking
+                adventures, including routes like Fansipan, Ta Nang – Phan Dung,
+                and Cat Ba Island.
               </p>
             </div>
           </div>{" "}
@@ -107,9 +107,9 @@ const Card = () => {
                 className="card-text"
                 style={{ fontFamily: "Signika Negative" }}
               >
-                Rowing, sometimes called crew in the United States, is the sport
-                of racing boats using oars.Rowing is one of the oldest Olympic
-                sports.
+                Rowing is a peaceful way to explore Vietnam's iconic waterways,
+                from the serene rivers of Ninh Binh to the bustling floating
+                markets of the Mekong Delta.
               </p>
             </div>
           </div>{" "}
@@ -142,9 +142,9 @@ const Card = () => {
                 className="card-text"
                 style={{ fontFamily: "Signika Negative" }}
               >
-                Rafting and whitewater rafting are recreational outdoor
-                activities which use an inflatable raft to navigate a river or
-                other body of water.
+                Challenge the rapids while rafting in Vietnam's adventurous
+                rivers, such as the Da Nhim River in Da Lat or the Ma River in
+                Thanh Hoa.
               </p>
             </div>
           </div>
