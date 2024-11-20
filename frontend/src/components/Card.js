@@ -66,7 +66,7 @@ const Card = () => {
               style={{ justifyContent: "center", alignItems: "center" }}
             >
               <h5 className="card-title" style={{ fontFamily: "Nunito" }}>
-                <strong>Trekking</strong>
+                <strong>TREKKING</strong>
               </h5>
               <p
                 className="card-text"

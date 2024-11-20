@@ -14,15 +14,16 @@ const AddTourist = () => {
   const navigate = useNavigate();
   const [isHoveredAdd, setIsHoveredAdd] = useState(false);
   const [isHoveredBook, setIsHoveredBook] = useState(false);
-  const [showScroll, setShowScroll] = useState(false);
+  const [showScroll, setShowScroll] = useState(true);
   const seats = location.state?.seat || 0;
   const tourId = location.state?.select;
   const tourAmount = location.state?.amt;
   const tourInfo = location.state?.tourInfo || {};
+  const [isLineVisible, setIsLineVisible] = useState(false);
 
   const [count, setCount] = useState(1);
   const [seat, setSeat] = useState(seats);
-  const [paymentMethod, setPaymentMethod] = useState("direct"); // Trạng thái cho phương thức thanh toán
+  const [paymentMethod, setPaymentMethod] = useState("direct");
 
   const currentDate = new Date();
   const today = currentDate.toISOString().split("T")[0];
@@ -38,6 +39,24 @@ const AddTourist = () => {
   };
 
   const addFormFields = () => {
+    // Kiểm tra tính hợp lệ của tất cả các form
+    const allFormsValid = formValues.every((form) => {
+      return (
+        form.touristName &&
+        form.age &&
+        form.phoneNumber &&
+        form.idProof &&
+        form.idProofNo
+      );
+    });
+
+    if (!allFormsValid) {
+      toast.error(
+        "Please fill out all fields in all forms before adding another."
+      );
+      return; // Dừng lại nếu bất kỳ form nào không hợp lệ
+    }
+
     if (seat > 0) {
       setFormValues([
         ...formValues,
@@ -52,6 +71,7 @@ const AddTourist = () => {
       setCount(count + 1);
       setSeat(seat - 1);
       setShowScroll(true);
+      setIsLineVisible(true);
     } else {
       toast.error("No more seats available to add.");
     }
@@ -63,8 +83,28 @@ const AddTourist = () => {
     setFormValues(newFormValues);
     setCount(count - 1);
     setSeat(seat + 1);
+
+    // Kiểm tra nếu chỉ còn lại form mặc định
     if (newFormValues.length === 0) {
-      setShowScroll(false);
+      setIsLineVisible(false);
+      setFormValues([
+        {
+          touristName: "",
+          age: "",
+          idProof: "",
+          idProofNo: "",
+          phoneNumber: "",
+        },
+      ]);
+      setCount(1);
+    } else {
+      // Nếu còn lại form khác, kiểm tra xem có cần hiển thị line không
+      setIsLineVisible(newFormValues.length > 1);
+    }
+
+    const firstForm = document.getElementById("firstForm");
+    if (firstForm) {
+      firstForm.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -78,9 +118,9 @@ const AddTourist = () => {
       bookingDto: {
         bookingDate: today,
         totalAmount: tourAmount * count,
-        paymentStatus: "PAYMENT_SUCCESSFUL",
+        paymentStatus: "PAYMENT_IN_PROGRESS",
         seatCount: count,
-        paymentMethod: paymentMethod, // Thêm phương thức thanh toán vào request
+        paymentMethod: paymentMethod,
       },
       touristDtoList: formValues,
     };
@@ -129,7 +169,7 @@ const AddTourist = () => {
               marginBottom: "10px",
               fontWeight: "bold",
               background: "#d5d0cd",
-              borderRadius: "5px",
+              borderRadius: "10px",
               padding: "15px",
               position: "relative",
               width: "709px",
@@ -165,10 +205,10 @@ const AddTourist = () => {
           </div>
           <div
             style={{
-              maxHeight: showScroll ? "400px" : "400px",
+              maxHeight: showScroll ? "388px" : "400px",
               maxWidth: showScroll ? "270px" : "400px",
               overflowY: showScroll ? "scroll" : "hidden",
-              marginTop: "-50px", // Adjusted margin to align with checkboxes
+              marginTop: "-40px",
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -179,21 +219,30 @@ const AddTourist = () => {
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "15px",
+                    position: "relative",
                   }}
                 >
+                  {index > 0 && (
+                    <button
+                      style={styles.deleteButton}
+                      onClick={() => removeFormFields(index)}
+                      className="delete-button"
+                    >
+                      <img
+                        src={closeIcon}
+                        alt="Delete"
+                        style={{
+                          width: "15px",
+                          height: "15px",
+                          position: "absolute",
+                          top: "0",
+                          right: "0",
+                          marginRight: "-3px",
+                        }}
+                      />
+                    </button>
+                  )}
                   <div className="form-inline" style={divStyle.div}>
-                    {index > 0 && (
-                      <button
-                        style={styles.deleteButton}
-                        onClick={() => removeFormFields(index)}
-                      >
-                        <img
-                          src={closeIcon}
-                          alt="Delete"
-                          style={{ width: "20px", height: "20px" }}
-                        />
-                      </button>
-                    )}
                     <div style={divStyle.inputContainer}>
                       <label>
                         <b>Name</b>
@@ -260,13 +309,20 @@ const AddTourist = () => {
                         style={divStyle.input}
                       />
                     </div>
+                    <div
+                      style={{
+                        borderTop: isLineVisible ? "2px solid black" : "none",
+                        width: "212px",
+                        marginBottom: "-20px",
+                        marginTop: "30px",
+                      }}
+                    ></div>
                   </div>
                 </div>
               ))}
             </form>
           </div>
         </div>
-      
         <div style={styles.tourInfoContainer}>
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>{tourInfo.tourName || "N/A"}</h3>
@@ -274,7 +330,7 @@ const AddTourist = () => {
               {tourInfo.source || "N/A"} to {tourInfo.destination || "N/A"}
             </p>
             <p>
-              <img src={homeIcon} alt=" home icon" style={styles.icon} />
+              <img src={homeIcon} alt="home icon" style={styles.icon} />
               {Math.ceil(
                 (new Date(tourInfo.tourEndDate) -
                   new Date(tourInfo.tourStartDate) +
@@ -428,10 +484,9 @@ const styles = {
     marginTop: "10px",
     height: "455px",
     position: "relative",
-    backgroundColor: "#FCF6F5FF", // Màu nền của formContainer
+    backgroundColor: "#FCF6F5FF",
     borderRadius: "12px",
   },
-
   deleteButton: {
     position: "absolute",
     top: "10px",
@@ -445,7 +500,6 @@ const styles = {
     flex: 1,
     marginLeft: "20px",
   },
-
   card: {
     backgroundColor: "#F7ECDE",
     borderRadius: "10px",
@@ -495,11 +549,12 @@ const divStyle = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    height: "385px",
+    height: "380px",
     width: "270px",
-    borderRadius: "5px",
+    borderRadius: "10px",
     padding: "20px",
     backgroundColor: "#FCF6F5FF",
+    marginTop: "10px",
   },
   inputContainer: {
     flex: 1,
