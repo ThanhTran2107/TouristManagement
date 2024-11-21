@@ -4,8 +4,8 @@ import swal from "sweetalert";
 import axios from "axios";
 import { toast } from "react-toastify";
 import closeIcon from "../../images/close-icon.png";
-import directPaymentImage from "../../images/directpayment.png"; // Thêm hình ảnh Direct Payment
-import bankCardImage from "../../images/bankcard.png"; // Thêm hình ảnh Card Payment
+import directPaymentImage from "../../images/directpayment.png"; 
+import bankCardImage from "../../images/bankcard.png";
 const homeIcon = require("../../images/homeIcon.png");
 const people = require("../../images/people.png");
 const transport = require("../../images/transport.png");
@@ -198,7 +198,7 @@ const AddTourist = () => {
               display: "flex",
               justifyContent: "flex-end",
               marginBottom: "10px",
-              position: "relative", // Set position relative for the container
+              position: "relative",
             }}
           >
             <label style={{ marginRight: "10px" }}>
@@ -237,7 +237,7 @@ const AddTourist = () => {
                   style={{
                     position: "absolute",
                     top: "80px",
-                    left: "58%",
+                    left: "57.5%",
                     transform: "translateX(-50%)",
                     transform: "translateY(400%)",
                     fontSize: "1.6em",

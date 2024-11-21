@@ -36,7 +36,6 @@ function App() {
         <Navbar />
 
         <Routes>
-          {/* common functionality */}
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/feedback" element={<Feedback />} />
@@ -45,7 +44,6 @@ function App() {
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/forgotpassword" element={<ForgotPassword/>}/>
 
-          {/* user functionality */}
           <Route path="/userProfile" exact element={<UserProfile />} />
           <Route path="/editProfile" exact element={<EditProfile />} />
           <Route path="/userTourTable" element={<UserTourTable />} />
@@ -55,7 +53,6 @@ function App() {
           <Route path="/gettours" element={<UserSearchTour />} />
           <Route path="/getbydestination/:destination" element={<UserSearchByDestination />} />
 
-          {/* admin functionality */}
           <Route path="/admin" element={<Admin />} />
           <Route path="/addTour" element={<AddTour />} />
           <Route path="/updateTour/:tourId" element={<UpdateTour />} />
