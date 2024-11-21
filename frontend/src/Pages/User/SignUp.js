@@ -241,7 +241,7 @@ const styles = {
     height: 40,
     backgroundColor: '#e02c18',
     color: 'white',
-    borderRadius: 15,
+    borderRadius: 10,
     border: 'none',
     transition: 'background-color 0.3s ease, color 0.3s ease',
   },

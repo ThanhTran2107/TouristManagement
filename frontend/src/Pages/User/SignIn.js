@@ -4,6 +4,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import swal from 'sweetalert';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { auth, provider, facebookProvider } from '../../firebase'; 
+import { signInWithPopup } from "firebase/auth"; 
+const gmailImage = require('../../images/gmail.png'); 
+const facebookImage = require('../../images/facebook.png'); 
 
 export const SignIn = (props) => {
   const [error, setError] = useState(null);
@@ -25,15 +29,18 @@ export const SignIn = (props) => {
   function valid(data) {
     if (data.email.length === 0) {
       toast.error("Please Enter Email");
+      return false;
     } else if (data.password.length === 0) {
       toast.error("Please Enter Password");
+      return false;
     } else if (data.password.length < 6 || data.password.length > 20) {
       toast.error("Password Length Should Be Between 6 to 20");
+      return false;
     } else if (!checkPasswordComplexity(data.password)) {
       toast.error("Password Must Contain At Least A Number And Special Character");
-    } else {
-      return true;
+      return false;
     }
+    return true;
   }
 
   async function handleLogin(event) {
@@ -53,12 +60,12 @@ export const SignIn = (props) => {
           sessionStorage["firstName"] = result.firstName;
           sessionStorage["lastName"] = result.lastName;
 
-          if (response.data.role === "USER") {
-            swal("Success", "USER Logged In Successfully\n Customer Username : " + response.data.email, "success");
+          if (result.role === "USER") {
+            swal("Success", "USER Logged In Successfully\n Customer Username : " + result.email, "success");
             navigate('/');
             window.location.reload();
-          } else if (response.data.role === "ADMIN") {
-            swal("Success", "ADMIN Logged In Successfully\n Admin Username : " + response.data.email, "success");
+          } else if (result.role === "ADMIN") {
+            swal("Success", "ADMIN Logged In Successfully\n Admin Username : " + result.email, "success");
             navigate('/admin');
             window.location.reload();
           }
@@ -71,6 +78,44 @@ export const SignIn = (props) => {
       toast.error("Invalid Credentials!!");
     }
   }
+
+  const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    sessionStorage.setItem("userId", user.uid);
+    sessionStorage.setItem("email", user.email);
+    sessionStorage.setItem("firstName", user.displayName);
+    sessionStorage.setItem("role", "USER");
+
+    swal("Success", "Logged In Successfully\n User Email: " + user.email, "success");
+    navigate('/');
+    window.location.reload();
+  } catch (error) {
+    console.error("Error during Google login:", error);
+    toast.error("Failed to login with Google!");
+  }
+};
+
+const handleFacebookLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
+
+    sessionStorage.setItem("userId", user.uid);
+    sessionStorage.setItem("email", user.email);
+    sessionStorage.setItem("firstName", user.displayName);
+    sessionStorage.setItem("role", "USER");
+
+    swal("Success", "Logged In Successfully\n User Email: " + user.email, "success");
+    navigate('/')
+    window.location.reload(); 
+  } catch (error) {
+    console.error("Error during Facebook login:", error);
+    toast.error("Failed to login with Facebook! " + error.message);
+  }
+};
 
   return (
     <div style={styles.background}>
@@ -128,6 +173,21 @@ export const SignIn = (props) => {
             <b>Login</b>
           </button>
         </div>
+
+        <div className="mb-3" style={{ textAlign: 'center' }}>
+          <img 
+            src={gmailImage} 
+            alt="Login with Google" 
+            onClick={handleGoogleLogin} 
+            style={{ cursor: 'pointer', width: '50px', height: '50px', marginRight: '10px' }} 
+          />
+          <img 
+            src={facebookImage} 
+            alt="Login with Facbook" 
+            onClick={handleFacebookLogin} 
+            style={{ cursor: 'pointer', width: '40px', height: '40px', marginRight: '10px' }} 
+          />
+        </div>
       </form>
     </div>
   );
@@ -161,7 +221,7 @@ const styles = {
     height: 40,
     backgroundColor: '#e02c18',
     color: 'white',
-    borderRadius: 15,
+    borderRadius: 10,
     border: 'none',
     transition: 'background-color 0.3s ease, color 0.3s ease',
   },
