@@ -38,8 +38,7 @@ const AccountManagement = () => {
     const filteredData = accounts.filter((account) => {
       const matchesRole = roleFilter === "ALL" || account.role === roleFilter;
       const matchesSearchTerm =
-        account.firstName.toLowerCase().includes(lowercasedFilter) ||
-        account.lastName.toLowerCase().includes(lowercasedFilter) ||
+        (account.firstName + " " + account.lastName).toLowerCase().includes(lowercasedFilter) ||
         account.email.toLowerCase().includes(lowercasedFilter) ||
         account.phoneNo.toString().includes(searchTerm) ||
         account.address.toLowerCase().includes(lowercasedFilter) ||
@@ -125,8 +124,7 @@ const AccountManagement = () => {
         <thead>
           <tr>
             <th style={Styles.th}>ID</th>
-            <th style={Styles.th}>First Name</th>
-            <th style={Styles.th}>Last Name</th>
+            <th style={Styles.th}>Full Name</th> 
             <th style={Styles.th}>Email</th>
             <th style={Styles.th}>Date of Birth</th>
             <th style={Styles.th}>Address</th>
@@ -147,8 +145,7 @@ const AccountManagement = () => {
                 onClick={() => handleRowClick(account)} 
               >
                 <td style={Styles.td}>{index + 1}</td>
-                <td style={Styles.td}>{account.firstName}</td>
-                <td style={Styles.td}>{account.lastName}</td>
+                <td style={Styles.td}>{account.firstName + " " + account.lastName}</td> 
                 <td style={Styles.td}>{account.email}</td>
                 <td style={Styles.td}>{account.dob}</td>
                 <td style={Styles.td}>{account.address}</td>
@@ -158,7 +155,7 @@ const AccountManagement = () => {
                   <button
                     style={Styles.deleteButton}
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent row click
+                      e.stopPropagation(); 
                       setAccountToDelete(account);
                       setShowDeleteModal(true);
                     }}
@@ -170,7 +167,7 @@ const AccountManagement = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="9" style={Styles.td}>No accounts found</td>
+              <td colSpan="8" style={Styles.td}>No accounts found</td> 
             </tr>
           )}
         </tbody>
@@ -227,7 +224,7 @@ const AccountManagement = () => {
                 setShowDeleteModal(false);
                 setAccountToDelete(null);
               }}
-              style={Styles.cancelButton}
+                            style={Styles.cancelButton}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
             >
@@ -237,159 +234,149 @@ const AccountManagement = () => {
         </>
       )}
     </div>
-   );
-  };
-  
-  const Styles = {
-    container: {
-      padding: "20px",
-      textAlign: "center",
-      background: `linear-gradient(to right, #D2DAFF, #EFEFEF, #B1B2FF)`,
-      minHeight: "100vh",
-    },
-    title: {
-      fontSize: "2rem",
-      marginBottom: "20px",
-    },
-    searchContainer: {
-      display: "flex",
-      marginBottom: "10px",
-    },
-    searchInput: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "1px solid #ddd",
-      borderRadius: "10px",
-      marginRight: "2px",
-      width: "250px",
-      outline: "none",
-    },
-    roleSelect: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "1px solid #ddd",
-      borderRadius: "10px",
-      marginRight: "10px",
-      width: "200px",
-      outline: "none",
-    },
-    cbxRole: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "1px solid #ddd",
-      borderRadius: "10px",
-      marginLeft: "935px",
-      width: "200px",
-      outline: "none",
-    },
-    searchButton: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "none",
-      backgroundColor: "transparent",
-      cursor: "pointer",
-      transition: "background-color 0.3s, transform 0.3s",
-    },
-    refreshButton: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "none",
-      backgroundColor: "transparent",
-      cursor: "pointer",
-      marginLeft: "5px",
-      transition: "background-color 0.3s, transform 0.3s",
-    },
-    icon: {
-      width: "25px",
-      height: "25px",
-    },
-    deleteIcon: {
-      width: "35px",
-      height: "35px",
-    },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse",
-      border: "1px solid #ddd",
-    },
-    th: {
-      backgroundColor: "#f2f2f2",
-      padding: "10px",
-      border: "1px solid #ddd",
-      paddingBottom: "15px",
-    },
-    td: {
-      padding: "10px",
-      border: "1px solid #ddd",
-      backgroundColor: "#fff",
-    },
-    row: {
-      transition: "background-color 0.3s",
-      cursor: "pointer",
-    },
-    modal: {
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      backgroundColor: "#fff",
-      padding: "20px",
-      boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-      zIndex: 1000,
-      borderRadius: "20px",
-    },
-    overlay: {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      zIndex: 999,
-    },
-    submitButton: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "none",
-      backgroundColor: "#4CAF50",
-      color: "white",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontWeight: "bold",
-      transition: "background-color 0.3s, transform 0.3s",
-    },
-    cancelButton: {
-      marginTop: "10px",
-      padding: "10px",
-      fontSize: "1rem",
-      border: "none",
-      backgroundColor: "#e02c18",
-      color: "white",
-      borderRadius: "5px",
-      cursor: "pointer",
-      marginLeft: "10px",
-      fontWeight: "bold",
-      transition: "background-color 0.3s, transform 0.3s",
-    },
-    deleteButton: {
-      padding: "10px",
-      border: "none",
-      backgroundColor: "transparent",
-      cursor: "pointer",
-      transition: "background-color 0.3s, transform 0.3s",
-    },
-  };
-  
-  // Thêm hiệu ứng hover cho nút xóa
-  const deleteButtonHoverStyle = {
-    backgroundColor: "#f8d7da", // Màu nền khi hover
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)", // Hiệu ứng bóng khi hover
-  };
-  
-  export default AccountManagement;
+  );
+};
+
+const Styles = {
+  container: {
+    padding: "20px",
+    textAlign: "center",
+    background: `linear-gradient(to right, #D2DAFF, #EFEFEF, #B1B2FF)`,
+    minHeight: "100vh",
+  },
+  title: {
+    fontSize: "2rem",
+    marginBottom: "20px",
+  },
+  searchContainer: {
+    display: "flex",
+    marginBottom: "10px",
+  },
+  searchInput: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginRight: "2px",
+    width: "250px",
+    outline: "none",
+  },
+  roleSelect: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginRight: "10px",
+    width: "200px",
+    outline: "none",
+  },
+  cbxRole: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginLeft: "935px",
+    width: "200px",
+    outline: "none",
+  },
+  searchButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  refreshButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    marginLeft: "5px",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  icon: {
+    width: "25px",
+    height: "25px",
+  },
+  deleteIcon: {
+    width: "35px",
+    height: "35px",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    border: "1px solid #ddd",
+  },
+  th: {
+    backgroundColor: "#f2f2f2",
+    padding: "10px",
+    border: "1px solid #ddd",
+    paddingBottom: "15px",
+  },
+  td: {
+    padding: "10px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+  },
+  row: {
+    transition: "background-color 0.3s",
+    cursor: "pointer",
+  },
+  modal: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fff",
+    padding: "20px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+    zIndex: 1000,
+    borderRadius: "20px",
+  },
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
+  },
+  deleteButton: {
+    border: "none",
+  },
+  submitButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  cancelButton: {
+    marginTop: "10px",
+    marginLeft: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#e02c18",
+    color: "white",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+};
+
+export default AccountManagement;
