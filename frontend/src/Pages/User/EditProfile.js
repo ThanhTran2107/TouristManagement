@@ -25,13 +25,6 @@ const EditProfile = () => {
     return regularExpression.test(pwd);
   };
 
-  const checkEmailExists = (email) => {
-    const storedEmails = JSON.parse(localStorage.getItem("email")) || [];
-    return storedEmails
-      .map((e) => e.toLowerCase())
-      .includes(email.toLowerCase());
-  };
-
   const updateProfile = (e) => {
     e.preventDefault();
     if (phoneNo.length !== 10) {
@@ -57,7 +50,7 @@ const EditProfile = () => {
 
       if (userId) {
         UserProfileService.editProfile(profile, userId)
-          .then((response) => {
+          .then(() => {
             toast.success("Profile updated successfully");
             sessionStorage.setItem("firstName", firstName);
             sessionStorage.setItem("lastName", lastName);
@@ -66,18 +59,6 @@ const EditProfile = () => {
             sessionStorage.setItem("phoneNo", phoneNo);
             sessionStorage.setItem("address", address);
 
-            const exists = checkEmailExists(email);
-            if (exists) {
-              const storedUsers =
-                JSON.parse(localStorage.getItem("users")) || [];
-              const userIndex = storedUsers.findIndex(
-                (user) => user.email === email
-              );
-              if (userIndex !== -1) {
-                storedUsers[userIndex].password = password;
-              }
-              localStorage.setItem("users", JSON.stringify(storedUsers));
-            }
             navigate("/userProfile");
             window.location.reload();
           })
@@ -249,7 +230,7 @@ const styles = {
     height: 40,
     backgroundColor: "#e02c18",
     color: "white",
-    borderRadius: 15,
+    borderRadius: 10,
     border: "none",
     marginTop: 20,
     cursor: "pointer",

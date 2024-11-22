@@ -1,10 +1,6 @@
-import { useState } from "react";
-import UserProfileService from "../../Services/UserProfileService";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-const firstName = sessionStorage.getItem("firstName");
-const lastName = sessionStorage.getItem('lastName');
+import UserProfileService from "../../Services/UserProfileService";
 
 const UserProfile = () => {
   
@@ -14,15 +10,22 @@ const UserProfile = () => {
     navigate('/editProfile');
   }
 
-  const [Profile, setProfile] = useState("");
+  const [Profile, setProfile] = useState({
+    firstName: sessionStorage.getItem("firstName") || "",
+    lastName: sessionStorage.getItem("lastName") || "",
+    email: sessionStorage.getItem("email") || "",
+    dob: sessionStorage.getItem("dob") || "",
+    phoneNo: sessionStorage.getItem("phoneNo") || "",
+    address: sessionStorage.getItem("address") || ""
+  });
   
   let userId = sessionStorage.getItem("userId");
   console.log(userId);
 
   function init() {
-    UserProfileService.getPersonalDetailsByUser(userId)
+    UserProfileService.getPersonalDetailsByUser (userId)
       .then((response) => {
-        console.log("User Profile: ", response.data);
+        console.log("User  Profile: ", response.data);
         setProfile(response.data);
       })
       .catch((error) => {
@@ -40,7 +43,7 @@ const UserProfile = () => {
         <div style={Styles.profileContainer}>
           <div className="row" style={Styles.header}>
             <div className="col-6">
-              <h2 style={Styles.title}>{firstName} {lastName}'s Profile</h2>
+              <h2 style={Styles.title}>{Profile.firstName} {Profile.lastName}'s Profile</h2>
             </div>
             <div className="col-6" style={{ textAlign: "right" }}>
               <button className="btn btn-outline-primary" style={Styles.buttonStyle} onClick={nav}><b>Edit</b></button>
@@ -97,7 +100,7 @@ const Styles = {
     marginBottom: "20px",
   },
   title: {
-    fontSize: "30px",
+    fontSize: "25px",
     fontWeight: "600",
     fontFamily: "Georgia, serif", 
     color: "#143F6B",
@@ -128,6 +131,5 @@ const Styles = {
     color: "#555",
   }
 };
-
 
 export default UserProfile;

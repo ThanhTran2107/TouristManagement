@@ -89,8 +89,8 @@ export const SignIn = (props) => {
         firstName: user.displayName.split(" ")[0],
         lastName: user.displayName.split(" ").slice(1).join(" ") || "N/A",
         dob: "2000-01-01",
-        address: "198/13, Ton Dan",
-        phoneNo: "0917889997",
+        address: "there is no address",
+        phoneNo: "0909090909",
         role: "USER",
         password: "secret@123",
       });
@@ -135,8 +135,8 @@ export const SignIn = (props) => {
         firstName: user.displayName.split(" ")[0],
         lastName: user.displayName.split(" ").slice(1).join(" ") || "N/A",
         dob: "2000-01-01",
-        address: "198/13, Ton Dan",
-        phoneNo: "0917889997",
+        address: "there is no address",
+        phoneNo: "0909090909",
         role: "USER",
         password: "secret@123",
       });
