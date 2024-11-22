@@ -11,8 +11,8 @@ const facebookImage = require('../../images/facebook.png');
 
 export const SignIn = (props) => {
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
@@ -80,65 +80,117 @@ export const SignIn = (props) => {
   }
 
   const handleGoogleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-    sessionStorage.setItem("userId", user.uid);
-    sessionStorage.setItem("email", user.email);
-    sessionStorage.setItem("firstName", user.displayName);
-    sessionStorage.setItem("role", "USER");
+      const response = await axios.post("http://localhost:9090/user/social", {
+        email: user.email,
+        firstName: user.displayName.split(" ")[0],
+        lastName: user.displayName.split(" ").slice(1).join(" ") || "N/A",
+        dob: "2000-01-01",
+        address: "198/13, Ton Dan",
+        phoneNo: "0917889997",
+        role: "USER",
+        password: "secret@123",
+      });
 
-    swal("Success", "Logged In Successfully\n User Email: " + user.email, "success");
-    navigate('/');
-    window.location.reload();
-  } catch (error) {
-    console.error("Error during Google login:", error);
-    toast.error("Failed to login with Google!");
-  }
-};
+      if (response.data) {
+        sessionStorage.setItem("userId", user.uid);
+        sessionStorage.setItem("email", user.email);
+        sessionStorage.setItem("firstName", response.data.firstName);
+        sessionStorage.setItem("lastName", response.data.lastName);
+        sessionStorage.setItem("dob", response.data.dob);
+        sessionStorage.setItem("address", response.data.address);
+        sessionStorage.setItem("phoneNo", response.data.phoneNo);
+        sessionStorage.setItem("role", response.data.role); 
+     
 
-const handleFacebookLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, facebookProvider);
-    const user = result.user;
+        swal(
+          "Success",
+          "Logged In Successfully\n User Email: " + user.email,
+          "success"
+        );
+        navigate("/");
+        window.location.reload();
+      } else {
+        toast.error("Failed to save user information!");
+      }
+    } catch (error) {
+      console.error("Error during Google login:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+      }
+      toast.error("Failed to login with Google!");
+    }
+  };
 
-    sessionStorage.setItem("userId", user.uid);
-    sessionStorage.setItem("email", user.email);
-    sessionStorage.setItem("firstName", user.displayName);
-    sessionStorage.setItem("role", "USER");
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookProvider);
+      const user = result.user;
 
-    swal("Success", "Logged In Successfully\n User Email: " + user.email, "success");
-    navigate('/')
-    window.location.reload(); 
-  } catch (error) {
-    console.error("Error during Facebook login:", error);
-    toast.error("Failed to login with Facebook! " + error.message);
-  }
-};
+      const response = await axios.post("http://localhost:9090/user/social", {
+        email: user.email,
+        firstName: user.displayName.split(" ")[0],
+        lastName: user.displayName.split(" ").slice(1).join(" ") || "N/A",
+        dob: "2000-01-01",
+        address: "198/13, Ton Dan",
+        phoneNo: "0917889997",
+        role: "USER",
+        password: "secret@123",
+      });
+
+      if (response.data) {
+        sessionStorage.setItem("userId", user.uid);
+        sessionStorage.setItem("email", user.email);
+        sessionStorage.setItem("firstName", response.data.firstName);
+        sessionStorage.setItem("lastName", response.data.lastName);
+        sessionStorage.setItem("dob", response.data.dob); 
+        sessionStorage.setItem("address", response.data.address); 
+        sessionStorage.setItem("phoneNo", response.data.phoneNo); 
+        sessionStorage.setItem("role", response.data.role); 
+        
+        swal(
+          "Success",
+          "Logged In Successfully\n User Email: " + user.email,
+          "success"
+        );
+        navigate("/");
+        window.location.reload();
+      } else {
+        toast.error("Failed to save user information!");
+      }
+    } catch (error) {
+      console.error("Error during Facebook login:", error);
+      toast.error("Failed to login with Facebook! " + error.message);
+    }
+  };
 
   return (
     <div style={styles.background}>
       <form onSubmit={handleLogin} style={styles.form}>
-        <h2 style={styles.title}><b>Login</b></h2>
+        <h2 style={styles.title}>
+          <b>Login</b>
+        </h2>
 
         <div className="mb-3">
           <label>Email</label>
-          <input 
-            onChange={(event) => setEmail(event.target.value)} 
-            className='form-control' 
-            type='email' 
-            placeholder="Email" 
+          <input
+            onChange={(event) => setEmail(event.target.value)}
+            className="form-control"
+            type="email"
+            placeholder="Email"
           />
         </div>
 
-        <div className='mb-3'>
+        <div className="mb-3">
           <label>Password</label>
           <div className="input-group">
             <input
               onChange={(event) => setPassword(event.target.value)}
-              className='form-control'
-              type={showPassword ? 'text' : 'password'}
+              className="form-control"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
             />
             <button
@@ -156,17 +208,21 @@ const handleFacebookLogin = async () => {
         </div>
 
         <div style={styles.linkContainer}>
-          <LinkWithHover to='/signup'><i>Don't have an account ?</i></LinkWithHover>
-          <LinkWithHover to='/forgotpassword'><i>Forgot password ?</i></LinkWithHover>
+          <LinkWithHover to="/signup">
+            <i>Don't have an account ?</i>
+          </LinkWithHover>
+          <LinkWithHover to="/forgotpassword">
+            <i>Forgot password ?</i>
+          </LinkWithHover>
         </div>
 
-        <div className='mb-3' style={{ marginTop: 15 }}>
-          <button 
-            style={{ 
-              ...styles.signinButton, 
-              ...(isHovered ? styles.signinButtonHover : {})
-            }} 
-            onMouseEnter={() => setIsHovered(true)} 
+        <div className="mb-3" style={{ marginTop: 15 }}>
+          <button
+            style={{
+              ...styles.signinButton,
+              ...(isHovered ? styles.signinButtonHover : {}),
+            }}
+            onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             type="submit"
           >
@@ -174,19 +230,34 @@ const handleFacebookLogin = async () => {
           </button>
         </div>
 
-        <div className="mb-3" style={{ textAlign: 'center' }}>
-          <img 
-            src={gmailImage} 
-            alt="Login with Google" 
-            onClick={handleGoogleLogin} 
-            style={{ cursor: 'pointer', width: '50px', height: '50px', marginRight: '10px' }} 
-          />
-          <img 
-            src={facebookImage} 
-            alt="Login with Facbook" 
-            onClick={handleFacebookLogin} 
-            style={{ cursor: 'pointer', width: '40px', height: '40px', marginRight: '10px' }} 
-          />
+        <div className="mb-3" style={{ textAlign: "center" }}>
+          <div style={{ display: "inline-block", marginRight: "65px" }}>
+            <img
+              src={gmailImage}
+              alt="Login with Google"
+              onClick={handleGoogleLogin}
+              style={{
+                cursor: "pointer",
+                width: "50px", 
+                height: "50px",
+              }}
+            
+            />
+          </div>
+          <div style={{ display: "inline-block", marginLeft: "70px" }}>
+            {"  "}
+            <img
+              src={facebookImage}
+              alt="Login with Facebook"
+              onClick={handleFacebookLogin}
+              style={{
+                cursor: "pointer",
+                width: "40px",
+                height: "40px",
+              }}
+        
+            />
+          </div>
         </div>
       </form>
     </div>
@@ -208,6 +279,7 @@ const styles = {
     padding: "30px",
     backgroundColor: "white",
     boxShadow: "3px 3px 10px 2px #576F72",
+    height: 410,
   },
   title: {
     textAlign: "center",

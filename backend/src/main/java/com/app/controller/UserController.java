@@ -79,9 +79,9 @@ public class UserController {
 	public ResponseEntity<String> checkEmailExist(@RequestParam String email) {
 		UserDTO getEmail = this.userService.getUserByEmail(email);
 		if (getEmail == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email does not exist"); // Email không tồn tại
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email does not exist"); 
 		}
-		return ResponseEntity.ok("Email exists"); // Email tồn tại
+		return ResponseEntity.ok("Email exists");
 	}
 
 	@GetMapping("/getuser")
@@ -94,6 +94,24 @@ public class UserController {
 	public ResponseEntity<List<UserDTO>> getAllUser() {
 		List<UserDTO> getUsers = this.userService.getAllUsers();
 		return new ResponseEntity<List<UserDTO>>(getUsers, HttpStatus.OK);
+	}
+
+
+	@PostMapping("/social")
+        @SuppressWarnings("CallToPrintStackTrace")
+	public ResponseEntity<UserDTO> createSocialUser(@RequestBody UserDTO userdto) {
+		try {
+			UserDTO existingUser  = userService.getUserByEmail(userdto.getEmail());
+			if (existingUser  != null) {
+				return new ResponseEntity<>(existingUser , HttpStatus.OK);
+			}
+
+			UserDTO createdUser  = this.userService.createUser (userdto);
+			return new ResponseEntity<UserDTO>(createdUser , HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
 	}
 
 }
