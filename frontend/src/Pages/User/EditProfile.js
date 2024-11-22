@@ -16,6 +16,8 @@ const EditProfile = () => {
   const [address, setAddress] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isPasswordReadOnly, setIsPasswordReadOnly] = useState(false); 
+  const [isPasswordToggleDisabled, setIsPasswordToggleDisabled] = useState(false); 
 
   let userId = sessionStorage.getItem("userId");
 
@@ -71,7 +73,7 @@ const EditProfile = () => {
 
   const init = () => {
     if (userId) {
-      UserProfileService.getPersonalDetailsByUser(userId)
+      UserProfileService.getPersonalDetailsByUser (userId)
         .then((response) => {
           setFirstName(response.data.firstName);
           setLastName(response.data.lastName);
@@ -80,6 +82,14 @@ const EditProfile = () => {
           setDob(response.data.dob);
           setPhoneNo(response.data.phoneNo);
           setAddress(response.data.address);
+
+          if (response.data.password === "secret@123") {
+            setIsPasswordReadOnly(true);
+            setIsPasswordToggleDisabled(true); 
+          } else {
+            setIsPasswordReadOnly(false);
+            setIsPasswordToggleDisabled(false); 
+          }
         })
         .catch((error) => {
           console.log("Something went wrong", error);
@@ -142,12 +152,14 @@ const EditProfile = () => {
                 className="form-control"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
+                readOnly={isPasswordReadOnly}
               />
               <div className="input-group-append">
                 <button
                   type="button"
                   className="btn btn-outline-secondary"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isPasswordToggleDisabled} 
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>

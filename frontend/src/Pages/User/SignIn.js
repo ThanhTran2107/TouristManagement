@@ -96,15 +96,14 @@ export const SignIn = (props) => {
       });
 
       if (response.data) {
-        sessionStorage.setItem("userId", user.uid);
+        sessionStorage.setItem("userId", response.data.userId);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("firstName", response.data.firstName);
         sessionStorage.setItem("lastName", response.data.lastName);
         sessionStorage.setItem("dob", response.data.dob);
         sessionStorage.setItem("address", response.data.address);
         sessionStorage.setItem("phoneNo", response.data.phoneNo);
-        sessionStorage.setItem("role", response.data.role); 
-     
+        sessionStorage.setItem("role", response.data.role);
 
         swal(
           "Success",
@@ -142,15 +141,15 @@ export const SignIn = (props) => {
       });
 
       if (response.data) {
-        sessionStorage.setItem("userId", user.uid);
+        sessionStorage.setItem("userId", response.data.userId);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("firstName", response.data.firstName);
         sessionStorage.setItem("lastName", response.data.lastName);
-        sessionStorage.setItem("dob", response.data.dob); 
-        sessionStorage.setItem("address", response.data.address); 
-        sessionStorage.setItem("phoneNo", response.data.phoneNo); 
-        sessionStorage.setItem("role", response.data.role); 
-        
+        sessionStorage.setItem("dob", response.data.dob);
+        sessionStorage.setItem("address", response.data.address);
+        sessionStorage.setItem("phoneNo", response.data.phoneNo);
+        sessionStorage.setItem("role", response.data.role);
+
         swal(
           "Success",
           "Logged In Successfully\n User Email: " + user.email,

@@ -90,7 +90,7 @@ const UserTourTable = () => {
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>
-        <b>Book Tours</b>
+        <b>Available Tours</b>
       </h1>
       <div style={styles.searchContainer}>
         <input
