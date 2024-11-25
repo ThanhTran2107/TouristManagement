@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import TourServices from "../../Services/TourServices";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 const EditTour = () => {
   const navigate = useNavigate();
@@ -19,8 +18,10 @@ const EditTour = () => {
   const [maxSeats, setMaxSeats] = useState("");
   const [transportationMode, setTransportationMode] = useState("");
   const [tourType, setTourType] = useState("");
+  const [tourImage, setTourImage] = useState(null);
+  const [tourImageBLOB, setTourImageBLOB] = useState("");
 
-  const updateTour = (e) => {
+  const updateTour = async (e) => {
     e.preventDefault();
 
     const updatedTour = {
@@ -35,24 +36,47 @@ const EditTour = () => {
       maxSeats,
       transportationMode,
       tourType,
+      tourImage: tourImageBLOB,
     };
 
-    if (tourId) {
-      TourServices.updateTour(updatedTour, tourId)
-        .then((response) => {
-          console.log("Tour updated successfully: ", response.data);
-          toast.success("Tour updated successfully");
-          navigate("/tourTable");
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.log("Something went wrong", error);
-          toast.error("Something went wrong");
-        });
+    if (!tourImage) {
+      toast.error("Please upload an image before updating");
+    }
+    else{
+      if (tourId) {
+        TourServices.updateTour(updatedTour, tourId)
+          .then((response) => {
+            console.log("Tour updated successfully: ", response.data);
+            toast.success("Tour updated successfully");
+            console.log(tourImageBLOB);
+            navigate("/tourTable");
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.log("Something went wrong", error);
+            toast.error("Something went wrong");
+          });
+      }
     }
   };
 
-  function init() {
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setTourImage(file);
+      convertToBase64(file);
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setTourImageBLOB(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const init = () => {
     if (tourId) {
       TourServices.getTourById(tourId)
         .then((response) => {
@@ -73,207 +97,214 @@ const EditTour = () => {
           console.log("Something went wrong", error);
         });
     }
-  }
+  };
 
   useEffect(() => {
     init();
-  }, []);
+  }, [tourId]);
 
   return (
-    <div>
-      <div
-        className="container"
-        style={{
-          position: "relative",
-          background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`,
-          minHeight: "170vh",
-          maxWidth: "100%",
-        }}
-      >
-        <div className="row">
-          <div className="col"></div>
-          <div className="col">
-            <form onSubmit={updateTour}>
-              <div style={Styles.divStyle}>
-                <h2 style={Styles.tourText}>
-                  <b>Update Tour</b>
-                </h2>
+    <div className="container" style={Styles.containerStyle}>
+      <div className="row">
+        <div className="col"></div>
+        <div className="col">
+          <form onSubmit={updateTour}>
+            <div style={Styles.divStyle}>
+              <h2 style={Styles.tourText}>
+                <b>Update Tour</b>
+              </h2>
 
-                <div className="mb-3">
-                  <label className="form-label">Tour name:</label>
+              <div className="mb-3">
+                <label className="form-label">Tour name:</label>
+                <input
+                  type="text"
+                  required
+                  className="form-control"
+                  value={tourName}
+                  onChange={(e) => setTourName(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3 d-flex justify-content-between">
+                <div style={{ flex: 1, padding: "5px" }}>
+                  <label className="form-label">Source:</label>
                   <input
                     type="text"
                     required
                     className="form-control"
-                    name="tourName"
-                    value={tourName}
-                    onChange={(e) => setTourName(e.target.value)}
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
                   />
                 </div>
 
-                <div className="mb-3 d-flex justify-content-between">
-                  <div style={{ flex: 1, padding: "5px" }}>
-                    <label className="form-label">Source:</label>
-                    <input
-                      type="text"
-                      required
-                      className="form-control"
-                      name="source"
-                      value={source}
-                      onChange={(e) => setSource(e.target.value)}
-                    />
-                  </div>
-
-                  <div style={{ flex: 1, padding: "5px" }}>
-                    <label className="form-label">Destination:</label>
-                    <input
-                      type="text"
-                      required
-                      className="form-control"
-                      name="destination"
-                      value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-3 d-flex justify-content-between">
-                  <div style={{ flex: 1, padding: "5px" }}>
-                    <label className="form-label">Start Date:</label>
-                    <input
-                      type="date"
-                      required
-                      className="form-control"
-                      name="tourStartDate"
-                      value={tourStartDate}
-                      onChange={(e) => setTourStartDate(e.target.value)}
-                    />
-                  </div>
-
-                  <div style={{ flex: 1, padding: "5px" }}>
-                    <label className="form-label">End Date:</label>
-                    <input
-                      type="date"
-                      required
-                      className="form-control"
-                      name="tourEndDate"
-                      value={tourEndDate}
-                      onChange={(e) => setTourEndDate(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Seats Available:</label>
+                <div style={{ flex: 1, padding: "5px" }}>
+                  <label className="form-label" style={{ marginBottom: "8px" }}>
+                    Destination:
+                  </label>
                   <input
-                    type="number"
+                    type="text"
                     required
                     className="form-control"
-                    name="maxSeats"
-                    value={maxSeats}
-                    onChange={(e) => setMaxSeats(e.target.value)}
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
                   />
-                </div>
-
-                <div className="mb-3">
-                  <label>Transportations</label> &nbsp;&nbsp;&nbsp;
-                  <select
-                    name="mode"
-                    value={transportationMode}
-                    onChange={(e) => setTransportationMode(e.target.value)}
-                    className="form-select"
-                    style={{ maxWidth: "250px" }}
-                  >
-                    <option>--Choose Transportation--</option>
-                    <option value="BUS">BUS</option>
-                    <option value="TRAIN">TRAIN</option>
-                    <option value="PLANE">PLANE</option>
-                    <option value="BOAT">BOAT</option>
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label>Types</label> &nbsp;&nbsp;&nbsp;
-                  <select
-                    name="tourType"
-                    value={tourType}
-                    onChange={(e) => setTourType(e.target.value)}
-                    className="form-select"
-                    style={{ maxWidth: "200px" }}
-                  >
-                    <option>--Choose tour type--</option>
-                    <option>INTERNATIONAL</option>
-                    <option>DOMESTIC</option>
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Activities:</label>
-                  <textarea
-                    required
-                    className="form-control"
-                    name="activities"
-                    value={activities}
-                    onChange={(e) => setActivities(e.target.value)}
-                    rows="2"
-                    style={{ resize: "vertical" }}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Tour Details:</label>
-                  <textarea
-                    required
-                    className="form-control"
-                    name="tourDetailInfo"
-                    value={tourDetailInfo}
-                    onChange={(e) => setTourDetailInfo(e.target.value)}
-                    rows="5"
-                    style={{ resize: "vertical" }}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label className="form-label">Booking Amount:</label>
-                  <input
-                    type="number"
-                    required
-                    className="form-control"
-                    name="bookingAmount"
-                    value={bookingAmount}
-                    onChange={(e) => setBookingAmount(e.target.value)}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <button
-                    style={Styles.buttonStyle}
-                    type="submit"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        Styles.buttonHover.backgroundColor;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        Styles.buttonStyle.backgroundColor;
-                    }}
-                  >
-                    Update
-                  </button>
                 </div>
               </div>
-            </form>
-          </div>
-          <div className="col"></div>
+
+              <div className="mb-3 d-flex justify-content-between">
+                <div style={{ flex: 1, padding: "5px" }}>
+                  <label className="form-label">Start Date:</label>
+                  <input
+                    type="date"
+                    required
+                    className="form-control"
+                    value={tourStartDate}
+                    onChange={(e) => setTourStartDate(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ flex: 1, padding: "5px" }}>
+                  <label className="form-label">End Date:</label>
+                  <input
+                    type="date"
+                    required
+                    className="form-control"
+                    value={tourEndDate}
+                    onChange={(e) => setTourEndDate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Seats Available:</label>
+                <input
+                  type="number"
+                  required
+                  className="form-control"
+                  value={maxSeats}
+                  onChange={(e) => setMaxSeats(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label>Transportations</label> &nbsp;&nbsp;&nbsp;
+                <select
+                  value={transportationMode}
+                  onChange={(e) => setTransportationMode(e.target.value)}
+                  className="form-select"
+                  style={{ maxWidth: "250px" }}
+                >
+                  <option>--Choose Transportation--</option>
+                  <option value="BUS">BUS</option>
+                  <option value="TRAIN">TRAIN</option>
+                  <option value="PLANE">PLANE</option>
+                  <option value="BOAT">BOAT</option>
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label>Types</label> &nbsp;&nbsp;&nbsp;
+                <select
+                  value={tourType}
+                  onChange={(e) => setTourType(e.target.value)}
+                  className="form-select"
+                  style={{ maxWidth: "200px" }}
+                >
+                  <option>--Choose tour type--</option>
+                  <option>INTERNATIONAL</option>
+                  <option>DOMESTIC</option>
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Activities:</label>
+                <textarea
+                  required
+                  className="form-control"
+                  value={activities}
+                  onChange={(e) => setActivities(e.target.value)}
+                  rows="2"
+                  style={{ resize: "vertical" }}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Tour Details:</label>
+                <textarea
+                  required
+                  className="form-control"
+                  value={tourDetailInfo}
+                  onChange={(e) => setTourDetailInfo(e.target.value)}
+                  rows="5"
+                  style={{ resize: "vertical" }}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Booking Amount:</label>
+                <input
+                  type="number"
+                  required
+                  className="form-control"
+                  value={bookingAmount}
+                  onChange={(e) => setBookingAmount(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Upload Tour Image:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-control"
+                  onChange={handleImageChange}
+                />
+              </div>
+
+              {tourImage && (
+                <div className="mb-3">
+                  <img
+                    src={URL.createObjectURL(tourImage)}
+                    alt="Tour"
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                </div>
+              )}
+
+              <div className="mb-3">
+                <button
+                  style={Styles.buttonStyle}
+                  type="submit"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      Styles.buttonHover.backgroundColor;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      Styles.buttonStyle.backgroundColor;
+                  }}
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
+        <div className="col"></div>
       </div>
     </div>
   );
 };
 
 const Styles = {
+  containerStyle: {
+    position: "relative",
+    background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`,
+    minHeight: "170vh",
+    maxWidth: "100%",
+  },
   divStyle: {
-    borderColor: "crimson ",
+    borderColor: "crimson",
     borderStyle: "thin",
     width: "30vw",
     margin: "auto",
@@ -297,7 +328,7 @@ const Styles = {
     fontWeight: "bold",
   },
   buttonHover: {
-    backgroundColor: "#892318", // Màu nền khi hover
+    backgroundColor: "#892318",
   },
   tourText: {
     textAlign: "center",

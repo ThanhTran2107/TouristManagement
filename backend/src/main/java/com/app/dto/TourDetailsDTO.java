@@ -17,7 +17,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class TourDetailsDTO {
-	private Long tourId;
+    
+    private Long tourId;
 	private String tourName;
 	private String source;
 	private String destination;
@@ -29,4 +30,5 @@ public class TourDetailsDTO {
 	private Integer maxSeats;
 	private TransportationMode transportationMode;
 	private TourTypeEnum tourType;
+    private String tourImage;
 }

@@ -20,29 +20,32 @@ import com.app.dto.TourDetailsDTO;
 import com.app.entities.TourTypeEnum;
 import com.app.service.TourDetailsService;
 
+@SuppressWarnings("Convert2Diamond")
 @RestController
 @RequestMapping("/tourdetails")
 @CrossOrigin(origins="http://localhost:3000")
 public class TourDetailsController {
-	@Autowired
-	TourDetailsService tourDetailsService;
+    @Autowired
+    TourDetailsService tourDetailsService;
 
-	@PostMapping("/create")
-	@SuppressWarnings("Convert2Diamond")
+	// @Value("${upload.dir}")
+    // @SuppressWarnings("unused")
+    // private String uploadDir;
+
+    @PostMapping("/create")
 	public ResponseEntity<TourDetailsDTO> saveTourDetails(@RequestBody TourDetailsDTO tourDetailsDTO) {
 		TourDetailsDTO savedTourDetails = this.tourDetailsService.saveTourDetails(tourDetailsDTO);
 		return new ResponseEntity<TourDetailsDTO>(savedTourDetails, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/update/{tourDetailId}")
-	@SuppressWarnings("Convert2Diamond")
-	public ResponseEntity<TourDetailsDTO> updateTourDetails(@RequestBody TourDetailsDTO tourDetailsDTO,
+   	public ResponseEntity<TourDetailsDTO> updateTourDetails(@RequestBody TourDetailsDTO tourDetailsDTO,
 			@PathVariable Long tourDetailId) {
 		TourDetailsDTO updatedTourDetails = this.tourDetailsService.updateTourDetails(tourDetailsDTO, tourDetailId);
 		return new ResponseEntity<TourDetailsDTO>(updatedTourDetails, HttpStatus.OK);
 	}
 
-	@GetMapping("/get/{tourDetailId}")
+    @GetMapping("/get/{tourDetailId}")
 	@SuppressWarnings("Convert2Diamond")
 	public ResponseEntity<TourDetailsDTO> getTourDetailsById(@PathVariable Long tourDetailId) {
 		TourDetailsDTO tourDetails = this.tourDetailsService.getTourDetailsById(tourDetailId);

@@ -16,7 +16,6 @@ const TourTable = () => {
   const [tourTypeFilter, setTourTypeFilter] = useState("");
   const [startDate, setStartDate] = useState("");
 
-  // Hàm khởi tạo để lấy danh sách tour
   const init = () => {
     TourServices.getAllTours()
       .then((response) => {
@@ -32,7 +31,6 @@ const TourTable = () => {
     init();
   }, []);
 
-  // Hàm xóa tour
   const handleDelete = (tourId) => {
     TourServices.removeTour(tourId)
       .then((response) => {
@@ -45,7 +43,6 @@ const TourTable = () => {
       });
   };
 
-  // Hàm làm mới danh sách tour
   const handleRefresh = () => {
     init();
     setSearchTerm("");
@@ -54,7 +51,6 @@ const TourTable = () => {
     setStartDate("");
   };
 
-  // Lọc danh sách tour theo các điều kiện
   const filteredTours = tours.filter((tour) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const bookingAmount = tour.bookingAmount;
@@ -63,23 +59,23 @@ const TourTable = () => {
       bookingAmountFilter === "Less than 1.000.000"
         ? bookingAmount < 1000000
         : bookingAmountFilter === "1.000.000 - 2.000.000"
-          ? bookingAmount >= 1000000 && bookingAmount <= 2000000
-          : bookingAmountFilter === "2.000.000 - 3.000.000"
-            ? bookingAmount >= 2000000 && bookingAmount <= 3000000
-            : bookingAmountFilter === "3.000.000 - 4.000.000"
-              ? bookingAmount >= 3000000 && bookingAmount <= 4000000
-              : bookingAmountFilter === "4.000.000 - 5.000.000"
-                ? bookingAmount >= 4000000 && bookingAmount <= 5000000
-                : bookingAmountFilter === "Greater than 5.000.000"
-                  ? bookingAmount > 5000000
-                  : true;
+        ? bookingAmount >= 1000000 && bookingAmount <= 2000000
+        : bookingAmountFilter === "2.000.000 - 3.000.000"
+        ? bookingAmount >= 2000000 && bookingAmount <= 3000000
+        : bookingAmountFilter === "3.000.000 - 4.000.000"
+        ? bookingAmount >= 3000000 && bookingAmount <= 4000000
+        : bookingAmountFilter === "4.000.000 - 5.000.000"
+        ? bookingAmount >= 4000000 && bookingAmount <= 5000000
+        : bookingAmountFilter === "Greater than 5.000.000"
+        ? bookingAmount > 5000000
+        : true;
 
     const tourTypeCondition =
       tourTypeFilter === "International"
         ? tour.tourType === "INTERNATIONAL"
         : tourTypeFilter === "Domestic"
-          ? tour.tourType === "DOMESTIC"
-          : true;
+        ? tour.tourType === "DOMESTIC"
+        : true;
 
     const startDateCondition = startDate
       ? new Date(tour.tourStartDate) >= new Date(startDate)
@@ -164,11 +160,13 @@ const TourTable = () => {
           return (
             <div key={tour.tourId} style={styles.cardContainer}>
               <div style={styles.card}>
+                <img src={tour.tourImage} alt="Tour" style={styles.tourImage} />{" "}
+                {/* Hình ảnh tour ở góc phải */}
                 <h4 style={styles.cardTitle}>{tour.tourName}</h4>
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
                 </p>
-                <img src={homeIcon} alt="home icon" style={styles.icon} />
+                <img src={homeIcon} alt="people icon" style={styles.icon} />
                 {duration} days{" - "}
                 <img src={people} alt="people icon" style={styles.icon} />
                 {tour.maxSeats} seats{" - "}
@@ -252,6 +250,7 @@ const styles = {
   cardContainer: {
     width: "710px",
     margin: "10px",
+    position: "relative", // Để định vị hình ảnh
   },
   card: {
     backgroundColor: "#F7ECDE",
@@ -273,13 +272,21 @@ const styles = {
   icon: {
     marginRight: "5px",
   },
+  tourImage: {
+    position: "absolute",
+    top: "20px",
+    right: "20px",
+    width: "200px", 
+    height: "110px", 
+    objectFit: "cover", 
+    borderRadius: "10px",
+  },
   cardActivities: {
     marginTop: "7px",
     fontFamily: "Uchen, serif",
     fontSize: "1.1em",
     color: "#2980B9",
   },
-  color: "#2980B9",
   cardDetails: {
     fontFamily: "Uchen, serif",
     fontSize: "1.1em",

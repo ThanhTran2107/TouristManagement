@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import swal from 'sweetalert';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { auth, provider, facebookProvider } from '../../firebase'; 
-import { signInWithPopup } from "firebase/auth"; 
-const gmailImage = require('../../images/gmail.png'); 
-const facebookImage = require('../../images/facebook.png'); 
+import axios from "axios";
+import { toast } from "react-toastify";
+import swal from "sweetalert";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { auth, provider, facebookProvider } from "../../firebase";
+import { signInWithPopup } from "firebase/auth";
+const gmailImage = require("../../images/gmail.png");
+const facebookImage = require("../../images/facebook.png");
 
 export const SignIn = (props) => {
   const [error, setError] = useState(null);
@@ -22,7 +22,8 @@ export const SignIn = (props) => {
   }, []);
 
   function checkPasswordComplexity(pwd) {
-    var regularExpression = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
+    var regularExpression =
+      /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
     return regularExpression.test(pwd);
   }
 
@@ -37,7 +38,9 @@ export const SignIn = (props) => {
       toast.error("Password Length Should Be Between 6 to 20");
       return false;
     } else if (!checkPasswordComplexity(data.password)) {
-      toast.error("Password Must Contain At Least A Number And Special Character");
+      toast.error(
+        "Password Must Contain At Least A Number And Special Character"
+      );
       return false;
     }
     return true;
@@ -49,28 +52,41 @@ export const SignIn = (props) => {
 
     try {
       if (valid(data)) {
-        const response = await axios.post('http://localhost:9090/user/signIn', data);
+        const response = await axios.post(
+          "http://localhost:9090/user/signIn",
+          data
+        );
         if (response.data) {
           const result = response.data;
           console.log(result);
 
-          sessionStorage["userId"] = result.userId;
-          sessionStorage["role"] = result.role;
-          sessionStorage["email"] = result.email;
-          sessionStorage["firstName"] = result.firstName;
-          sessionStorage["lastName"] = result.lastName;
+          sessionStorage.setItem("token", result.token); 
+          sessionStorage.setItem("userId", result.userId);
+          sessionStorage.setItem("role", result.role);
+          sessionStorage.setItem("email", result.email);
+          sessionStorage.setItem("firstName", result.firstName);
+          sessionStorage.setItem("lastName", result.lastName);
 
           if (result.role === "USER") {
-            swal("Success", "USER Logged In Successfully\n Customer Username : " + result.email, "success");
-            navigate('/');
+            swal(
+              "Success",
+              "USER Logged In Successfully\n Customer Username : " +
+                result.email,
+              "success"
+            );
+            navigate("/");
             window.location.reload();
           } else if (result.role === "ADMIN") {
-            swal("Success", "ADMIN Logged In Successfully\n Admin Username : " + result.email, "success");
-            navigate('/admin');
+            swal(
+              "Success",
+              "ADMIN Logged In Successfully\n Admin Username : " + result.email,
+              "success"
+            );
+            navigate("/admin");
             window.location.reload();
           }
         } else {
-          toast.error('Invalid Credentials');
+          toast.error("Invalid Credentials");
         }
       }
     } catch (error) {
@@ -96,6 +112,7 @@ export const SignIn = (props) => {
       });
 
       if (response.data) {
+        sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("userId", response.data.userId);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("firstName", response.data.firstName);
@@ -141,6 +158,7 @@ export const SignIn = (props) => {
       });
 
       if (response.data) {
+        sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("userId", response.data.userId);
         sessionStorage.setItem("email", user.email);
         sessionStorage.setItem("firstName", response.data.firstName);
@@ -237,14 +255,12 @@ export const SignIn = (props) => {
               onClick={handleGoogleLogin}
               style={{
                 cursor: "pointer",
-                width: "50px", 
+                width: "50px",
                 height: "50px",
               }}
-            
             />
           </div>
           <div style={{ display: "inline-block", marginLeft: "70px" }}>
-            {"  "}
             <img
               src={facebookImage}
               alt="Login with Facebook"
@@ -254,22 +270,21 @@ export const SignIn = (props) => {
                 width: "40px",
                 height: "40px",
               }}
-        
             />
           </div>
         </div>
       </form>
     </div>
   );
-}
+};
 
 const styles = {
   background: {
     background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`,
     height: "100vh",
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   form: {
     borderColor: "crimson",
@@ -283,37 +298,37 @@ const styles = {
   title: {
     textAlign: "center",
     color: "#022831",
-    fontFamily: 'Signika Negative',
+    fontFamily: "Signika Negative",
     marginBottom: 20,
   },
   signinButton: {
-    position: 'relative',
-    width: '100%',
+    position: "relative",
+    width: "100%",
     height: 40,
-    backgroundColor: '#e02c18',
-    color: 'white',
+    backgroundColor: "#e02c18",
+    color: "white",
     borderRadius: 10,
-    border: 'none',
-    transition: 'background-color 0.3s ease, color 0.3s ease',
+    border: "none",
+    transition: "background-color 0.3s ease, color 0.3s ease",
   },
   signinButtonHover: {
-    backgroundColor: '#892318',
+    backgroundColor: "#892318",
   },
   linkContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
     marginTop: 20,
-    color: 'blue',
+    color: "blue",
   },
   link: {
-    textDecoration: 'none',
-    color: 'blue',
-    transition: 'color 0.3s ease',
+    textDecoration: "none",
+    color: "blue",
+    transition: "color 0.3s ease",
   },
   linkHover: {
-    color: 'green',
+    color: "green",
   },
-}
+};
 
 const LinkWithHover = ({ to, children }) => {
   const [isHovered, setIsHovered] = useState(false);

@@ -35,31 +35,31 @@ public class TourDetails {
 
     @Column(name = "tour_name", nullable = false)
     @NonNull
-    private String tourName; // Đã loại bỏ @Length
+    private String tourName; 
 
     @Column(name = "source", nullable = false)
     @NonNull
-    private String source; // Đã loại bỏ @Length
+    private String source; 
 
     @Column(name = "destination", nullable = false)
     @NonNull
-    private String destination; // Đã loại bỏ @Length
+    private String destination; 
 
+    @Column(name = "activities", nullable = false)
     @NonNull
-    private String activities; // Đã loại bỏ @Length
+    private String activities; 
 
     @Column(name = "booking_amount", nullable = false)
     @Min(value = 0, message = "The value must be positive")
     private Double bookingAmount;
 
     @Column(name = "tour_detail_info")
-    private String tourDetailInfo; // Đã loại bỏ @Length
+    private String tourDetailInfo; 
 
     @Column(name = "tour_start_date", nullable = false)
     private LocalDate tourStartDate;
 
     @Column(name = "tour_end_date", nullable = false)
-    // tour end date must be after tour start date validation required
     private LocalDate tourEndDate;
 
     @Column(name = "max_seats")
@@ -75,5 +75,9 @@ public class TourDetails {
     private TourTypeEnum tourType;
 
     @OneToMany(mappedBy = "tourDetails", cascade = CascadeType.ALL)
-    List<Booking> bookingList = new ArrayList<>();
+    private List<Booking> bookingList = new ArrayList<>();
+
+    @Column(name = "image_path", nullable = false)
+    private String tourImage;
+
 }
