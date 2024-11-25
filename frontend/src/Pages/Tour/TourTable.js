@@ -16,6 +16,9 @@ const TourTable = () => {
   const [tourTypeFilter, setTourTypeFilter] = useState("");
   const [startDate, setStartDate] = useState("");
 
+  // Thêm state để quản lý việc phóng to hình ảnh
+  const [expandedImage, setExpandedImage] = useState(null);
+
   const init = () => {
     TourServices.getAllTours()
       .then((response) => {
@@ -30,6 +33,29 @@ const TourTable = () => {
   useEffect(() => {
     init();
   }, []);
+
+  // Hàm xử lý khi click vào hình ảnh để phóng to
+  const handleImageClick = (imageUrl) => {
+    setExpandedImage(imageUrl);
+  };
+
+  // Hàm xử lý đóng hình ảnh phóng to
+  const handleCloseExpandedImage = () => {
+    setExpandedImage(null);
+  };
+
+  // Thêm effect để lắng nghe sự kiện click toàn màn hình
+  useEffect(() => {
+    // Chỉ thêm event listener khi có ảnh được phóng to
+    if (expandedImage) {
+      window.addEventListener("click", handleCloseExpandedImage);
+
+      // Cleanup event listener
+      return () => {
+        window.removeEventListener("click", handleCloseExpandedImage);
+      };
+    }
+  }, [expandedImage]);
 
   const handleDelete = (tourId) => {
     TourServices.removeTour(tourId)
@@ -159,9 +185,17 @@ const TourTable = () => {
 
           return (
             <div key={tour.tourId} style={styles.cardContainer}>
+              {" "}
               <div style={styles.card}>
-                <img src={tour.tourImage} alt="Tour" style={styles.tourImage} />{" "}
-                {/* Hình ảnh tour ở góc phải */}
+                <img
+                  src={tour.tourImage}
+                  alt="Tour"
+                  style={styles.tourImage}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn chặn sự kiện click lan sang phần tử cha
+                    handleImageClick(tour.tourImage);
+                  }}
+                />
                 <h4 style={styles.cardTitle}>{tour.tourName}</h4>
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
@@ -225,6 +259,21 @@ const TourTable = () => {
           );
         })}
       </div>
+
+      {/* Modal phóng to hình ảnh */}
+      {expandedImage && (
+        <div
+          style={styles.expandedImageOverlay}
+          onClick={handleCloseExpandedImage}
+        >
+          <img
+            src={expandedImage}
+            alt="Expanded Tour"
+            style={styles.expandedImage}
+            onClick={(e) => e.stopPropagation()} // Ngăn chặn sự kiện click đóng modal khi click vào ảnh
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -250,7 +299,7 @@ const styles = {
   cardContainer: {
     width: "710px",
     margin: "10px",
-    position: "relative", // Để định vị hình ảnh
+    position: "relative",
   },
   card: {
     backgroundColor: "#F7ECDE",
@@ -273,13 +322,14 @@ const styles = {
     marginRight: "5px",
   },
   tourImage: {
-    position: "absolute",
+    position: " absolute",
     top: "20px",
     right: "20px",
-    width: "200px", 
-    height: "110px", 
-    objectFit: "cover", 
+    width: "200px",
+    height: "110px",
+    objectFit: "cover",
     borderRadius: "10px",
+    cursor: "pointer",
   },
   cardActivities: {
     marginTop: "7px",
@@ -369,6 +419,39 @@ const styles = {
     marginLeft: "10px",
     outline: "none",
     marginRight: "10px",
+  },
+  expandedImageOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    cursor: "pointer",
+  },
+  expandedImage: {
+    right: "20px",
+    width: "65%",
+    height: "70%",
+    objectFit: "contain",
+    transition: "all 0.3s ease", // Hiệu ứng chuyển động mượt
+    animation: "zoomIn 0.3s ease", // Hiệu ứng zoom
+  },
+
+  // Thêm keyframes animation (nếu bạn muốn)
+  "@keyframes zoomIn": {
+    from: {
+      transform: "scale(0.7)",
+      opacity: 0.7,
+    },
+    to: {
+      transform: "scale(1)",
+      opacity: 1,
+    },
   },
 };
 
