@@ -15,8 +15,6 @@ const TourTable = () => {
   const [bookingAmountFilter, setBookingAmountFilter] = useState("");
   const [tourTypeFilter, setTourTypeFilter] = useState("");
   const [startDate, setStartDate] = useState("");
-
-  // Thêm state để quản lý việc phóng to hình ảnh
   const [expandedImage, setExpandedImage] = useState(null);
 
   const init = () => {
@@ -34,23 +32,18 @@ const TourTable = () => {
     init();
   }, []);
 
-  // Hàm xử lý khi click vào hình ảnh để phóng to
   const handleImageClick = (imageUrl) => {
     setExpandedImage(imageUrl);
   };
 
-  // Hàm xử lý đóng hình ảnh phóng to
   const handleCloseExpandedImage = () => {
     setExpandedImage(null);
   };
 
-  // Thêm effect để lắng nghe sự kiện click toàn màn hình
   useEffect(() => {
-    // Chỉ thêm event listener khi có ảnh được phóng to
     if (expandedImage) {
       window.addEventListener("click", handleCloseExpandedImage);
 
-      // Cleanup event listener
       return () => {
         window.removeEventListener("click", handleCloseExpandedImage);
       };
@@ -192,7 +185,7 @@ const TourTable = () => {
                   alt="Tour"
                   style={styles.tourImage}
                   onClick={(e) => {
-                    e.stopPropagation(); // Ngăn chặn sự kiện click lan sang phần tử cha
+                    e.stopPropagation(); 
                     handleImageClick(tour.tourImage);
                   }}
                 />
@@ -270,7 +263,7 @@ const TourTable = () => {
             src={expandedImage}
             alt="Expanded Tour"
             style={styles.expandedImage}
-            onClick={(e) => e.stopPropagation()} // Ngăn chặn sự kiện click đóng modal khi click vào ảnh
+            onClick={(e) => e.stopPropagation()} 
           />
         </div>
       )}
@@ -326,7 +319,7 @@ const styles = {
     top: "20px",
     right: "20px",
     width: "200px",
-    height: "110px",
+    height: "105px",
     objectFit: "cover",
     borderRadius: "10px",
     cursor: "pointer",
@@ -438,11 +431,10 @@ const styles = {
     width: "65%",
     height: "70%",
     objectFit: "contain",
-    transition: "all 0.3s ease", // Hiệu ứng chuyển động mượt
-    animation: "zoomIn 0.3s ease", // Hiệu ứng zoom
+    transition: "all 0.3s ease", 
+    animation: "zoomIn 0.3s ease", 
   },
 
-  // Thêm keyframes animation (nếu bạn muốn)
   "@keyframes zoomIn": {
     from: {
       transform: "scale(0.7)",

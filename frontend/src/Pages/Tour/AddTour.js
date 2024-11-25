@@ -15,19 +15,34 @@ const AddTour = () => {
   const [transportationMode, setTransportationMode] = useState("");
   const [tourType, setTourType] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [tourImage, setTourImage] = useState(null);
+  const [tourImageBLOB, setTourImageBLOB] = useState("");
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setTourImage(file);
+      convertToBase64(file);
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setTourImageBLOB(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const saveTour = (e) => {
     e.preventDefault();
 
-    // Kiểm tra ngày bắt đầu và ngày kết thúc
     if (new Date(tourEndDate) < new Date(tourStartDate)) {
       toast.error("Ngày kết thúc không thể sớm hơn ngày bắt đầu!");
-      return; // Dừng lại nếu có lỗi
+      return; 
     }
 
-    // Kiểm tra độ dài của activities
     if (activities.length > 500) {
-      // Giả sử giới hạn là 500 ký tự
       toast.error("Activities không được vượt quá 500 ký tự!");
       return;
     }
@@ -44,30 +59,36 @@ const AddTour = () => {
       tourDetailInfo,
       bookingAmount,
       tourType,
+      tourImage: tourImageBLOB
     };
 
-    // Create
-    TourServices.saveTourDetails(tour)
-      .then((response) => {
-        console.log("Tour added successfully", response.data);
-        toast.success("Tour Added successfully!");
-        // Clear input fields
-        setTourName("");
-        setSource("");
-        setDestination("");
-        setActivities("");
-        setBookingAmount("");
-        setTourDetailInfo("");
-        setTourStartDate("");
-        setTourEndDate("");
-        setMaxSeats("");
-        setTransportationMode("");
-        setTourType("");
-      })
-      .catch((error) => {
-        toast.error("Something went wrong: " + error.message);
-        console.log("Something went wrong", error);
-      });
+    if (!tourImage) {
+      toast.error("Please upload an image before updating");
+      return;
+    }
+    else{
+      TourServices.saveTourDetails(tour)
+        .then((response) => {
+          console.log("Tour added successfully", response.data);
+          toast.success("Tour Added successfully!");
+          setTourName("");
+          setSource("");
+          setDestination("");
+          setActivities("");
+          setBookingAmount("");
+          setTourDetailInfo("");
+          setTourStartDate("");
+          setTourEndDate("");
+          setMaxSeats("");
+          setTransportationMode("");
+          setTourType("");
+          setTourImage("");
+        })
+        .catch((error) => {
+          toast.error("Something went wrong: " + error.message);
+          console.log("Something went wrong", error);
+        });
+    }
   };
 
   return (
@@ -206,8 +227,8 @@ const AddTour = () => {
                     name="activities"
                     value={activities}
                     onChange={(e) => setActivities(e.target.value)}
-                    rows="2" // Tăng số dòng ở đây
-                    style={{ resize: "vertical" }} // Cho phép người dùng thay đổi kích thước
+                    rows="2"
+                    style={{ resize: "vertical" }}
                   />
                 </div>
 
@@ -219,8 +240,8 @@ const AddTour = () => {
                     name="tourDetailInfo"
                     value={tourDetailInfo}
                     onChange={(e) => setTourDetailInfo(e.target.value)}
-                    rows="5" // Tăng số dòng ở đây
-                    style={{ resize: "vertical" }} // Cho phép người dùng thay đổi kích thước
+                    rows="5"
+                    style={{ resize: "vertical" }}
                   />
                 </div>
 
@@ -235,6 +256,29 @@ const AddTour = () => {
                     onChange={(e) => setBookingAmount(e.target.value)}
                   />
                 </div>
+                <div className="mb-3">
+                  <label className="form-label">Upload Tour Image:</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control"
+                    onChange={handleImageChange}
+                    required
+                  />
+                </div>
+                {tourImage && (
+                  <div className="mb-3">
+                    <img
+                      src={URL.createObjectURL(tourImage)}
+                      alt="Tour Preview"
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  </div>
+                )}
 
                 <div className="mb-3">
                   <button

@@ -39,7 +39,7 @@ const Card = ({ image, title, link }) => {
         style={{
           ...Styles.buttonStyle,
           backgroundColor: isHovered ? "#892318" : Styles.buttonStyle.backgroundColor,
-          transform: isHovered ? "scale(1.05)" : "scale(1)", // Thêm hiệu ứng phóng to khi hover
+          transform: isHovered ? "scale(1.05)" : "scale(1)", 
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
