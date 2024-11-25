@@ -252,8 +252,6 @@ const TourTable = () => {
           );
         })}
       </div>
-
-      {/* Modal phóng to hình ảnh */}
       {expandedImage && (
         <div
           style={styles.expandedImageOverlay}
@@ -434,7 +432,6 @@ const styles = {
     transition: "all 0.3s ease", 
     animation: "zoomIn 0.3s ease", 
   },
-
   "@keyframes zoomIn": {
     from: {
       transform: "scale(0.7)",

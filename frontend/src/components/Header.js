@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import '../CSS/Header.css';
 import { toast } from "react-toastify";
-import swal from 'sweetalert';
 
 const logo2 = require("../images/logo.png");
 const user = sessionStorage.getItem("userId");

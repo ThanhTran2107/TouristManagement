@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TourServices from "../../Services/TourServices";
+
 const homeIcon = require("../../images/homeIcon.png");
 const people = require("../../images/people.png");
 const transport = require("../../images/transport.png");
@@ -13,6 +14,8 @@ const UserTourTable = () => {
   const [bookingAmountFilter, setBookingAmountFilter] = useState("");
   const [tourTypeFilter, setTourTypeFilter] = useState("");
   const [startDate, setStartDate] = useState("");
+  const [expandedImage, setExpandedImage] = useState(null);
+
   const user = sessionStorage.getItem("userId");
   const uID = user ?? " ";
 
@@ -31,6 +34,24 @@ const UserTourTable = () => {
     init();
   }, []);
 
+  const handleImageClick = (imageUrl) => {
+    setExpandedImage(imageUrl);
+  };
+
+  const handleCloseExpandedImage = () => {
+    setExpandedImage(null);
+  };
+
+  useEffect(() => {
+    if (expandedImage) {
+      window.addEventListener("click", handleCloseExpandedImage);
+
+      return () => {
+        window.removeEventListener("click", handleCloseExpandedImage);
+      };
+    }
+  }, [expandedImage]);
+
   const handleRefresh = () => {
     init();
     setSearchTerm("");
@@ -47,23 +68,23 @@ const UserTourTable = () => {
       bookingAmountFilter === "Less than 1.000.000"
         ? bookingAmount < 1000000
         : bookingAmountFilter === "1.000.000 - 2.000.000"
-          ? bookingAmount >= 1000000 && bookingAmount <= 2000000
-          : bookingAmountFilter === "2.000.000 - 3.000.000"
-            ? bookingAmount >= 2000000 && bookingAmount <= 3000000
-            : bookingAmountFilter === "3.000.000 - 4.000.000"
-              ? bookingAmount >= 3000000 && bookingAmount <= 4000000
-              : bookingAmountFilter === "4.000.000 - 5.000.000"
-                ? bookingAmount >= 4000000 && bookingAmount <= 5000000
-                : bookingAmountFilter === "Greater than 5.000.000"
-                  ? bookingAmount > 5000000
-                  : true;
+        ? bookingAmount >= 1000000 && bookingAmount <= 2000000
+        : bookingAmountFilter === "2.000.000 - 3.000.000"
+        ? bookingAmount >= 2000000 && bookingAmount <= 3000000
+        : bookingAmountFilter === "3.000.000 - 4.000.000"
+        ? bookingAmount >= 3000000 && bookingAmount <= 4000000
+        : bookingAmountFilter === "4.000.000 - 5.000.000"
+        ? bookingAmount >= 4000000 && bookingAmount <= 5000000
+        : bookingAmountFilter === "Greater than 5.000.000"
+        ? bookingAmount > 5000000
+        : true;
 
     const tourTypeCondition =
       tourTypeFilter === "International"
         ? tour.tourType === "INTERNATIONAL"
         : tourTypeFilter === "Domestic"
-          ? tour.tourType === "DOMESTIC"
-          : true;
+        ? tour.tourType === "DOMESTIC"
+        : true;
 
     const startDateCondition = startDate
       ? new Date(tour.tourStartDate) >= new Date(startDate)
@@ -148,6 +169,15 @@ const UserTourTable = () => {
           return (
             <div key={tour.tourId} style={styles.cardContainer}>
               <div style={styles.card}>
+                <img
+                  src={tour.tourImage}
+                  alt="Tour"
+                  style={styles.tourImage}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleImageClick(tour.tourImage);
+                  }}
+                />
                 <h4 style={styles.cardTitle}>{tour.tourName}</h4>
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
@@ -174,7 +204,7 @@ const UserTourTable = () => {
                 <h2 style={styles.price}>
                   {new Intl.NumberFormat("vi-VN").format(tour.bookingAmount)}{" "}
                   VND /-
-                </h2>{" "}
+                </h2>
                 <h6 style={styles.perPerson}>per person</h6>
                 {uID !== " " && (
                   <Link
@@ -193,6 +223,7 @@ const UserTourTable = () => {
                         tourActivities: tour.activities,
                         tourType: tour.tourType,
                         tourTransportation: tour.transportationMode,
+                        tourImage: tour.tourImage,
                       },
                     }}
                     style={styles.buttonStyle}
@@ -211,6 +242,19 @@ const UserTourTable = () => {
           );
         })}
       </div>
+      {expandedImage && (
+        <div
+          style={styles.expandedImageOverlay}
+          onClick={handleCloseExpandedImage}
+        >
+          <img
+            src={expandedImage}
+            alt="Expanded Tour"
+            style={styles.expandedImage}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -252,11 +296,12 @@ const styles = {
     border: "none",
     cursor: "pointer",
     padding: "0",
-    marginRight: "560px",
+    marginRight: "10px",
   },
   refreshIcon: {
     width: "25px",
     height: "25px",
+    marginRight: "550px",
   },
   bookingAmountSelect: {
     padding: "10px",
@@ -296,6 +341,17 @@ const styles = {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     transition: "transform 0.2s",
     minHeight: "400px",
+    position: "relative",
+  },
+  tourImage: {
+    position: "absolute",
+    top: "20px",
+    right: "20px",
+    width: "200px",
+    height: "105px",
+    objectFit: "cover",
+    borderRadius: "10px",
+    cursor: "pointer",
   },
   cardTitle: {
     fontFamily: "Uchen, serif",
@@ -337,6 +393,38 @@ const styles = {
     borderRadius: "10px",
     textDecoration: "none",
     transition: "background-color 0.3s ease, transform 0.2s",
+  },
+  expandedImageOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    cursor: "pointer",
+  },
+  expandedImage: {
+    right: "20px",
+    width: "65%",
+    height: "70%",
+    objectFit: "contain",
+    transition: "all 0.3s ease",
+    animation: "zoomIn 0.3s ease",
+  },
+
+  "@keyframes zoomIn": {
+    from: {
+      transform: "scale(0.7)",
+      opacity: 0.7,
+    },
+    to: {
+      transform: "scale(1)",
+      opacity: 1,
+    },
   },
 };
 

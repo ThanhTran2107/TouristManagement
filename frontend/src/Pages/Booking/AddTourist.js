@@ -22,7 +22,6 @@ const AddTourist = () => {
   const tourAmount = location.state?.amt;
   const tourInfo = location.state?.tourInfo || {};
   const [isLineVisible, setIsLineVisible] = useState(false);
-
   const [count, setCount] = useState(1);
   const [seat, setSeat] = useState(seats);
   const [paymentMethod, setPaymentMethod] = useState("direct");
@@ -140,11 +139,7 @@ const AddTourist = () => {
       touristDtoList: formValues,
     };
 
-    axios
-      .post(
-        `http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,
-        requestObject
-      )
+    axios.post(`http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,requestObject)
       .then((response) => {
         const result = response.data;
         if (result["status"] === "error") {
@@ -387,6 +382,20 @@ const AddTourist = () => {
         <div style={styles.tourInfoContainer}>
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>{tourInfo.tourName || "N/A"}</h3>
+            <img
+              src={tourInfo.tourImage || "default-image-url"}
+              alt="Tour"
+              style={{
+                position: "absolute",
+                top: "20px",
+                right: "20px",
+                width: "200px",
+                height: "105px",
+                objectFit: "cover",
+                borderRadius: "10px",
+                cursor: "pointer",
+              }}
+            />
             <p style={styles.cardSubtitle}>
               {tourInfo.source || "N/A"} to {tourInfo.destination || "N/A"}
             </p>
@@ -569,6 +578,7 @@ const styles = {
     transition: "transform 0.2s",
     minHeight: "400px",
     width: "750px",
+    position: "relative",
   },
   cardTitle: {
     fontFamily: "Uchen, serif",
@@ -659,4 +669,5 @@ const buttonStyle = {
     backgroundColor: "green",
   },
 };
+
 export default AddTourist;
