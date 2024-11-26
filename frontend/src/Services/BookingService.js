@@ -3,33 +3,41 @@ import axios from "axios";
 const userURL = "http://localhost:9090";
 
 class BookingService {
+  getAllBookings = () => {
+    // const tok=sessionStorage.getItem("token");
+    // console.log(tok);
+    // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
+    return axios.get(userURL + "/booking/getallbookings/");
+  };
 
-    getAllBookings = () => {
-        // const tok=sessionStorage.getItem("token");
-        // console.log(tok);
-        // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
-        return axios.get(userURL + '/booking/getallbookings/')
-    }
+  createBooking = (tourId, userId, bookingWrapping) => {
+    return axios.post(
+      `${userURL}/booking/createBooking/tour/${tourId}/user/${userId}`, // Đúng URL
+      bookingWrapping
+    );
+  };
 
-    getAllBookingByUserId = (userId) => {
-        // const tok=sessionStorage.getItem("token");
-        // console.log(tok);
-        // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
-        return axios.get(userURL + '/booking/getAllbyuserId/' + userId)
-    }
+  getAllBookingByUserId = (userId) => {
+    // const tok=sessionStorage.getItem("token");
+    // console.log(tok);
+    // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
+    return axios.get(userURL + "/booking/getAllbyuserId/" + userId);
+  };
 
-    deleteBooking = (bookingId) => {
-        // const tok=sessionStorage.getItem("token");
-        // console.log(tok);
-        // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
-        return axios.delete(userURL + '/booking/delete/' + bookingId)
-    }
+  deleteBooking = (bookingId) => {
+    // const tok=sessionStorage.getItem("token");
+    // console.log(tok);
+    // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
+    return axios.delete(userURL + "/booking/delete/" + bookingId);
+  };
 
-    getAllTouristByBookingId = (bookingId) => {
-        // const tok=sessionStorage.getItem("token");
-        // console.log(tok);
-        // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
-        return axios.get(userURL + '/tourist/getAllTouristByBookingId/' + bookingId)
-    }
+  getAllTouristByBookingId = (bookingId) => {
+    // const tok=sessionStorage.getItem("token");
+    // console.log(tok);
+    // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
+    return axios.get(
+      userURL + "/tourist/getAllTouristByBookingId/" + bookingId
+    );
+  };
 }
 export default new BookingService();

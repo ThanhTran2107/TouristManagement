@@ -20,5 +20,5 @@ public class TouristDTO {
 	private String touristName;
 	private IdProof idProof;
 	private String idProofNo;
-
+	private String phoneNumber;
 }

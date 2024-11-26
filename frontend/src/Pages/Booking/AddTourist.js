@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import closeIcon from "../../images/close-icon.png";
 import directPaymentImage from "../../images/directpayment.png"; 
 import bankCardImage from "../../images/bankcard.png";
+import BookingService from "../../Services/BookingService";
 const homeIcon = require("../../images/homeIcon.png");
 const people = require("../../images/people.png");
 const transport = require("../../images/transport.png");
@@ -36,14 +37,20 @@ const AddTourist = () => {
 
   const currentDate = new Date();
   const today = currentDate.toISOString().split("T")[0];
-
   const [formValues, setFormValues] = useState([
-    { touristName: "", age: "", idProof: "", idProofNo: "", phoneNumber: "" },
+    { age: "", touristName: "", idProof: "", idProofNo: "", phoneNumber: "" },
   ]);
 
   const handleChange = (i, e) => {
     let newFormValues = [...formValues];
     newFormValues[i][e.target.name] = e.target.value;
+
+    if (e.target.name === "age") {
+      newFormValues[i][e.target.name] = parseInt(e.target.value) || 0;
+    } else {
+      newFormValues[i][e.target.name] = e.target.value;
+    }
+
     setFormValues(newFormValues);
   };
 
@@ -96,8 +103,8 @@ const AddTourist = () => {
       setIsLineVisible(false);
       setFormValues([
         {
-          touristName: "",
           age: "",
+          touristName: "",
           idProof: "",
           idProofNo: "",
           phoneNumber: "",
@@ -185,24 +192,40 @@ const AddTourist = () => {
       }
     }
 
+    const paymentMethodFormatted =
+      paymentMethod === "direct" ? "DIRECT_PAYMENT" : "CARD_PAYMENT";
+
+    const idProofMapping = {
+      "Identity Card": "IDENTITY_CARD",
+      "Driver's License": "DRIVER_LICENSE",
+    };
+
+    const touristDtoList = formValues.map((form) => ({
+      ...form,
+      idProof: idProofMapping[form.idProof] || form.idProof,
+    }));
+
     const requestObject = {
       bookingDto: {
         bookingDate: today,
-        totalAmount: tourAmount * count,
         paymentStatus: "PAYMENT_IN_PROGRESS",
         seatCount: count,
-        paymentMethod: paymentMethod,
+        totalAmount: tourAmount * count,
+        paymentMethod: paymentMethodFormatted,
       },
-      touristDtoList: formValues,
+      touristDtoList: touristDtoList,
     };
 
-    axios
-      .post(
-        `http://localhost:9090/booking/createBooking/tour/${tourId}/user/${user}`,
-        requestObject
-      )
+
+    console.log(tourId);
+    console.log(user);
+    console.log(JSON.stringify(requestObject, null, 2));
+
+    BookingService.createBooking(tourId, user, requestObject)
       .then((response) => {
         const result = response.data;
+        console.log(response);
+        console.log(response.data);
         if (result["status"] === "error") {
           toast.error("Something went wrong. Please check");
         } else {
@@ -211,31 +234,31 @@ const AddTourist = () => {
             `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
             "success"
           );
+          setPaymentMethod("");
           navigate("/getBookedTours");
         }
       })
       .catch((error) => {
-        console.log("error", error);
+        console.log(
+          "error",
+          error.response ? error.response.data : error.message
+        );
       });
   };
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "expirationMonth") {
-      // Chỉ cho phép nhập số
       const numericValue = value.replace(/\D/g, "");
 
-      // Xử lý logic cho tháng hợp lệ
       let limitedValue = "";
 
       if (numericValue === "") {
         limitedValue = "";
       } else if (numericValue.length === 1) {
-        // Nếu nhập 1 chữ số
         limitedValue = numericValue === "0" ? "0" : numericValue;
         limitedValue = numericValue === "1" ? "1" : limitedValue;
       } else if (numericValue.length === 2) {
-        // Nếu nhập 2 chữ số
         const monthValue = parseInt(numericValue, 10);
         limitedValue =
           monthValue >= 1 && monthValue <= 12

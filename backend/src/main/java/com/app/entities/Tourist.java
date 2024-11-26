@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +33,10 @@ public class Tourist {
 
 	@Column(name = "age", nullable = false)
 	private Integer age;
+
+	@Column(name = "phone_number", nullable = false)
+	@Pattern(regexp = "^[0-9]{9,11}$", message = "Phone number must be between 9 and 11 digits")
+	private String phoneNumber;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "id_proof", nullable = false)

@@ -13,6 +13,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class BookingWrapper {
-private BookingDTO bookingDto;
-private List<TouristDTO> touristDtoList;
+    private BookingDTO bookingDto;
+    private List<TouristDTO> touristDtoList;
 }

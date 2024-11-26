@@ -50,11 +50,14 @@ public class Booking {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Tourist> touristList;
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tour_id")
 	private TourDetails tourDetails;
+
+	@Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 }

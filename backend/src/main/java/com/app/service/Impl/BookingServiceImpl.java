@@ -40,53 +40,38 @@ public class BookingServiceImpl implements BookingService {
 	@Autowired
 	TouristRepository touristAdd;
 
-//check with react.
 	@Override
-	public BookingDTO createBooking(BookingDTO bookingdto, Long tourDetailId, Long userId,
-			List<TouristDTO> touristDtos) {
+	public BookingDTO createBooking(BookingDTO bookingdto, Long tourDetailId, Long userId, List<TouristDTO> touristDtos) {
 		Booking booking = this.modelMapper.map(bookingdto, Booking.class);
+
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("user", "userId", userId));
 		TourDetails tour = this.tourRepo.findById(tourDetailId)
 				.orElseThrow(() -> new ResourceNotFoundException("tour", "tourDetailId", tourDetailId));
 
 		booking.setUser(user);
-
 		booking.setTourDetails(tour);
-			
+
 		Booking createdBooking = bookingRepo.save(booking);
 
-		Long bookingId = createdBooking.getBookingId();
+		List<Tourist> tourists = touristDtos.stream()
+			.map(tr -> {
+				Tourist tourist = this.modelMapper.map(tr, Tourist.class);
+				tourist.setBooking(createdBooking); // Gắn Booking
+				return tourist;
+			})
+			.collect(Collectors.toList());
 
-		Booking bookingObj = this.bookingRepo.findById(bookingId).get();
+		touristAdd.saveAll(tourists); 
+		createdBooking.setTouristList(tourists);
 
-		List<Tourist> tourists = new ArrayList<>();
-	
-		
-		for (TouristDTO tr : touristDtos) {
-			System.err.println("In loop +++++");
-			Tourist tourist = this.modelMapper.map(tr, Tourist.class);
-			touristAdd.save(tourist);
-			tourist.setBooking(bookingObj);
-			// saving into the tourists List
-			System.err.println("adding tourist_------------------------------ -");
-			tourists.add(tourist);
-			
+		if (tour.getMaxSeats() >= createdBooking.getSeatCount()) {
+			tour.setMaxSeats(tour.getMaxSeats() - createdBooking.getSeatCount());
+		} else {
+			throw new RuntimeException("Not enough seats available for booking!");
 		}
-		System.out.println("---------------------------------------");
-		tourists.stream().forEach(tourist->System.err.println(tourist+"Tourist added"));
-		System.out.println("---------------------------------------");
 
-		System.err.println("after for loop++++++++++++++++++++++++++++++++++");
-		
-		
-		bookingObj.setTouristList(tourists);
-		
-		System.err.println("after for loop++++++++++++++++++++++++++++++++++11111111111111111");
-		tour.setMaxSeats(tour.getMaxSeats() - createdBooking.getSeatCount());
-		System.err.println("after for loop++++++++++++++++++++++++++++++++++ 1222222222222222222222");
-		BookingDTO updatedBookingDto = this.modelMapper.map(this.bookingRepo.save(bookingObj), BookingDTO.class);
-		return updatedBookingDto;
+		return this.modelMapper.map(createdBooking, BookingDTO.class);
 	}
 
 	@Override

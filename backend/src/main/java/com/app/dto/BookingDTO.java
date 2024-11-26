@@ -21,7 +21,6 @@ public class BookingDTO {
 	private PaymentStatus paymentStatus;
 	private Integer seatCount;
 	private Long totalAmount;
-//	private TourDetails tourDetails;
 	private TourDetailsDTO tourDetails;
 	private PaymentMethod paymentMethod;
 }
