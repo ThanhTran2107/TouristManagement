@@ -5,10 +5,7 @@ import com.app.entities.Role;
 public class UpdateRoleRequest {
     private String email;
     private Role role;
-
-    // Constructor mặc định
     public UpdateRoleRequest() {}
-    // Getters và Setters
     public String getEmail() {
         return email;
     }

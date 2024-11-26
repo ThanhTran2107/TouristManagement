@@ -38,12 +38,12 @@ const AddTour = () => {
     e.preventDefault();
 
     if (new Date(tourEndDate) < new Date(tourStartDate)) {
-      toast.error("Ngày kết thúc không thể sớm hơn ngày bắt đầu!");
+      toast.error("End date cannot be earlier than start date!");
       return; 
     }
 
     if (activities.length > 500) {
-      toast.error("Activities không được vượt quá 500 ký tự!");
+      toast.error("Activities cannot exceed 500 characters!");
       return;
     }
 
@@ -70,7 +70,7 @@ const AddTour = () => {
       TourServices.saveTourDetails(tour)
         .then((response) => {
           console.log("Tour added successfully", response.data);
-          toast.success("Tour Added successfully!");
+          toast.success("Tour added successfully!");
           setTourName("");
           setSource("");
           setDestination("");
@@ -90,7 +90,7 @@ const AddTour = () => {
         });
     }
   };
-
+  
   return (
     <div>
       <div
