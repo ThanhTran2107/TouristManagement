@@ -2,6 +2,7 @@ package com.app.dto;
 
 import java.time.LocalDate;
 
+import com.app.entities.PaymentMethod;
 import com.app.entities.PaymentStatus;
 
 import lombok.AllArgsConstructor;
@@ -22,4 +23,5 @@ public class BookingDTO {
 	private Long totalAmount;
 //	private TourDetails tourDetails;
 	private TourDetailsDTO tourDetails;
+	private PaymentMethod paymentMethod;
 }

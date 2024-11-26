@@ -148,7 +148,7 @@ const AddTourist = () => {
 
     if (paymentMethod === "card") {
       if (!cardDetails.cardHolderName.trim()) {
-        toast.error("Please enter card holder name");
+        toast.error("Please enter card name");
         return;
       }
 
@@ -221,16 +221,42 @@ const AddTourist = () => {
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "cardNumber") {
+    if (name === "expirationMonth") {
+      // Chỉ cho phép nhập số
+      const numericValue = value.replace(/\D/g, "");
+
+      // Xử lý logic cho tháng hợp lệ
+      let limitedValue = "";
+
+      if (numericValue === "") {
+        limitedValue = "";
+      } else if (numericValue.length === 1) {
+        // Nếu nhập 1 chữ số
+        limitedValue = numericValue === "0" ? "0" : numericValue;
+        limitedValue = numericValue === "1" ? "1" : limitedValue;
+      } else if (numericValue.length === 2) {
+        // Nếu nhập 2 chữ số
+        const monthValue = parseInt(numericValue, 10);
+        limitedValue =
+          monthValue >= 1 && monthValue <= 12
+            ? monthValue < 10
+              ? "0" + monthValue
+              : monthValue.toString()
+            : "12";
+      }
+
+      setCardDetails((prevDetails) => ({
+        ...prevDetails,
+        [name]: limitedValue,
+      }));
+    } else if (name === "cardNumber") {
       const formattedValue = formatCardNumber(value);
       setCardDetails((prevDetails) => ({
         ...prevDetails,
         [name]: formattedValue,
       }));
     } else if (name === "cardHolderName") {
-      const formattedValue = value
-        .replace(/[^a-zA-Z\s]/g, "") 
-        .toUpperCase();
+      const formattedValue = value.replace(/[^a-zA-Z\s]/g, "").toUpperCase();
 
       setCardDetails((prevDetails) => ({
         ...prevDetails,
@@ -280,13 +306,13 @@ const AddTourist = () => {
 };
 
 const isValidCardNumber = () => {
-  const cardNumberPattern = /^\d{16}$/;
-  const cleanCardNumber = cardDetails.cardNumber.replace(/\s/g, '');
-  
-  if (!cardNumberPattern.test(cleanCardNumber)) {
+  const cleanCardNumber = cardDetails.cardNumber.replace(/\s/g, "");
+
+  if (cleanCardNumber.length !== 16) {
     toast.error("Card number must be 16 digits");
     return false;
   }
+
   return true;
 };
 
@@ -471,7 +497,7 @@ const formatCardNumber = (value) => {
                             name="cardHolderName"
                             value={cardDetails.cardHolderName}
                             onChange={handleCardDetailsChange}
-                            placeholder="Enter card holder name"
+                            placeholder="Enter card name"
                             style={{
                               width: "100%",
                               padding: "10px",
