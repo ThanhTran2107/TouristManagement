@@ -153,6 +153,12 @@ const AddTourist = () => {
       return;
     }
 
+    if (paymentMethod === "card") {
+      if (!isValidCardNumber() || !isValidExpiration() || !isValidCVV()) {
+        return;
+      }
+    }
+
     const paymentMethodFormatted =
       paymentMethod === "direct" ? "DIRECT_PAYMENT" : "CARD_PAYMENT";
 
@@ -184,16 +190,15 @@ const AddTourist = () => {
           toast.error("Something went wrong. Please check");
         } else {
           const newSeatCount = seats - count;
-          BookingService.updateTourSeats(tourId, newSeatCount)
-            .then(() => {
-              swal(
-                "Success",
-                `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
-                "success"
-              ).then(() => {
-                navigate("/getBookedTours");
-              });
-            })
+          BookingService.updateTourSeats(tourId, newSeatCount).then(() => {
+            swal(
+              "Success",
+              `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
+              "success"
+            ).then(() => {
+              navigate("/getBookedTours");
+            });
+          });
         }
       })
       .catch((error) => {
