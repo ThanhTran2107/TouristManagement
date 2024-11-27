@@ -93,11 +93,26 @@ const GetBookedTours = () => {
                 <div style={styles.transportContainer}>
                   <span style={styles.days}>
                     <img src={home} alt="day" style={styles.icon} />
-                    {duration} days{" - "}
+                    {duration} days
                   </span>
                   <img src={transport} alt="Transport" style={styles.icon} />
                   <span>{tour.tourDetails.transportationMode}</span>
                 </div>
+                <p
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10
+                  }}
+                >
+                  Booking ID : <b>{tour.bookingId}</b>
+                </p>
+                <p
+                  style={{
+                    marginBottom: 10
+                  }}
+                >
+                  Number of Seats : <b>{tour.seatCount}</b>
+                </p>
                 <p
                   style={{
                     marginTop: 10,
@@ -136,20 +151,21 @@ const GetBookedTours = () => {
                 </p>
                 <p style={{ marginBottom: 10 }}>
                   Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
-                  Date: <b>{tour.tourDetails.tourEndDate}</b>
+                  Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date:{" "}
+                  <b>{tour.bookingDate}</b>
                 </p>
-                <p>
-                  Booking Date: <b>{tour.bookingDate}</b> | Total Amount:{" "}
+                <p
+                  style={{
+                    fontSize: "1.5em",
+                    color: "#C0392B",
+                    margin: "10px 0",
+                  }}
+                >
+                  <h>Total Amount : </h>
                   <b>
                     {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}{" "}
                     VND
                   </b>
-                </p>
-                <p>
-                  <b>Booking ID: {tour.bookingId}</b>
-                </p>
-                <p>
-                  <b>No of Seats: {tour.seatCount}</b>
                 </p>
                 <div style={styles.buttonContainer}>
                   <button

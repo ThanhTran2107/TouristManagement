@@ -120,7 +120,7 @@ const UserTourTable = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={styles.searchInput}
-        />
+               />
         <img src={searchIcon} alt="search icon" style={styles.searchIcon} />
         <button style={styles.refreshButton} onClick={handleRefresh}>
           <img
@@ -208,33 +208,45 @@ const UserTourTable = () => {
                 <h6 style={styles.perPerson}>per person</h6>
                 {uID !== " " && (
                   <Link
-                    to={`/add-tourists`}
-                    state={{
-                      select: tour.tourId,
-                      amt: tour.bookingAmount,
-                      seat: tour.maxSeats,
-                      tourInfo: {
-                        tourName: tour.tourName,
-                        source: tour.source,
-                        destination: tour.destination,
-                        tourStartDate: tour.tourStartDate,
-                        tourEndDate: tour.tourEndDate,
-                        tourDetailInfo: tour.tourDetailInfo,
-                        tourActivities: tour.activities,
-                        tourType: tour.tourType,
-                        tourTransportation: tour.transportationMode,
-                        tourImage: tour.tourImage,
-                      },
+                    to={tour.maxSeats > 0 ? `/add-tourists` : "#"} // Chỉ chuyển hướng nếu còn chỗ
+                    state={
+                      tour.maxSeats > 0
+                        ? {
+                            select: tour.tourId,
+                            amt: tour.bookingAmount,
+                            seat: tour.maxSeats,
+                            tourInfo: {
+                              tourName: tour.tourName,
+                              source: tour.source,
+                              destination: tour.destination,
+                              tourStartDate: tour.tourStartDate,
+                              tourEndDate: tour.tourEndDate,
+                              tourDetailInfo: tour.tourDetailInfo,
+                              tourActivities: tour.activities,
+                              tourType: tour.tourType,
+                              tourTransportation: tour.transportationMode,
+                              tourImage: tour.tourImage,
+                            },
+                          }
+                        : null // Không có state nếu đã hết chỗ
+                    }
+                    style={{
+                      ...styles.buttonStyle,
+                      backgroundColor: tour.maxSeats === 0 ? "#ccc" : "#e02c18",
+                      cursor: tour.maxSeats === 0 ? "not-allowed" : "pointer",
                     }}
-                    style={styles.buttonStyle}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#892318";
+                      if (tour.maxSeats > 0) {
+                        e.currentTarget.style.backgroundColor = "#892318";
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#e02c18";
+                      if (tour.maxSeats > 0) {
+                        e.currentTarget.style.backgroundColor = "#e02c18";
+                      }
                     }}
                   >
-                    <b>Book</b>
+                    <b>{tour.maxSeats === 0 ? "Sold Out" : "Book"}</b>
                   </Link>
                 )}
               </div>
@@ -382,49 +394,36 @@ const styles = {
     margin: "10px 0",
   },
   perPerson: {
+    fontSize: "1em",
     color: "#7E7474",
   },
   buttonStyle: {
-    display: "inline-block",
-    marginTop: "10px",
-    padding: "10px 20px",
     backgroundColor: "#e02c18",
     color: "white",
+    border: "none",
     borderRadius: "10px",
+    padding: "10px 20px",
+    cursor: "pointer",
     textDecoration: "none",
-    transition: "background-color 0.3s ease, transform 0.2s",
+    display: "inline-block",
+    marginTop: "10px",
+    transition: "background-color 0.3s",
   },
   expandedImageOverlay: {
     position: "fixed",
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
+    right: 0,
+    bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
-    cursor: "pointer",
   },
   expandedImage: {
-    right: "20px",
-    width: "65%",
-    height: "70%",
-    objectFit: "contain",
-    transition: "all 0.3s ease",
-    animation: "zoomIn 0.3s ease",
-  },
-
-  "@keyframes zoomIn": {
-    from: {
-      transform: "scale(0.7)",
-      opacity: 0.7,
-    },
-    to: {
-      transform: "scale(1)",
-      opacity: 1,
-    },
+    maxWidth: "90%",
+    maxHeight: "90%",
   },
 };
 
