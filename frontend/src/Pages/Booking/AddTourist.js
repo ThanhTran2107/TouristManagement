@@ -153,45 +153,6 @@ const AddTourist = () => {
       return;
     }
 
-    if (paymentMethod === "card") {
-      if (!cardDetails.cardHolderName.trim()) {
-        toast.error("Please enter card name");
-        return;
-      }
-
-      if (!cardDetails.cardNumber.trim()) {
-        toast.error("Please enter card number");
-        return;
-      }
-
-      if (!cardDetails.expirationMonth.trim()) {
-        toast.error("Please enter expiration month");
-        return;
-      }
-
-      if (!cardDetails.expirationYear.trim()) {
-        toast.error("Please enter expiration year");
-        return;
-      }
-
-      if (!cardDetails.cvv.trim()) {
-        toast.error("Please enter CVV");
-        return;
-      }
-
-      if (!isValidCardNumber()) {
-        return;
-      }
-
-      if (!isValidExpiration()) {
-        return;
-      }
-
-      if (!isValidCVV()) {
-        return;
-      }
-    }
-
     const paymentMethodFormatted =
       paymentMethod === "direct" ? "DIRECT_PAYMENT" : "CARD_PAYMENT";
 
@@ -216,35 +177,33 @@ const AddTourist = () => {
       touristDtoList: touristDtoList,
     };
 
-
-    console.log(tourId);
-    console.log(user);
-    console.log(JSON.stringify(requestObject, null, 2));
-
     BookingService.createBooking(tourId, user, requestObject)
       .then((response) => {
         const result = response.data;
-        console.log(response);
-        console.log(response.data);
         if (result["status"] === "error") {
           toast.error("Something went wrong. Please check");
         } else {
-          swal(
-            "Success",
-            `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
-            "success"
-          );
-          setPaymentMethod("");
-          navigate("/getBookedTours");
+          const newSeatCount = seats - count;
+          BookingService.updateTourSeats(tourId, newSeatCount)
+            .then(() => {
+              swal(
+                "Success",
+                `Tour Booked Successfully\n Booking ID : ${result.bookingId}`,
+                "success"
+              ).then(() => {
+                navigate("/getBookedTours");
+              });
+            })
         }
       })
       .catch((error) => {
         console.log(
-          "error",
+          "Error:",
           error.response ? error.response.data : error.message
         );
       });
   };
+
   const handleCardDetailsChange = (e) => {
     const { name, value } = e.target;
 
@@ -693,7 +652,7 @@ const formatCardNumber = (value) => {
                     <div className="form-inline" style={divStyle.div}>
                       <div style={divStyle.inputContainer}>
                         <label>
-                          <b>Name</b>
+                          <b>Full Name</b>
                         </label>
                         <input
                           type="text"

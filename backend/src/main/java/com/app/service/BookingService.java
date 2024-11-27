@@ -22,4 +22,6 @@ public interface BookingService {
 
 	List<BookingDTO> getBookingByDuration(LocalDate startdate, LocalDate lastDate);
 
+	public boolean updateSeats(Long tourId, int newSeatCount);
+
 }

@@ -74,6 +74,17 @@ public class BookingServiceImpl implements BookingService {
 		return this.modelMapper.map(createdBooking, BookingDTO.class);
 	}
 
+    @SuppressWarnings("override")
+	public boolean updateSeats(Long tourId, int newSeatCount) {
+        TourDetails tour = tourRepo.findById(tourId).orElse(null);
+        if (tour != null) {
+            tour.setMaxSeats(newSeatCount);
+            tourRepo.save(tour);
+            return true;
+        }
+        return false;
+    }
+
 	@Override
 	public void DeleteBookingById(Long bookingId) {
 		Booking deleteBooking = this.bookingRepo.findById(bookingId)

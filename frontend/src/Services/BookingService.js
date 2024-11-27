@@ -39,5 +39,11 @@ class BookingService {
       userURL + "/tourist/getAllTouristByBookingId/" + bookingId
     );
   };
+
+  updateTourSeats = (tourId, newSeatCount) => {
+    return axios.put(`${userURL}/booking/updateTourSeats/tour/${tourId}/seats`, {
+      seats: newSeatCount,
+    });
+  };
 }
 export default new BookingService();
