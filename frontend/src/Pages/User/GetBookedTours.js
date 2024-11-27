@@ -1,171 +1,261 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import BookingService from "../../Services/BookingService";
 import { toast } from "react-toastify";
-const homeIcon = require("../../images/homeIcon.png");
-const people = require("../../images/people.png");
-const transport = require("../../images/transport.png");
+import transport from "../../images/transport.png";
+import home from "../../images/homeIcon.png";
+import TourServices from "../../Services/TourServices";
 
 const GetBookedTours = () => {
-  const [Tours, setTours] = useState([]);
-
-  //const [Bookings, setBookings] = useState([]);
-  const [bookId, setBookId] = useState();
-
-  let bookingId;
-
-  const userId=sessionStorage.getItem("userId");
-  console.log(userId)
-
-  const navigate = useNavigate;
+  const [tours, setTours] = useState([]);
+  const userId = sessionStorage.getItem("userId");
+  const [hoveredBookingId, setHoveredBookingId] = useState(null);
 
   const init = () => {
-      BookingService.getAllBookingByUserId(userId)
+    BookingService.getAllBookingByUserId(userId)
       .then((response) => {
         console.log("Printing Bookings", response.data);
 
-        
-        response.data.forEach((e , i)=>{
-          response.data[i]["tourists"] = []
-          BookingService.getAllTouristByBookingId(e.bookingId).then((res)=>{
-            response.data[i].tourists = [...res.data]
-          })
-        })
+        response.data.forEach((e, i) => {
+          response.data[i]["tourists"] = [];
+          BookingService.getAllTouristByBookingId(e.bookingId).then((res) => {
+            response.data[i].tourists = [...res.data];
+          });
+        });
 
         setTours(response.data);
-        bookingId=response.data.bookingId;
+        const bookingId = response.data.bookingId;
         console.log(bookingId);
       })
       .catch((error) => {
         console.log("Something went wrong", error);
-        toast.error("You have no bookings yet, "+sessionStorage.getItem("name"))
+        toast.error(
+          "You have no bookings yet, " + sessionStorage.getItem("name")
+        );
       });
   };
 
-    const handleDelete = (bookingId) => {
-      console.log("Booking id :", bookingId);
-      BookingService.deleteBooking(bookingId).then((response) => {
-        console.log("booking deleted successfully ", response.data);
-        toast.success("Booking cancelled successfully");
-        window.location.reload();
-        //navigate('/getBookedTours')
-      });
-    };
+  const handleDelete = (bookingId, tourId, seatCount) => {
+    BookingService.deleteBooking(bookingId).then((response) => {
+      console.log("Booking deleted successfully ", response.data);
+      toast.success("Booking cancelled successfully");
+
+      TourServices.getTourById(tourId)
+        .then((tourResponse) => {
+          const currentSeatCount = tourResponse.data.maxSeats;
+          const updatedSeatCount = currentSeatCount + seatCount;
+
+          BookingService.updateTourSeats(tourId, updatedSeatCount)
+            .then(() => {
+              console.log("Seat count updated successfully");
+              init();
+            })
+            .catch((error) => {
+              console.log("Error updating seat count", error);
+              toast.error("Failed to update seat count");
+            });
+        })
+        .catch((error) => {
+          console.log("Error fetching tour details", error);
+          toast.error("Failed to fetch tour details");
+        });
+    });
+  };
 
   useEffect(() => {
     init();
   }, []);
-  
+
   return (
-    
-    <div style={{marginTop:"10vh", background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)`,minHeight:"100vh"}}>
-    <br /><br />
-      {Tours.map((tour) => {
-        return(
-          <div className="container-fluid" style={Styles.divStyle}>
-            {/* {tour.tourists.map((tourist)=>{
-              return(
-              <div>{tourist.name}</div>
-              )
-            })} */}
-            <div style={{ padding: "5px", width: "70%" }}>
-                <h2 style={{fontFamily: "Uchen, serif"}}>{"Tour Name: "+ "'" +tour.tourDetails.tourName+"'"}</h2>
-                
-                
-                <hr/>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "left",
-                  alignItems: "left",
-                }}
-              >
-                <h4 style={{fontFamily: "Uchen, serif"}} >
-                  {tour.tourDetails.source} to {tour.tourDetails.destination}{" "}
-                </h4>
-              </div>
-              
-              <p>
-                <img src={transport}></img>
-                {tour.tourDetails.transportationMode}
-              </p>
-              <br />
-              <p>
-                Start Date :&nbsp;&nbsp;<b>{tour.tourDetails.tourStartDate}</b>{" "}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date :
-                <b>{tour.tourDetails.tourEndDate}</b>
-              </p>
-            
-              <p>
-                Booking Date :&nbsp;&nbsp;<b>{tour.bookingDate}</b>{" "}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Amount :
-                <b>{tour.totalAmount}</b>
-              </p>
-            </div>
-            <span style={{maxWidth:"30%"}}>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style={{fontSize:"18px"}}><b>{"Booking Id: "+tour.bookingId}</b></span> 
-              <br></br>
-              <br />
-              <h3 style={{ marginTop: "1vw" }}>
-                {tour.tourDetails.bookingAmount}/-
-              </h3>
-              <h6 style={{ color: "#7E7474" }}>per person</h6>
-              
-              <span style={{fontSize:"15px"}}><b>{"No of Seats: "+tour.seatCount}</b></span>
-              <br />
-              
-              <div style={{ display: "flex" }}>
-                <button
-                  type="button"
-                  style={Styles.buttonStyle}
-                  onClick={()=>{handleDelete(tour.bookingId)}}
+    <div style={styles.container}>
+      <h1 style={styles.title}>
+        <b>Your Booked Tours</b>
+      </h1>
+      <div style={styles.row}>
+        {tours.map((tour) => {
+          const startDate = new Date(tour.tourDetails.tourStartDate);
+          const endDate = new Date(tour.tourDetails.tourEndDate);
+          const duration = Math.ceil(
+            (endDate - startDate + 1) / (1000 * 60 * 60 * 24)
+          );
+
+          return (
+            <div key={tour.bookingId} style={styles.cardContainer}>
+              <div style={styles.card}>
+                <img
+                  src={tour.tourDetails.tourImage}
+                  alt="Tour"
+                  style={styles.tourImage}
+                />
+                <h4 style={styles.cardTitle}>{tour.tourDetails.tourName}</h4>
+                <p style={styles.cardSubtitle}>
+                  {tour.tourDetails.source} to {tour.tourDetails.destination}
+                </p>
+                <div style={styles.transportContainer}>
+                  <span style={styles.days}>
+                    <img src={home} alt="day" style={styles.icon} />
+                    {duration} days{" - "}
+                  </span>
+                  <img src={transport} alt="Transport" style={styles.icon} />
+                  <span>{tour.tourDetails.transportationMode}</span>
+                </div>
+                <p
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    fontSize: "1.1em",
+                    color: "#2980B9",
+                  }}
                 >
-                  Cancel Booking
-                </button>
+                  Activities:{" "}
+                  <b>
+                    {Array.isArray(tour.tourDetails.activities)
+                      ? tour.tourDetails.activities.join(", ")
+                      : tour.tourDetails.activities}
+                  </b>
+                </p>
+                <p
+                  style={{
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    color: "#7E7474",
+                    fontSize: "1.1em",
+                  }}
+                >
+                  Tour Type: <b>{tour.tourDetails.tourType}</b>
+                </p>
+                <p
+                  style={{
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    color: "#7E7474",
+                    fontSize: "1.1em",
+                  }}
+                >
+                  Tour Details: <b>{tour.tourDetails.tourDetailInfo}</b>
+                </p>
+                <p style={{ marginBottom: 10 }}>
+                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
+                  Date: <b>{tour.tourDetails.tourEndDate}</b>
+                </p>
+                <p>
+                  Booking Date: <b>{tour.bookingDate}</b> | Total Amount:{" "}
+                  <b>
+                    {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}{" "}
+                    VND
+                  </b>
+                </p>
+                <p>
+                  <b>Booking ID: {tour.bookingId}</b>
+                </p>
+                <p>
+                  <b>No of Seats: {tour.seatCount}</b>
+                </p>
+                <div style={styles.buttonContainer}>
+                  <button
+                    style={{
+                      ...styles.buttonStyle,
+                      backgroundColor:
+                        hoveredBookingId === tour.bookingId
+                          ? "#892318"
+                          : "#e02c18",
+                    }}
+                    onMouseEnter={() => setHoveredBookingId(tour.bookingId)}
+                    onMouseLeave={() => setHoveredBookingId(null)}
+                    onClick={() =>
+                      handleDelete(
+                        tour.bookingId,
+                        tour.tourDetails.tourId,
+                        tour.seatCount
+                      )
+                    }
+                  >
+                    <b>Cancel Booking</b>
+                  </button>
+                </div>
               </div>
-            </span>
-          </div>
-        )
-      })}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
 
-const Styles={
-
-  divStyle:{
-    backgroundColor:"#F7ECDE", 
-    //border:"solid",
-    borderStyle:"thin", 
-    maxWidth:"50vw",
-    minWidth:"46vw",
-    display:"flex",
-    marginTop:"5vh",
-    borderRadius:"5px",
+const styles = {
+  container: {
+    marginTop: "10vh",
+    background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)`,
+    minHeight: "100vh",
     padding: "20px",
-    //boxShadow: "3px 3px 10px 2px #C00000",
-    // backgroundColor:"#F0EBE3"
   },
-  loginText:{
-      textAlign: "center",
-      color:"#C00000",
-      fontStyle:"arial",marginTop:10, 
-      
-      
+  title: {
+    textAlign: "center",
+    fontFamily: "Uchen, serif",
+    marginBottom: "20px",
+    color: "#333",
   },
-  buttonStyle:{
-       
-    marginTop:10,
-    position:"relative",
-    justifyContent:'center', alignItems:'center', height: '50vh',
-    maxWidth: '70%',
-    maxHeight:40,
-    backgroundColor: '#D83A56',
-    color: 'white',
-    borderRadius: 5,
-    border: 'none',}
-
-}
+  row: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  cardContainer: {
+    width: "710px",
+    margin: "10px",
+  },
+  card: {
+    backgroundColor: "#F7ECDE",
+    borderRadius: "10px",
+    padding: "20px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    transition: "transform 0.2s",
+    minHeight: "200px",
+    position: "relative",
+  },
+  tourImage: {
+    position: "absolute",
+    top: "20px",
+    right: "20px",
+    width: "200px",
+    height: "105px",
+    objectFit: "cover",
+    borderRadius: "10px",
+  },
+  cardTitle: {
+    fontFamily: "Uchen, serif",
+    fontSize: "1.5em",
+    color: "#2C3E50",
+  },
+  cardSubtitle: {
+    fontSize: "1.2em",
+    color: "#34495E",
+  },
+  icon: {
+    marginRight: "5px",
+  },
+  transportContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: "10px",
+  },
+  days: {
+    marginRight: "10px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "10px",
+  },
+  buttonStyle: {
+    padding: "10px 20px",
+    backgroundColor: "#e02c18",
+    color: "white",
+    borderRadius: "10px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  },
+};
 
 export default GetBookedTours;
