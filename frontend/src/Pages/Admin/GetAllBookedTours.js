@@ -113,7 +113,7 @@ const GetAllBookedTours = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Manage Booked Tours</h2>
+      <h2 style={styles.title}>Booking Management</h2>
       <div style={styles.searchContainer}>
         <input
           type="text"
@@ -256,14 +256,18 @@ const GetAllBookedTours = () => {
 
 const styles = {
   container: {
+    marginTop: "11vh",
     padding: "20px",
     textAlign: "center",
     background: `linear-gradient(to right, #D2DAFF, #EFEFEF, #B1B2FF)`,
     minHeight: "100vh",
   },
   title: {
-    fontSize: "2rem",
-    marginBottom: "20px",
+    fontSize: "2.5rem",
+    fontFamily: "Uchen, serif",
+    marginBottom: "5px",
+    color: "#333",
+    fontWeight: "bold",
   },
   searchContainer: {
     display: "flex",
