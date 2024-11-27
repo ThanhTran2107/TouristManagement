@@ -7,7 +7,7 @@ class BookingService {
     // const tok=sessionStorage.getItem("token");
     // console.log(tok);
     // axios.defaults.headers.common={Authorization:`Bearer ${tok}`};
-    return axios.get(userURL + "/booking/getallbookings/");
+    return axios.get(userURL + "/booking/getallbookings");
   };
 
   createBooking = (tourId, userId, bookingWrapping) => {

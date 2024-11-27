@@ -1,114 +1,310 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import BookingService from "../../Services/BookingService";
 import { toast } from "react-toastify";
-import homeIcon from "../../images/homeIcon.png";
-import people from "../../images/people.png";
-import transport from "../../images/transport.png";
+import BookingService from "../../Services/BookingService";
+import TourServices from "../../Services/TourServices";
+import searchIcon from "../../images/search-icon.png";
+import refreshIcon from "../../images/refresh.png";
+import deleteIcon from "../../images/delete.jpg";
 
 const GetAllBookedTours = () => {
-  const [Tours, setTours] = useState([]);
-  const userId = sessionStorage.getItem("userId");
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [bookedTours, setBookedTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [tourToDelete, setTourToDelete] = useState(null);
 
-  const init = async () => {
-    if (!userId) {
-      toast.error("Please log in to view your bookings");
-      navigate("/login");
-      return;
-    }
-
+  const fetchBookedTours = async () => {
     try {
-      const response = await BookingService.getAllBookingByUserId(userId);
-      console.log("API Response Data:", response.data); // Kiểm tra dữ liệu trả về từ API
-      if (response.data && response.data.length > 0) {
-        const bookingsData = await Promise.all(
-          response.data.map(async (booking) => {
-            console.log("Booking Data:", booking); // Kiểm tra từng phần tử trong dữ liệu booking
-            const tourists = await BookingService.getAllTouristByBookingId(booking.bookingId);
-            return { ...booking, tourists: tourists.data };
-          })
-        );
-        setTours(bookingsData);
-      } else {
-        toast.info("You have no bookings yet");
-      }
+      const response = await BookingService.getAllBookings();
+      setBookedTours(response.data);
+      setFilteredTours(response.data);
     } catch (error) {
-      console.log("Error fetching bookings:", error);
-      toast.error("Failed to retrieve bookings.");
-    }
-  };
-
-  const handleDelete = async (bookingId) => {
-    try {
-      await BookingService.deleteBooking(bookingId);
-      toast.success("Booking cancelled successfully");
-      window.location.reload();
-    } catch (error) {
-      console.log("Failed to delete booking", error);
-      toast.error("Failed to cancel booking");
+      toast.error("Failed to fetch booked tours: " + error.message);
     }
   };
 
   useEffect(() => {
-    init();
+    fetchBookedTours();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm, bookedTours]);
+
+  const handleSearch = () => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = bookedTours.filter((tour) => {
+      return (
+        tour.tourDetails.tourName.toLowerCase().includes(lowercasedFilter) || // Giả sử tourDetails có thuộc tính tourName
+        tour.user.firstName.toLowerCase().includes(lowercasedFilter) || // Giả sử user có thuộc tính firstName
+        tour.user.lastName.toLowerCase().includes(lowercasedFilter) // Giả sử user có thuộc tính lastName
+      );
+    });
+    setFilteredTours(filteredData);
+  };
+
+  const handleRefresh = () => {
+    fetchBookedTours();
+    setSearchTerm("");
+  };
+
+  const handleDeleteTour = (bookingId, tourId, seatCount) => {
+    BookingService.deleteBooking(bookingId).then((response) => {
+      console.log("Booking deleted successfully ", response.data);
+      toast.success("Booking Deleted Successfully");
+      fetchBookedTours();
+      setShowDeleteModal(false);
+      setTourToDelete(null);
+
+      TourServices.getTourById(tourId)
+        .then((tourResponse) => {
+          const currentSeatCount = tourResponse.data.maxSeats;
+          const updatedSeatCount = currentSeatCount + seatCount;
+
+          BookingService.updateTourSeats(tourId, updatedSeatCount);
+        })
+        .catch((error) => {
+          console.log("Error fetching tour details", error);
+          toast.error("Failed to fetch tour details");
+        });
+    });    
+  };
+
   return (
-    <div style={{ marginTop: "10vh", background: `linear-gradient(to right, #B4AEE8 ,#EFEFEF, #93329E)`, minHeight: "100vh" }}>
-      <br /><br />
-      {Tours.map((tour) => (
-        <div className="container-fluid" style={Styles.divStyle} key={tour.bookingId}>
-          <div style={{ padding: "5px", width: "70%" }}>
-            <h2 style={{ fontFamily: "Uchen, serif" }}>{"Tour Name: " + "'" + tour.tourDetails.tourName + "'"}</h2>
-            <hr />
-            <h4 style={{ fontFamily: "Uchen, serif" }}>
-              {tour.tourDetails.source} to {tour.tourDetails.destination}
-            </h4>
-            <p><img src={transport} alt="transport icon" /> {tour.tourDetails.transportationMode}</p>
-            <p>Start Date: <b>{tour.tourDetails.tourStartDate}</b> &nbsp;&nbsp; End Date: <b>{tour.tourDetails.tourEndDate}</b></p>
-            <p>Booking Date: <b>{tour.bookingDate}</b> &nbsp;&nbsp; Total Amount: <b>{tour.totalAmount}</b></p>
-          </div>
-          <span style={{ maxWidth: "30%" }}>
-            <span style={{ fontSize: "18px" }}><b>{"Booking Id: " + tour.bookingId}</b></span>
-            <h3 style={{ marginTop: "1vw" }}>{tour.tourDetails.bookingAmount}/-</h3>
-            <h6 style={{ color: "#7E7474" }}>per person</h6>
-            <span style={{ fontSize: "15px" }}><b>{"No of Seats: " + tour.seatCount}</b></span>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Manage Booked Tours</h2>
+      <div style={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={styles.searchInput}
+        />
+        <button style={styles.searchButton} onClick={handleSearch}>
+          <img src={searchIcon} alt="Search" style={styles.icon} />
+        </button>
+        <button style={styles.refreshButton} onClick={handleRefresh}>
+          <img src={refreshIcon} alt="Refresh" style={styles.icon} />
+        </button>
+      </div>
+      <table style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.th}>ID</th>
+            <th style={styles.th}>Booking Date</th>
+            <th style={styles.th}>Seat Count</th>
+            <th style={styles.th}>Payment Status</th>
+            <th style={styles.th}>Payment Method</th>
+            <th style={styles.th}>Total Amount</th>
+            <th style={styles.th}>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredTours.length > 0 ? (
+            filteredTours.map((tour, index) => (
+              <tr key={tour.bookingId} style={styles.row}>
+                <td style={styles.td}>{index + 1}</td>
+                <td style={styles.td}>{tour.bookingDate}</td>
+                <td style={styles.td}>{tour.seatCount}</td>
+                <td style={styles.tdStatus}>{tour.paymentStatus}</td>
+                <td style={styles.td}>{tour.paymentMethod}</td>
+                <td style={styles.tdTotalAmount}>
+                  {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)} VND
+                </td>
+                <td style={styles.td}>
+                  <button
+                    style={styles.deleteButton}
+                    onClick={() => {
+                      setShowDeleteModal(true);
+                      setTourToDelete(tour);
+                    }}
+                  >
+                    <img
+                      src={deleteIcon}
+                      alt="Delete"
+                      style={styles.deleteIcon}
+                    />
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" style={styles.td}>
+                No booked tours found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      {showDeleteModal && tourToDelete && (
+        <>
+          <div style={styles.overlay} />
+          <div style={styles.modal}>
+            <h3>
+              <b>Delete This Booking?</b>
+            </h3>
             <button
-              type="button"
-              style={Styles.buttonStyle}
-              onClick={() => handleDelete(tour.bookingId)}
+              onClick={() =>
+                handleDeleteTour(
+                  tourToDelete.bookingId,
+                  tourToDelete.tourId,
+                  tourToDelete.seatCount
+                )
+              }
+              style={styles.submitButton}
             >
-              Cancel Booking
+              Confirm
             </button>
-          </span>
-        </div>
-      ))}
+            <button
+              onClick={() => {
+                setShowDeleteModal(false);
+                setTourToDelete(null);
+              }}
+              style={styles.cancelButton}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-const Styles = {
-  divStyle: {
-    backgroundColor: "#F7ECDE",
-    borderStyle: "thin",
-    maxWidth: "50vw",
-    minWidth: "46vw",
-    display: "flex",
-    marginTop: "5vh",
-    borderRadius: "5px",
+const styles = {
+  container: {
     padding: "20px",
+    textAlign: "center",
+    background: `linear-gradient(to right, #D2DAFF, #EFEFEF, #B1B2FF)`,
+    minHeight: "100vh",
   },
-  buttonStyle: {
-    marginTop: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    maxWidth: '70%',
-    maxHeight: 40,
-    backgroundColor: '#D83A56',
-    color: 'white',
-    borderRadius: 5,
-    border: 'none',
+  title: {
+    fontSize: "2rem",
+    marginBottom: "20px",
+  },
+  searchContainer: {
+    display: "flex",
+    marginBottom: "10px",
+  },
+  searchInput: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginRight: "2px",
+    width: "250px",
+    outline: "none",
+  },
+  searchButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  refreshButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+    marginLeft: "5px",
+    transition: "background-color 0.3s, transform 0.3s",
+  },
+  icon: {
+    width: "25px",
+    height: "25px",
+  },
+  deleteIcon: {
+    width: "35px",
+    height: "35px",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    border: "1px solid #ddd",
+  },
+  th: {
+    backgroundColor: "#f2f2f2",
+    padding: "10px",
+    border: "1px solid #ddd",
+    paddingBottom: "15px",
+  },
+  td: {
+    padding: "10px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+  },
+  tdStatus: {
+    padding: "10px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+    fontWeight: "bold",
+  },
+  tdTotalAmount: {
+    padding: "10px",
+    border: "1px solid #ddd",
+    backgroundColor: "#fff",
+    fontWeight: "bold",
+    color: "red",
+  },
+  row: {
+    transition: "background-color 0.3s",
+    cursor: "pointer",
+  },
+  modal: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fff",
+    padding: "20px",
+    boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+    zIndex: 1000,
+    borderRadius: "20px",
+  },
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
+  },
+  deleteButton: {
+    border: "none",
+  },
+  submitButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
+    marginRight: 20
+  },
+  cancelButton: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#e02c18",
+    color: "white",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
   },
 };
 
