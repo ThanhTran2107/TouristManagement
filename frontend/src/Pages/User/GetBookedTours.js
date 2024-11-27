@@ -34,31 +34,34 @@ const GetBookedTours = () => {
       });
   };
 
-  const handleDelete = (bookingId, tourId, seatCount) => {
-    BookingService.deleteBooking(bookingId).then((response) => {
-      console.log("Booking deleted successfully ", response.data);
-      toast.success("Booking cancelled successfully");
+  const handleDeleteTour = (bookingId, tourId, seatCount) => {
+    BookingService.deleteBooking(bookingId)
+      .then((response) => {
+        console.log("Booking deleted successfully ", response.data);
+        toast.success("Booking Deleted Successfully");
 
-      TourServices.getTourById(tourId)
-        .then((tourResponse) => {
-          const currentSeatCount = tourResponse.data.maxSeats;
-          const updatedSeatCount = currentSeatCount + seatCount;
+        return TourServices.getTourById(tourId);
+      })
+      .then((tourResponse) => {
+        const currentSeatCount = tourResponse.data.maxSeats;
+        const updatedSeatCount = currentSeatCount + seatCount;
 
-          BookingService.updateTourSeats(tourId, updatedSeatCount)
-            .then(() => {
-              console.log("Seat count updated successfully");
-              init();
-            })
-            .catch((error) => {
-              console.log("Error updating seat count", error);
-              toast.error("Failed to update seat count");
-            });
-        })
-        .catch((error) => {
-          console.log("Error fetching tour details", error);
-          toast.error("Failed to fetch tour details");
-        });
-    });
+        return BookingService.updateTourSeats(tourId, updatedSeatCount);
+      })
+      .then(() => {
+        console.log("Seat count updated successfully");
+        fetchBookedTours();
+        setShowDeleteModal(false);
+        setTourToDelete(null);
+      })
+      .catch((error) => {
+        console.log("Error occurred:", error);
+        if (error.response && error.response.status === 404) {
+          toast.error("Failed to find the booking or tour.");
+        } else {
+          toast.error("An error occurred: " + error.message);
+        }
+      });
   };
 
   useEffect(() => {
@@ -179,7 +182,7 @@ const GetBookedTours = () => {
                     onMouseEnter={() => setHoveredBookingId(tour.bookingId)}
                     onMouseLeave={() => setHoveredBookingId(null)}
                     onClick={() =>
-                      handleDelete(
+                      handleDeleteTour(
                         tour.bookingId,
                         tour.tourDetails.tourId,
                         tour.seatCount

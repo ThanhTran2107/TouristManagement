@@ -35,9 +35,9 @@ const GetAllBookedTours = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = bookedTours.filter((tour) => {
       return (
-        tour.tourDetails.tourName.toLowerCase().includes(lowercasedFilter) || // Giả sử tourDetails có thuộc tính tourName
-        tour.user.firstName.toLowerCase().includes(lowercasedFilter) || // Giả sử user có thuộc tính firstName
-        tour.user.lastName.toLowerCase().includes(lowercasedFilter) // Giả sử user có thuộc tính lastName
+        tour.tourDetails.tourName.toLowerCase().includes(lowercasedFilter) || 
+        tour.user.firstName.toLowerCase().includes(lowercasedFilter) || 
+        tour.user.lastName.toLowerCase().includes(lowercasedFilter) 
       );
     });
     setFilteredTours(filteredData);
@@ -48,26 +48,49 @@ const GetAllBookedTours = () => {
     setSearchTerm("");
   };
 
+
+  const [hasDeletedBooking, setHasDeletedBooking] = useState(false);
+
   const handleDeleteTour = (bookingId, tourId, seatCount) => {
-    BookingService.deleteBooking(bookingId).then((response) => {
-      console.log("Booking deleted successfully ", response.data);
-      toast.success("Booking Deleted Successfully");
-      fetchBookedTours();
-      setShowDeleteModal(false);
-      setTourToDelete(null);
+    if (!tourId) {
+      console.error("Invalid tourId:", tourId);
+      toast.error("Invalid tour ID.");
+      return;
+    }
 
-      TourServices.getTourById(tourId)
-        .then((tourResponse) => {
-          const currentSeatCount = tourResponse.data.maxSeats;
-          const updatedSeatCount = currentSeatCount + seatCount;
+    BookingService.deleteBooking(bookingId)
+      .then((response) => {
+        console.log("Booking deleted successfully ", response.data);
+        if (!hasDeletedBooking) {
+          toast.success("Booking Deleted Successfully");
+          setHasDeletedBooking(true);
+        }
 
-          BookingService.updateTourSeats(tourId, updatedSeatCount);
-        })
-        .catch((error) => {
-          console.log("Error fetching tour details", error);
-          toast.error("Failed to fetch tour details");
-        });
-    });    
+        return TourServices.getTourById(tourId);
+      })
+      .then((tourResponse) => {
+        console.log(seatCount);
+        console.log(tourResponse.data.maxSeats);
+        const currentSeatCount = tourResponse.data.maxSeats;
+        const updatedSeatCount = currentSeatCount + seatCount;
+
+        return BookingService.updateTourSeats(tourId, updatedSeatCount);
+      })
+      .then(() => {
+        console.log("Seat count updated successfully");
+        fetchBookedTours();
+        setShowDeleteModal(false);
+        setTourToDelete(null);
+        setHasDeletedBooking(false); 
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+        toast.error(
+          "Failed to delete booking: " +
+            (error.response ? error.response.data.message : error.message)
+        );
+        setHasDeletedBooking(false); 
+      });
   };
 
   return (
@@ -148,8 +171,8 @@ const GetAllBookedTours = () => {
             <button
               onClick={() =>
                 handleDeleteTour(
-                  tourToDelete.bookingId,
-                  tourToDelete.tourId,
+                  tourToDelete.bookingId, 
+                  tourToDelete.tourDetails.tourId,
                   tourToDelete.seatCount
                 )
               }
