@@ -23,8 +23,6 @@ const GetBookedTours = () => {
         });
 
         setTours(response.data);
-        const bookingId = response.data.bookingId;
-        console.log(bookingId);
       })
       .catch((error) => {
         console.log("Something went wrong", error);
@@ -50,9 +48,7 @@ const GetBookedTours = () => {
       })
       .then(() => {
         console.log("Seat count updated successfully");
-        fetchBookedTours();
-        setShowDeleteModal(false);
-        setTourToDelete(null);
+        init();
       })
       .catch((error) => {
         console.log("Error occurred:", error);
@@ -73,7 +69,7 @@ const GetBookedTours = () => {
       <h1 style={styles.title}>
         <b>Your Booked Tours</b>
       </h1>
-      <div style={styles.row}>
+      <div style={styles.row(tours.length)}>
         {tours.map((tour) => {
           const startDate = new Date(tour.tourDetails.tourStartDate);
           const endDate = new Date(tour.tourDetails.tourEndDate);
@@ -101,30 +97,13 @@ const GetBookedTours = () => {
                   <img src={transport} alt="Transport" style={styles.icon} />
                   <span>{tour.tourDetails.transportationMode}</span>
                 </div>
-                <p
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 10
-                  }}
-                >
+                <p style={{ marginTop: 10, marginBottom: 10 }}>
                   Booking ID : <b>{tour.bookingId}</b>
                 </p>
-                <p
-                  style={{
-                    marginBottom: 10
-                  }}
-                >
-                  Number of Seats : <b>{tour.seatCount}</b>
+                <p style={{ marginBottom: 10 }}>
+                  Number of Seats : <b >{tour.seatCount}</b>
                 </p>
-                <p
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 10,
-                    fontFamily: "Uchen, serif",
-                    fontSize: "1.1em",
-                    color: "#2980B9",
-                  }}
-                >
+                <p style={{ marginTop: 10, marginBottom: 10, fontFamily: "Uchen, serif", fontSize: "1.1em", color: "#2980B9" }}>
                   Activities:{" "}
                   <b>
                     {Array.isArray(tour.tourDetails.activities)
@@ -132,62 +111,30 @@ const GetBookedTours = () => {
                       : tour.tourDetails.activities}
                   </b>
                 </p>
-                <p
-                  style={{
-                    marginBottom: 10,
-                    fontFamily: "Uchen, serif",
-                    color: "#7E7474",
-                    fontSize: "1.1em",
-                  }}
-                >
+                <p style={{ marginBottom: 10, fontFamily: "Uchen, serif", color: "#7E7474", fontSize: "1.1em" }}>
                   Tour Type: <b>{tour.tourDetails.tourType}</b>
                 </p>
-                <p
-                  style={{
-                    marginBottom: 10,
-                    fontFamily: "Uchen, serif",
-                    color: "#7E7474",
-                    fontSize: "1.1em",
-                  }}
-                >
+                <p style={{ marginBottom: 10, fontFamily: "Uchen, serif", color: "#7E7474", fontSize: "1.1em" }}>
                   Tour Details: <b>{tour.tourDetails.tourDetailInfo}</b>
                 </p>
                 <p style={{ marginBottom: 10 }}>
-                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
-                  Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date:{" "}
-                  <b>{tour.bookingDate}</b>
+                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date: <b>{tour.bookingDate}</b>
                 </p>
-                <p
-                  style={{
-                    fontSize: "1.5em",
-                    color: "#C0392B",
-                    margin: "10px 0",
-                  }}
-                >
+                <p style={{ fontSize: "1.5em", color: "#C0392B", margin: "10px 0" }}>
                   <h>Total Amount : </h>
                   <b>
-                    {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}{" "}
-                    VND
+                    {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)} VND
                   </b>
                 </p>
                 <div style={styles.buttonContainer}>
                   <button
                     style={{
                       ...styles.buttonStyle,
-                      backgroundColor:
-                        hoveredBookingId === tour.bookingId
-                          ? "#892318"
-                          : "#e02c18",
+                      backgroundColor: hoveredBookingId === tour.bookingId ? "#892318" : "#e02c18",
                     }}
                     onMouseEnter={() => setHoveredBookingId(tour.bookingId)}
                     onMouseLeave={() => setHoveredBookingId(null)}
-                    onClick={() =>
-                      handleDeleteTour(
-                        tour.bookingId,
-                        tour.tourDetails.tourId,
-                        tour.seatCount
-                      )
-                    }
+                    onClick={() => handleDeleteTour(tour.bookingId, tour.tourDetails.tourId, tour.seatCount)}
                   >
                     <b>Cancel Booking</b>
                   </button>
@@ -214,14 +161,14 @@ const styles = {
     marginBottom: "20px",
     color: "#333",
   },
-  row: {
+  row: (length) => ({
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
+    justifyContent: length === 1 ? "center" : "flex-start",
+  }),
   cardContainer: {
     width: "710px",
-    margin: "10px",
+    margin: "14px",
   },
   card: {
     backgroundColor: "#F7ECDE",
@@ -272,7 +219,7 @@ const styles = {
     color: "white",
     borderRadius: "10px",
     border: "none",
-    cursor: "pointer",
+ cursor: "pointer",
     transition: "background-color 0.3s ease",
   },
 };

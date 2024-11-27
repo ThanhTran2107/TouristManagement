@@ -185,7 +185,7 @@ const TourTable = () => {
                   alt="Tour"
                   style={styles.tourImage}
                   onClick={(e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     handleImageClick(tour.tourImage);
                   }}
                 />
@@ -261,7 +261,7 @@ const TourTable = () => {
             src={expandedImage}
             alt="Expanded Tour"
             style={styles.expandedImage}
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

@@ -10,8 +10,12 @@ const GetAllBookedTours = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [bookedTours, setBookedTours] = useState([]);
   const [filteredTours, setFilteredTours] = useState([]);
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState("ALL"); 
+  const [priceFilter, setPriceFilter] = useState("ALL"); 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [tourToDelete, setTourToDelete] = useState(null);
+  const [isHoveringConfirm, setIsHoveringConfirm] = useState(false);
+  const [isHoveringCancel, setIsHoveringCancel] = useState(false);
 
   const fetchBookedTours = async () => {
     try {
@@ -29,16 +33,38 @@ const GetAllBookedTours = () => {
 
   useEffect(() => {
     handleSearch();
-  }, [searchTerm, bookedTours]);
+  }, [searchTerm, bookedTours, paymentMethodFilter, priceFilter]); 
 
   const handleSearch = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = bookedTours.filter((tour) => {
-      return (
-        tour.tourDetails.tourName.toLowerCase().includes(lowercasedFilter) || 
-        tour.user.firstName.toLowerCase().includes(lowercasedFilter) || 
-        tour.user.lastName.toLowerCase().includes(lowercasedFilter) 
-      );
+      const matchesPaymentMethod = paymentMethodFilter === "ALL" || tour.paymentMethod === paymentMethodFilter; 
+      const matchesPrice =
+        priceFilter === "ALL" ||
+        (priceFilter === "Less than 1.000.000" && tour.totalAmount < 1000000) ||
+        (priceFilter === "1.000.000 - 2.000.000" &&
+          tour.totalAmount >= 1000000 &&
+          tour.totalAmount < 2000000) ||
+        (priceFilter === "2.000.000 - 3.000.000" &&
+          tour.totalAmount >= 2000000 &&
+          tour.totalAmount < 3000000) ||
+        (priceFilter === "3.000.000 - 4.000.000" &&
+          tour.totalAmount >= 3000000 &&
+          tour.totalAmount < 4000000) ||
+        (priceFilter === "4.000.000 - 5.000.000" &&
+          tour.totalAmount >= 4000000 &&
+          tour.totalAmount < 5000000) ||
+        (priceFilter === "Greater than 5.000.000" &&
+          tour.totalAmount > 5000000); 
+
+      const matchesSearchTerm =
+        tour.bookingId.toString().includes(lowercasedFilter) ||
+        tour.bookingDate.toLowerCase().includes(lowercasedFilter) ||
+        tour.seatCount.toString().includes(lowercasedFilter) ||
+        tour.paymentStatus.toLowerCase().includes(lowercasedFilter) ||
+        tour.totalAmount.toString().includes(lowercasedFilter); 
+
+      return matchesPaymentMethod && matchesPrice && matchesSearchTerm; 
     });
     setFilteredTours(filteredData);
   };
@@ -46,10 +72,9 @@ const GetAllBookedTours = () => {
   const handleRefresh = () => {
     fetchBookedTours();
     setSearchTerm("");
+    setPaymentMethodFilter("ALL"); 
+    setPriceFilter("ALL"); 
   };
-
-
-  const [hasDeletedBooking, setHasDeletedBooking] = useState(false);
 
   const handleDeleteTour = (bookingId, tourId, seatCount) => {
     if (!tourId) {
@@ -61,16 +86,11 @@ const GetAllBookedTours = () => {
     BookingService.deleteBooking(bookingId)
       .then((response) => {
         console.log("Booking deleted successfully ", response.data);
-        if (!hasDeletedBooking) {
-          toast.success("Booking Deleted Successfully");
-          setHasDeletedBooking(true);
-        }
+        toast.success("Booking Deleted Successfully");
 
         return TourServices.getTourById(tourId);
       })
       .then((tourResponse) => {
-        console.log(seatCount);
-        console.log(tourResponse.data.maxSeats);
         const currentSeatCount = tourResponse.data.maxSeats;
         const updatedSeatCount = currentSeatCount + seatCount;
 
@@ -81,7 +101,6 @@ const GetAllBookedTours = () => {
         fetchBookedTours();
         setShowDeleteModal(false);
         setTourToDelete(null);
-        setHasDeletedBooking(false); 
       })
       .catch((error) => {
         console.error("Error occurred:", error);
@@ -89,7 +108,6 @@ const GetAllBookedTours = () => {
           "Failed to delete booking: " +
             (error.response ? error.response.data.message : error.message)
         );
-        setHasDeletedBooking(false); 
       });
   };
 
@@ -110,11 +128,39 @@ const GetAllBookedTours = () => {
         <button style={styles.refreshButton} onClick={handleRefresh}>
           <img src={refreshIcon} alt="Refresh" style={styles.icon} />
         </button>
+        <select
+          value={paymentMethodFilter}
+          onChange={(e) => {
+            setPaymentMethodFilter(e.target.value);
+            handleSearch();
+          }}
+          style={styles.cbxMethod}
+        >
+          <option value="ALL">All Payment Methods</option>
+          <option value="CARD_PAYMENT">Card Payment</option>
+          <option value="DIRECT_PAYMENT">Direct Payment</option>
+        </select>
+        <select
+          value={priceFilter}
+          onChange={(e) => {
+            setPriceFilter(e.target.value);
+            handleSearch();
+          }}
+          style={styles.cbxPrice}
+        >
+          <option value="ALL">All Prices</option>
+          <option value="Less than 1.000.000">Less than 1.000.000</option>
+          <option value="1.000.000 - 2.000.000">1.000.000 - 2.000.000</option>
+          <option value="2.000.000 - 3.000.000">2.000.000 - 3.000.000</option>
+          <option value="3.000.000 - 4.000.000">3.000.000 - 4.000.000</option>
+          <option value="4.000.000 - 5.000.000">4.000.000 - 5.000.000</option>
+          <option value="Greater than 5.000.000">Greater than 5.000.000</option>
+        </select>
       </div>
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>ID</th>
+            <th style={styles.th}>Booking ID</th>
             <th style={styles.th}>Booking Date</th>
             <th style={styles.th}>Seat Count</th>
             <th style={styles.th}>Payment Status</th>
@@ -126,21 +172,22 @@ const GetAllBookedTours = () => {
         <tbody>
           {filteredTours.length > 0 ? (
             filteredTours.map((tour, index) => (
-              <tr key={tour.bookingId} style={styles.row}>
+              <tr key={tour.bookingId}>
                 <td style={styles.td}>{index + 1}</td>
                 <td style={styles.td}>{tour.bookingDate}</td>
                 <td style={styles.td}>{tour.seatCount}</td>
                 <td style={styles.tdStatus}>{tour.paymentStatus}</td>
                 <td style={styles.td}>{tour.paymentMethod}</td>
-                <td style={styles.tdTotalAmount}>
-                  {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)} VND
+                <td style={styles.tdTotal}>
+                  {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}
                 </td>
                 <td style={styles.td}>
                   <button
                     style={styles.deleteButton}
-                    onClick={() => {
-                      setShowDeleteModal(true);
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setTourToDelete(tour);
+                      setShowDeleteModal(true);
                     }}
                   >
                     <img
@@ -155,13 +202,13 @@ const GetAllBookedTours = () => {
           ) : (
             <tr>
               <td colSpan="7" style={styles.td}>
-                No booked tours found
-              </td>
+                No tours found
+                              </td>
             </tr>
           )}
         </tbody>
       </table>
-      {showDeleteModal && tourToDelete && (
+      {showDeleteModal && (
         <>
           <div style={styles.overlay} />
           <div style={styles.modal}>
@@ -169,23 +216,34 @@ const GetAllBookedTours = () => {
               <b>Delete This Booking?</b>
             </h3>
             <button
+              onMouseEnter={() => setIsHoveringConfirm(true)}
+              onMouseLeave={() => setIsHoveringConfirm(false)}
               onClick={() =>
                 handleDeleteTour(
-                  tourToDelete.bookingId, 
+                  tourToDelete.bookingId,
                   tourToDelete.tourDetails.tourId,
                   tourToDelete.seatCount
                 )
               }
-              style={styles.submitButton}
+              style={{
+                ...styles.submitButton,
+                ...(isHoveringConfirm ? styles.submitButtonHover : {}),
+              }}
             >
               Confirm
             </button>
             <button
+              onMouseEnter={() => setIsHoveringCancel(true)}
+              onMouseLeave={() => setIsHoveringCancel(false)}
               onClick={() => {
                 setShowDeleteModal(false);
                 setTourToDelete(null);
+                setIsHoveringCancel(false);
               }}
-              style={styles.cancelButton}
+              style={{
+                ...styles.cancelButton,
+                ...(isHoveringCancel ? styles.cancelButtonHover : {}),
+              }}
             >
               Cancel
             </button>
@@ -219,6 +277,26 @@ const styles = {
     borderRadius: "10px",
     marginRight: "2px",
     width: "250px",
+    outline: "none",
+  },
+  cbxMethod: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginLeft: "725px",
+    width: "200px",
+    outline: "none",
+  },
+  cbxPrice: {
+    marginTop: "10px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    marginLeft: "5px",
+    width: "220px",
     outline: "none",
   },
   searchButton: {
@@ -269,17 +347,14 @@ const styles = {
     border: "1px solid #ddd",
     backgroundColor: "#fff",
     fontWeight: "bold",
+    color: "#e02c18",
   },
-  tdTotalAmount: {
+  tdTotal: {
     padding: "10px",
     border: "1px solid #ddd",
     backgroundColor: "#fff",
+    color: "#e02c18",
     fontWeight: "bold",
-    color: "red",
-  },
-  row: {
-    transition: "background-color 0.3s",
-    cursor: "pointer",
   },
   modal: {
     position: "fixed",
@@ -315,10 +390,13 @@ const styles = {
     cursor: "pointer",
     fontWeight: "bold",
     transition: "background-color 0.3s, transform 0.3s",
-    marginRight: 20
+  },
+  submitButtonHover: {
+    backgroundColor: "green",
   },
   cancelButton: {
     marginTop: "10px",
+    marginLeft: "10px",
     padding: "10px",
     fontSize: "1rem",
     border: "none",
@@ -328,6 +406,9 @@ const styles = {
     cursor: "pointer",
     fontWeight: "bold",
     transition: "background-color 0.3s, transform 0.3s",
+  },
+  cancelButtonHover: {
+    backgroundColor: "#892318",
   },
 };
 

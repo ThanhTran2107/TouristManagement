@@ -210,7 +210,7 @@ const AccountManagement = () => {
         <>
           <div style={Styles.overlay} />
           <div style={Styles.modal}>
-            <h3><b>Delete This Account? {accountToDelete.firstName} {accountToDelete.lastName}</b></h3>
+            <h3><b>Delete This Account ?</b></h3>
             <button
               onClick={handleDeleteAccount}
               style={Styles.submitButton}
@@ -359,7 +359,7 @@ const Styles = {
     border: "none",
     backgroundColor: "#4CAF50",
     color: "white",
-    borderRadius: "5px",
+    borderRadius: "10px",
     cursor: "pointer",
     fontWeight: "bold",
     transition: "background-color 0.3s, transform 0.3s",
@@ -372,7 +372,7 @@ const Styles = {
     border: "none",
     backgroundColor: "#e02c18",
     color: "white",
-    borderRadius: "5px",
+    borderRadius: "10px",
     cursor: "pointer",
     fontWeight: "bold",
     transition: "background-color 0.3s, transform 0.3s",
