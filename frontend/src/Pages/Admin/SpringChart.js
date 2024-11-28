@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar, Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,6 +12,7 @@ import {
   PointElement,
   ArcElement,
 } from "chart.js";
+import BookingService from "../../Services/BookingService";
 
 ChartJS.register(
   CategoryScale,
@@ -27,25 +28,76 @@ ChartJS.register(
 
 const SpringChart = () => {
   const [selectedChart, setSelectedChart] = useState("revenue");
+  const [revenueData, setRevenueData] = useState({ labels: [], datasets: [] });
 
-  const revenueData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Revenue",
-        data: [5000, 7000, 8000, 6000, 9000, 12000, 15000],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchRevenueData = async () => {
+      try {
+        const response = await BookingService.getAllBookings();
+        const data = response.data;
+        console.log(data);
+
+        const revenueByMonth = {};
+
+        if (Array.isArray(data)) {
+          data.forEach((item) => {
+            const month = new Date(item.bookingDate).getMonth() + 1;
+            const amount = item.totalAmount;
+
+            if (!revenueByMonth[month]) {
+              revenueByMonth[month] = 0;
+            }
+            revenueByMonth[month] += amount;
+          });
+
+          const monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+
+          const labels = Object.keys(revenueByMonth).map(
+            (month) => monthNames[month - 1] 
+          );
+          const amounts = Object.values(revenueByMonth);
+
+          setRevenueData({
+            labels: labels,
+            datasets: [
+              {
+                label: "Revenue",
+                data: amounts,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1,
+              },
+            ],
+          });
+        } else {
+          console.error("Data is not an array:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching revenue data:", error);
+      }
+    };
+
+    fetchRevenueData();
+  }, []);
 
   const salesData = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
       {
-        label: "Tours Sold",
+        label: "Tickets Sold",
         data: [50, 70, 80, 60, 90, 120, 150],
         backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderColor: "rgba(255, 99, 132, 1)",
@@ -145,7 +197,7 @@ const Styles = {
     marginBottom: "20px",
     width: "500px",
     textAlign: "center",
-    outline: "none"
+    outline: "none",
   },
   chartContainer: {
     border: "1px solid",
