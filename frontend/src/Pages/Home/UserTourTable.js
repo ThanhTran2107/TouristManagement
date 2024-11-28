@@ -182,12 +182,26 @@ const UserTourTable = () => {
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
                 </p>
-                <img src={homeIcon} alt="home icon" style={styles.icon} />
-                {duration} days{" - "}
-                <img src={people} alt="people icon" style={styles.icon} />
-                {tour.maxSeats} seats{" - "}
-                <img src={transport} alt="transport icon" style={styles.icon} />
-                {tour.transportationMode}
+                <span
+                  style={{marginRight: "10px"}}
+                >
+                  <img src={homeIcon} alt="home icon" style={styles.icon} />
+                  {duration} days
+                </span>
+                <span
+                  style={{marginRight: "10px"}}
+                >
+                  <img src={people} alt="people icon" style={styles.icon} />
+                  {tour.maxSeats} seats
+                </span>
+                <span>
+                  <img
+                    src={transport}
+                    alt="transport icon"
+                    style={styles.icon}
+                  />
+                  {tour.transportationMode}
+                </span>
                 <h5 style={styles.cardActivities}>
                   Activities: <b>{tour.activities}</b>
                 </h5>

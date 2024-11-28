@@ -5,17 +5,28 @@ import TourServices from "../../Services/TourServices";
 import searchIcon from "../../images/search-icon.png";
 import refreshIcon from "../../images/refresh.png";
 import deleteIcon from "../../images/delete.jpg";
+import transport from "../../images/transport.png";
+import home from "../../images/homeIcon.png";
 
 const GetAllBookedTours = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [bookedTours, setBookedTours] = useState([]);
   const [filteredTours, setFilteredTours] = useState([]);
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState("ALL"); 
-  const [priceFilter, setPriceFilter] = useState("ALL"); 
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState("ALL");
+  const [priceFilter, setPriceFilter] = useState("ALL");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [tourToDelete, setTourToDelete] = useState(null);
   const [isHoveringConfirm, setIsHoveringConfirm] = useState(false);
   const [isHoveringCancel, setIsHoveringCancel] = useState(false);
+  const [selectedBookingDetails, setSelectedBookingDetails] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const calculateDuration = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24) + 1); // Tính số ngày
+    return duration;
+  };
 
   const fetchBookedTours = async () => {
     try {
@@ -33,12 +44,14 @@ const GetAllBookedTours = () => {
 
   useEffect(() => {
     handleSearch();
-  }, [searchTerm, bookedTours, paymentMethodFilter, priceFilter]); 
+  }, [searchTerm, bookedTours, paymentMethodFilter, priceFilter]);
 
   const handleSearch = () => {
     const lowercasedFilter = searchTerm.toLowerCase();
     const filteredData = bookedTours.filter((tour) => {
-      const matchesPaymentMethod = paymentMethodFilter === "ALL" || tour.paymentMethod === paymentMethodFilter; 
+      const matchesPaymentMethod =
+        paymentMethodFilter === "ALL" ||
+        tour.paymentMethod === paymentMethodFilter;
       const matchesPrice =
         priceFilter === "ALL" ||
         (priceFilter === "Less than 1.000.000" && tour.totalAmount < 1000000) ||
@@ -55,16 +68,16 @@ const GetAllBookedTours = () => {
           tour.totalAmount >= 4000000 &&
           tour.totalAmount < 5000000) ||
         (priceFilter === "Greater than 5.000.000" &&
-          tour.totalAmount > 5000000); 
+          tour.totalAmount > 5000000);
 
       const matchesSearchTerm =
         tour.bookingId.toString().includes(lowercasedFilter) ||
         tour.bookingDate.toLowerCase().includes(lowercasedFilter) ||
         tour.seatCount.toString().includes(lowercasedFilter) ||
         tour.paymentStatus.toLowerCase().includes(lowercasedFilter) ||
-        tour.totalAmount.toString().includes(lowercasedFilter); 
+        tour.totalAmount.toString().includes(lowercasedFilter);
 
-      return matchesPaymentMethod && matchesPrice && matchesSearchTerm; 
+      return matchesPaymentMethod && matchesPrice && matchesSearchTerm;
     });
     setFilteredTours(filteredData);
   };
@@ -72,8 +85,8 @@ const GetAllBookedTours = () => {
   const handleRefresh = () => {
     fetchBookedTours();
     setSearchTerm("");
-    setPaymentMethodFilter("ALL"); 
-    setPriceFilter("ALL"); 
+    setPaymentMethodFilter("ALL");
+    setPriceFilter("ALL");
   };
 
   const handleDeleteTour = (bookingId, tourId, seatCount) => {
@@ -111,6 +124,27 @@ const GetAllBookedTours = () => {
       });
   };
 
+  const handleRowClick = async (tour) => {
+    try {
+      const tourDetails = await TourServices.getTourById(
+        tour.tourDetails.tourId
+      );
+      const tourists = await BookingService.getAllTouristByBookingId(
+        tour.bookingId
+      );
+
+      const duration = calculateDuration(tourDetails.data.tourStartDate, tourDetails.data.tourEndDate);
+
+      setSelectedBookingDetails({
+        tour: tourDetails.data,
+        tourists: tourists.data,
+        duration: duration,
+      });
+      setShowDetailsModal(true);
+    } catch (error) {
+      toast.error("Failed to fetch booking details: " + error.message);
+    }
+  };
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Booking Management</h2>
@@ -172,7 +206,11 @@ const GetAllBookedTours = () => {
         <tbody>
           {filteredTours.length > 0 ? (
             filteredTours.map((tour, index) => (
-              <tr key={tour.bookingId}>
+              <tr
+                key={tour.bookingId}
+                onClick={() => handleRowClick(tour)}
+                style={{ cursor: "pointer" }}
+              >
                 <td style={styles.td}>{index + 1}</td>
                 <td style={styles.td}>{tour.bookingDate}</td>
                 <td style={styles.td}>{tour.seatCount}</td>
@@ -203,11 +241,12 @@ const GetAllBookedTours = () => {
             <tr>
               <td colSpan="7" style={styles.td}>
                 No tours found
-                              </td>
+              </td>
             </tr>
           )}
         </tbody>
       </table>
+
       {showDeleteModal && (
         <>
           <div style={styles.overlay} />
@@ -249,6 +288,87 @@ const GetAllBookedTours = () => {
             </button>
           </div>
         </>
+      )}
+
+      {selectedBookingDetails && (
+        <div style={styles.detailsContainer}>
+          <p
+            style={{
+              fontFamily: "Uchen, serif",
+              fontSize: "1.5em",
+              color: "#2C3E50",
+            }}
+          >
+            {selectedBookingDetails.tour.tourName}
+          </p>
+          <p style={{ fontSize: "1.2em", color: "#34495E" }}>
+            {selectedBookingDetails.tour.source} to{" "}
+            {selectedBookingDetails.tour.destination}
+          </p>
+          <div style={styles.transportContainer}>
+            <span style={styles.days}>
+              <img src={home} alt="day" style={styles.icon} />
+              {selectedBookingDetails.duration} days
+            </span>
+            <img src={transport} alt="Transport" style={styles.icon} />
+            <span>{selectedBookingDetails.tour.transportationMode}</span>
+          </div>
+          <p
+            style={{
+              fontFamily: "Uchen, serif",
+              fontSize: "1.1em",
+              color: "#2980B9",
+            }}
+          >
+            Activities: <b>{selectedBookingDetails.tour.activities}</b>
+          </p>
+          <p
+            style={{
+              fontFamily: "Uchen, serif",
+              color: "#7E7474",
+              fontSize: "1.1em",
+            }}
+          >
+            Tour Type: <b>{selectedBookingDetails.tour.tourType}</b>
+          </p>
+          <p
+            style={{
+              fontFamily: "Uchen, serif",
+              color: "#7E7474",
+              fontSize: "1.1em",
+            }}
+          >
+            Tour Details: <b>{selectedBookingDetails.tour.tourDetailInfo}</b>
+          </p>
+          <p>
+            <strong>Start Date:</strong>{" "}
+            {selectedBookingDetails.tour.tourStartDate}
+            {" | "}
+            <strong>End Date:</strong> {selectedBookingDetails.tour.tourEndDate}
+          </p>
+          <table style={styles.detailsTable}>
+            <thead>
+              <tr>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Age</th>
+                <th style={styles.th}>Phone Number</th>
+                <th style={styles.th}>ID Proof</th>
+                <th style={styles.th}>ID Proof Number</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedBookingDetails.tourists.map((tourist, index) => (
+                <tr key={index}>
+                  <td style={styles.td}>{tourist.touristName}</td>
+                  <td style={styles.td}>{tourist.age}</td>
+                  <td style={styles.td}>{tourist.phoneNumber}</td>
+                  <td style={styles.td}>{tourist.idProof}</td>
+                  <td style={styles.td}>{tourist.idProofNo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -412,7 +532,28 @@ const styles = {
     transition: "background-color 0.3s, transform 0.3s",
   },
   cancelButtonHover: {
-    backgroundColor: "#892318",
+    backgroundColor: "#c62828",
+  },
+  detailsContainer: {
+    marginTop: "20px",
+    padding: "20px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    backgroundColor: "#F7ECDE",
+    textAlign: "left",
+  },
+  detailsTable: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "10px",
+  },
+  transportContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "10px",
+  },
+  days: {
+    marginRight: "10px",
   },
 };
 
