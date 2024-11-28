@@ -27,6 +27,7 @@ import GetAllBookedTours from "./Pages/Admin/GetAllBookedTours";
 import GetFeedback from "./Pages/Admin/GetFeedback";
 import ForgotPassword from "./Pages/User/ForgotPassword";
 import AccountManagement from "./Pages/Admin/AccountManagement";
+import SpringChart from "./Pages/Admin/SpringChart";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
@@ -62,6 +63,7 @@ function App() {
           <Route path="/searchbydestination/:destination" element={<SearchByDestination />} />
           <Route path="/searchByBudget" element={<SearchByBudget />} />
           <Route path="/accounts" element={<AccountManagement/>}/>
+          <Route path="/springChart" element={<SpringChart/>}/>
 
         </Routes>
         <ToastContainer position="top-center" autoClose={3000} />

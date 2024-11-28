@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 const tourPic = require("../../images/tourList.png");
 const addTourPic = require("../../images/addTour.png");
-const bookPic = require("../../images/book.png");
+const chartpic = require("../../images/chart.png");
 const account_management = require("../../images/account_management.png");
 
 const Admin = () => {
@@ -21,25 +21,36 @@ const Admin = () => {
           <Card image={account_management} title="Accounts" link="/accounts" />
           <Card image={tourPic} title="Tour List" link="/tourTable" />
           <Card image={addTourPic} title="Add Tour" link="/addTour" />
-          <Card image={bookPic} title="Confirmation" link="/bookingDetails" />
+          <Card
+            image={chartpic}
+            title="Analytics Chart"
+            link="/springChart"
+            imageStyle={{ width: "120px", height: "120px", marginTop: 32 }}
+          />
         </div>
       </div>
     </div>
   );
 };
 
-const Card = ({ image, title, link }) => {
+const Card = ({ image, title, link, imageStyle }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
     <div style={Styles.card}>
-      <img src={image} style={Styles.imageStyle} alt={title} />
+      <img
+        src={image}
+        style={{ ...Styles.imageStyle, ...imageStyle }}
+        alt={title}
+      />
       <Link
         to={link}
         style={{
           ...Styles.buttonStyle,
-          backgroundColor: isHovered ? "#892318" : Styles.buttonStyle.backgroundColor,
-          transform: isHovered ? "scale(1.05)" : "scale(1)", 
+          backgroundColor: isHovered
+            ? "#892318"
+            : Styles.buttonStyle.backgroundColor,
+          transform: isHovered ? "scale(1.05)" : "scale(1)",
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -73,9 +84,9 @@ const Styles = {
     transition: "transform 0.2s",
   },
   imageStyle: {
-    width: '150px',
-    height: '150px',
-    marginBottom: '10px',
+    width: "150px",
+    height: "150px",
+    marginBottom: "10px",
   },
   buttonStyle: {
     display: "inline-block",
