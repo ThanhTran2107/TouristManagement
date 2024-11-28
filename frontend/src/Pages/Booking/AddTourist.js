@@ -27,6 +27,11 @@ const AddTourist = () => {
   const [seat, setSeat] = useState(seats);
   const [paymentMethod, setPaymentMethod] = useState("direct");
   const [showCardForm, setShowCardForm] = useState(false);
+  const firstName = sessionStorage.getItem("firstName");
+  const lastName = sessionStorage.getItem("lastName");
+  const dob = sessionStorage.getItem("dob");
+  const phoneNumber = sessionStorage.getItem("phoneNo");
+
   const [cardDetails, setCardDetails] = useState({
     cardHolderName: "",
     cardNumber: "",
@@ -37,8 +42,20 @@ const AddTourist = () => {
 
   const currentDate = new Date();
   const today = currentDate.toISOString().split("T")[0];
+
+  const birthYear = dob
+    ? new Date(dob).getFullYear()
+    : currentDate.getFullYear();
+  const age = currentDate.getFullYear() - birthYear;
+
   const [formValues, setFormValues] = useState([
-    { age: "", touristName: "", idProof: "", idProofNo: "", phoneNumber: "" },
+    {
+      age: age || "",
+      touristName: `${firstName || ""} ${lastName || ""}`,
+      idProof: "",
+      idProofNo: "",
+      phoneNumber: phoneNumber || "",
+    },
   ]);
 
   const handleChange = (i, e) => {
@@ -262,63 +279,63 @@ const AddTourist = () => {
   };
 
   const handleOutsideClick = (e) => {
-    if (e.target.id === 'card-modal-overlay') {
+    if (e.target.id === "card-modal-overlay") {
       setShowCardForm(false);
     }
   };
 
   const isValidExpiration = () => {
-  const currentYear = new Date().getFullYear() % 100;
-  const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear() % 100;
+    const currentMonth = new Date().getMonth() + 1;
 
-  const month = parseInt(cardDetails.expirationMonth);
-  const year = parseInt(cardDetails.expirationYear);
+    const month = parseInt(cardDetails.expirationMonth);
+    const year = parseInt(cardDetails.expirationYear);
 
-  if (isNaN(month) || month < 1 || month > 12) {
-    toast.error("Invalid expiration month");
-    return false;
-  }
+    if (isNaN(month) || month < 1 || month > 12) {
+      toast.error("Invalid expiration month");
+      return false;
+    }
 
-  if (isNaN(year) || year < currentYear) {
-    toast.error("Invalid expiration year");
-    return false;
-  }
+    if (isNaN(year) || year < currentYear) {
+      toast.error("Invalid expiration year");
+      return false;
+    }
 
-  if (year === currentYear && month < currentMonth) {
-    toast.error("Card has expired");
-    return false;
-  }
+    if (year === currentYear && month < currentMonth) {
+      toast.error("Card has expired");
+      return false;
+    }
 
-  return true;
-};
+    return true;
+  };
 
-const isValidCardNumber = () => {
-  const cleanCardNumber = cardDetails.cardNumber.replace(/\s/g, "");
+  const isValidCardNumber = () => {
+    const cleanCardNumber = cardDetails.cardNumber.replace(/\s/g, "");
 
-  if (cleanCardNumber.length !== 16) {
-    toast.error("Card number must be 16 digits");
-    return false;
-  }
+    if (cleanCardNumber.length !== 16) {
+      toast.error("Card number must be 16 digits");
+      return false;
+    }
 
-  return true;
-};
+    return true;
+  };
 
-const isValidCVV = () => {
-  const cvvPattern = /^\d{3}$/;
-  
-  if (!cvvPattern.test(cardDetails.cvv)) {
-    toast.error("CVV must be 3 digits");
-    return false;
-  }
-  return true;
-};
+  const isValidCVV = () => {
+    const cvvPattern = /^\d{3}$/;
 
-const formatCardNumber = (value) => {
-  return value
-    .replace(/\s/g, '')
-    .replace(/(\d{4})/g, '$1 ')
-    .trim();
-};
+    if (!cvvPattern.test(cardDetails.cvv)) {
+      toast.error("CVV must be 3 digits");
+      return false;
+    }
+    return true;
+  };
+
+  const formatCardNumber = (value) => {
+    return value
+      .replace(/\s/g, "")
+      .replace(/(\d{4})/g, "$1 ")
+      .trim();
+  };
 
   return (
     <>

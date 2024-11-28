@@ -66,6 +66,9 @@ export const SignIn = (props) => {
           sessionStorage.setItem("email", result.email);
           sessionStorage.setItem("firstName", result.firstName);
           sessionStorage.setItem("lastName", result.lastName);
+          sessionStorage.setItem("dob", response.data.dob);
+          sessionStorage.setItem("address", response.data.address);
+          sessionStorage.setItem("phoneNo", response.data.phoneNo);
 
           if (result.role === "USER") {
             swal(
