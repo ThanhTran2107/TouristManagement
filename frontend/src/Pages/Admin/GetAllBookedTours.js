@@ -152,6 +152,7 @@ const GetAllBookedTours = () => {
         tour.bookingDate.toLowerCase().includes(lowercasedFilter) ||
         tour.seatCount.toString().includes(lowercasedFilter) ||
         tour.paymentStatus.toLowerCase().includes(lowercasedFilter) ||
+        tour.paymentMethod.toLowerCase().includes(lowercasedFilter) ||
         tour.totalAmount.toString().includes(lowercasedFilter);
 
       return matchesPaymentMethod && matchesPrice && matchesSearchTerm;
@@ -164,6 +165,7 @@ const GetAllBookedTours = () => {
     setSearchTerm("");
     setPaymentMethodFilter("ALL");
     setPriceFilter("ALL");
+    setSelectedBookingDetails(null);
   };
 
   const handleDeleteTour = (bookingId, tourId, seatCount) => {
@@ -282,7 +284,15 @@ const GetAllBookedTours = () => {
                   {tour.paymentStatus}
                 </td>
                 <td style={styles.td}>{tour.paymentMethod}</td>
-                <td style={styles.tdTotal}>
+                <td
+                  style={{
+                    ...styles.tdTotal,
+                    color:
+                      tour.paymentStatus === "PAYMENT_SUCCESSFUL"
+                        ? "#4CAF50"
+                        : "#e02c18",
+                  }}
+                >
                   {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}
                 </td>
                 <td style={styles.td}>
@@ -364,8 +374,8 @@ const GetAllBookedTours = () => {
                 fontFamily: "Uchen, serif",
                 fontSize: "1.5em",
                 color: "#2C3E50",
-                flex: 1, 
-                textAlign: "left", 
+                flex: 1,
+                textAlign: "left",
               }}
             >
               {selectedBookingDetails.tour.tourName}
@@ -375,9 +385,9 @@ const GetAllBookedTours = () => {
                 fontFamily: "Uchen, serif",
                 fontSize: "1.5em",
                 color: "#2C3E50",
-                marginLeft: "auto", 
-                textAlign: "right", 
-                marginBottom: "-45px"
+                marginLeft: "auto",
+                textAlign: "right",
+                marginBottom: "-45px",
               }}
             >
               Booking ID: <b>{selectedBookingDetails.booking.bookingId}</b>
