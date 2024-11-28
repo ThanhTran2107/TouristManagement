@@ -23,7 +23,7 @@ const Admin = () => {
           <Card image={addTourPic} title="Add Tour" link="/addTour" />
           <Card
             image={chartpic}
-            title="Analytics Chart"
+            title="Analytics"
             link="/springChart"
             imageStyle={{ width: "120px", height: "120px", marginTop: 32 }}
           />
