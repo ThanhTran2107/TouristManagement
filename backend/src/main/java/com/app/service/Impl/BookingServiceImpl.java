@@ -3,6 +3,7 @@ package com.app.service.Impl;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import com.app.dto.BookingDTO;
 import com.app.dto.TourDetailsDTO;
 import com.app.dto.TouristDTO;
 import com.app.entities.Booking;
+import com.app.entities.PaymentStatus;
 import com.app.entities.TourDetails;
 import com.app.entities.Tourist;
 import com.app.entities.User;
@@ -84,6 +86,18 @@ public class BookingServiceImpl implements BookingService {
         }
         return false;
     }
+
+    @SuppressWarnings("override")
+	public boolean updatePaymentStatus(Long bookingId, PaymentStatus paymentStatus) {
+		Optional<Booking> optionalBooking = bookingRepo.findById(bookingId);
+		if (optionalBooking.isPresent()) {
+			Booking booking = optionalBooking.get();
+			booking.setPaymentStatus(paymentStatus);
+			bookingRepo.save(booking); 
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void DeleteBookingById(Long bookingId) {

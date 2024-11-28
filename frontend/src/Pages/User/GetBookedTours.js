@@ -77,6 +77,9 @@ const GetBookedTours = () => {
             (endDate - startDate + 1) / (1000 * 60 * 60 * 24)
           );
 
+          const isPaymentSuccessful =
+            tour.paymentStatus === "PAYMENT_SUCCESSFUL";
+
           return (
             <div key={tour.bookingId} style={styles.cardContainer}>
               <div style={styles.card}>
@@ -101,9 +104,17 @@ const GetBookedTours = () => {
                   Booking ID : <b>{tour.bookingId}</b>
                 </p>
                 <p style={{ marginBottom: 10 }}>
-                  Number of Seats : <b >{tour.seatCount}</b>
+                  Number of Seats : <b>{tour.seatCount}</b>
                 </p>
-                <p style={{ marginTop: 10, marginBottom: 10, fontFamily: "Uchen, serif", fontSize: "1.1em", color: "#2980B9" }}>
+                <p
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    fontSize: "1.1em",
+                    color: "#2980B9",
+                  }}
+                >
                   Activities:{" "}
                   <b>
                     {Array.isArray(tour.tourDetails.activities)
@@ -111,32 +122,75 @@ const GetBookedTours = () => {
                       : tour.tourDetails.activities}
                   </b>
                 </p>
-                <p style={{ marginBottom: 10, fontFamily: "Uchen, serif", color: "#7E7474", fontSize: "1.1em" }}>
+                <p
+                  style={{
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    color: "#7E7474",
+                    fontSize: "1.1em",
+                  }}
+                >
                   Tour Type: <b>{tour.tourDetails.tourType}</b>
                 </p>
-                <p style={{ marginBottom: 10, fontFamily: "Uchen, serif", color: "#7E7474", fontSize: "1.1em" }}>
+                <p
+                  style={{
+                    marginBottom: 10,
+                    fontFamily: "Uchen, serif",
+                    color: "#7E7474",
+                    fontSize: "1.1em",
+                  }}
+                >
                   Tour Details: <b>{tour.tourDetails.tourDetailInfo}</b>
                 </p>
                 <p style={{ marginBottom: 10 }}>
-                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date: <b>{tour.bookingDate}</b>
+                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
+                  Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date:{" "}
+                  <b>{tour.bookingDate}</b>
                 </p>
-                <p style={{ fontSize: "1.5em", color: "#C0392B", margin: "10px 0" }}>
+                <p
+                  style={{
+                    fontSize: "1.5em",
+                    color: "#C0392B",
+                    margin: "10px 0",
+                  }}
+                >
                   <h>Total Amount : </h>
                   <b>
-                    {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)} VND
+                    {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}{" "}
+                    VND
                   </b>
                 </p>
                 <div style={styles.buttonContainer}>
                   <button
                     style={{
                       ...styles.buttonStyle,
-                      backgroundColor: hoveredBookingId === tour.bookingId ? "#892318" : "#e02c18",
+                      backgroundColor: isPaymentSuccessful
+                        ? "green"
+                        : hoveredBookingId === tour.bookingId
+                        ? "#892318"
+                        : "#e02c18", 
+                      opacity: isPaymentSuccessful ? 0.5 : 1,
+                      cursor: isPaymentSuccessful ? "not-allowed" : "pointer",
                     }}
                     onMouseEnter={() => setHoveredBookingId(tour.bookingId)}
                     onMouseLeave={() => setHoveredBookingId(null)}
-                    onClick={() => handleDeleteTour(tour.bookingId, tour.tourDetails.tourId, tour.seatCount)}
+                    onClick={
+                      !isPaymentSuccessful
+                        ? () =>
+                            handleDeleteTour(
+                              tour.bookingId,
+                              tour.tourDetails.tourId,
+                              tour.seatCount
+                            )
+                        : null
+                    }
+                    disabled={isPaymentSuccessful} 
                   >
-                    <b>Cancel Booking</b>
+                    <b>
+                      {isPaymentSuccessful
+                        ? "Booking Confirmed"
+                        : "Cancel Booking"}
+                    </b>
                   </button>
                 </div>
               </div>

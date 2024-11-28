@@ -19,6 +19,7 @@ import com.app.dto.ApiResponse;
 import com.app.dto.BookingDTO;
 import com.app.dto.BookingWrapper;
 import com.app.dto.SeatUpdateRequest;
+import com.app.entities.PaymentStatus;
 import com.app.service.BookingService;
 
 @RestController
@@ -48,6 +49,22 @@ public class BookingController {
             return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
         }
     }
+
+	@PutMapping("/updatePaymentStatus/{bookingId}")
+	public ResponseEntity<ApiResponse> updatePaymentStatus(
+			@PathVariable Long bookingId, 
+			@RequestBody PaymentStatus paymentStatus) {
+		try {
+			boolean isUpdated = bookingService.updatePaymentStatus(bookingId, paymentStatus);
+			if (isUpdated) {
+				return ResponseEntity.ok(new ApiResponse("Payment status updated successfully.", false));
+			} else {
+				return ResponseEntity.status(404).body(new ApiResponse("Booking not found.", true));
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body(new ApiResponse("An error occurred: " + e.getMessage(), true));
+		}
+	}
 
 	@DeleteMapping("/delete/{bookingId}")
 	public ResponseEntity<ApiResponse> deleteBooking(@PathVariable Long bookingId) {

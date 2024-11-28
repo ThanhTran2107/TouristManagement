@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.app.dto.BookingDTO;
 import com.app.dto.TouristDTO;
+import com.app.entities.PaymentStatus;
 
 public interface BookingService {
 	
@@ -23,5 +24,7 @@ public interface BookingService {
 	List<BookingDTO> getBookingByDuration(LocalDate startdate, LocalDate lastDate);
 
 	public boolean updateSeats(Long tourId, int newSeatCount);
+	
+	public boolean updatePaymentStatus(Long bookingId, PaymentStatus paymentStatus);
 
 }

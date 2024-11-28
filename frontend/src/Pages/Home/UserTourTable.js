@@ -222,7 +222,7 @@ const UserTourTable = () => {
                 <h6 style={styles.perPerson}>per person</h6>
                 {uID !== " " && (
                   <Link
-                    to={tour.maxSeats > 0 ? `/add-tourists` : "#"} // Chỉ chuyển hướng nếu còn chỗ
+                    to={tour.maxSeats > 0 ? `/add-tourists` : "#"}
                     state={
                       tour.maxSeats > 0
                         ? {
@@ -242,7 +242,7 @@ const UserTourTable = () => {
                               tourImage: tour.tourImage,
                             },
                           }
-                        : null // Không có state nếu đã hết chỗ
+                        : null
                     }
                     style={{
                       ...styles.buttonStyle,

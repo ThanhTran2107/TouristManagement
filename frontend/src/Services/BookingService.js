@@ -41,9 +41,19 @@ class BookingService {
   };
 
   updateTourSeats = (tourId, newSeatCount) => {
-    return axios.put(`${userURL}/booking/updateTourSeats/tour/${tourId}/seats`, {
-      seats: newSeatCount,
-    });
+    return axios.put(
+      `${userURL}/booking/updateTourSeats/tour/${tourId}/seats`,
+      {
+        seats: newSeatCount,
+      }
+    );
+  };
+  
+  updatePaymentStatus = (bookingId, newStatus) => {
+    return axios.put(`${userURL}/booking/updatePaymentStatus/${bookingId}`, newStatus,{
+    headers: {
+        'Content-Type': 'application/json'
+    }});
   };
 }
 export default new BookingService();

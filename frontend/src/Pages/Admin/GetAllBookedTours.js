@@ -21,10 +21,87 @@ const GetAllBookedTours = () => {
   const [selectedBookingDetails, setSelectedBookingDetails] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
+  const PaymentStatus = {
+    PAYMENT_IN_PROGRESS: "PAYMENT_IN_PROGRESS",
+    PAYMENT_SUCCESSFUL: "PAYMENT_SUCCESSFUL",
+  };
+
+  const handleRowClick = async (tour) => {
+    try {
+      const tourDetails = await TourServices.getTourById(
+        tour.tourDetails.tourId
+      );
+      const tourists = await BookingService.getAllTouristByBookingId(
+        tour.bookingId
+      );
+      const booking = await BookingService.getAllBookings();
+
+      const duration = calculateDuration(
+        tourDetails.data.tourStartDate,
+        tourDetails.data.tourEndDate
+      );
+
+      setSelectedBookingDetails({
+        tour: tourDetails.data,
+        tourists: tourists.data,
+        booking: booking.data.find((b) => b.bookingId === tour.bookingId), 
+        duration: duration,
+      });
+      setShowDetailsModal(true);
+    } catch (error) {
+      toast.error("Failed to fetch booking details: " + error.message);
+    }
+  };
+
+  const handleConfirmBooking = async () => {
+    if (!selectedBookingDetails) {
+      console.error("selectedBookingDetails is undefined");
+      return;
+    }
+
+    const booking = selectedBookingDetails.booking; 
+    if (!booking) {
+      console.error("Booking is undefined");
+      return;
+    }
+
+    const bookingId = booking.bookingId; 
+    if (!bookingId) {
+      console.error("bookingId is undefined");
+      return;
+    }
+
+    console.log("Confirming booking with ID:", bookingId);
+    console.log("Payment status:", PaymentStatus.PAYMENT_SUCCESSFUL);
+    try {
+      await BookingService.updatePaymentStatus(
+        bookingId,
+        PaymentStatus.PAYMENT_SUCCESSFUL
+      );
+      toast.success("Payment status updated to PAYMENT_SUCCESSFUL");
+      fetchBookedTours();
+    } catch (error) {
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        toast.error(
+          "Failed to confirm booking: " +
+            (error.response.data.message || "Unknown error")
+        );
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+        toast.error("No response received from server.");
+      } else {
+        console.error("Error message:", error.message);
+        toast.error("Error: " + error.message);
+      }
+    }
+  };
+
   const calculateDuration = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24) + 1); // Tính số ngày
+    const duration = Math.ceil((end - start) / (1000 * 60 * 60 * 24) + 1);
     return duration;
   };
 
@@ -124,27 +201,6 @@ const GetAllBookedTours = () => {
       });
   };
 
-  const handleRowClick = async (tour) => {
-    try {
-      const tourDetails = await TourServices.getTourById(
-        tour.tourDetails.tourId
-      );
-      const tourists = await BookingService.getAllTouristByBookingId(
-        tour.bookingId
-      );
-
-      const duration = calculateDuration(tourDetails.data.tourStartDate, tourDetails.data.tourEndDate);
-
-      setSelectedBookingDetails({
-        tour: tourDetails.data,
-        tourists: tourists.data,
-        duration: duration,
-      });
-      setShowDetailsModal(true);
-    } catch (error) {
-      toast.error("Failed to fetch booking details: " + error.message);
-    }
-  };
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Booking Management</h2>
@@ -214,7 +270,17 @@ const GetAllBookedTours = () => {
                 <td style={styles.td}>{index + 1}</td>
                 <td style={styles.td}>{tour.bookingDate}</td>
                 <td style={styles.td}>{tour.seatCount}</td>
-                <td style={styles.tdStatus}>{tour.paymentStatus}</td>
+                <td
+                  style={{
+                    ...styles.tdStatus,
+                    color:
+                      tour.paymentStatus === "PAYMENT_SUCCESSFUL"
+                        ? "#4CAF50"
+                        : "#e02c18",
+                  }}
+                >
+                  {tour.paymentStatus}
+                </td>
                 <td style={styles.td}>{tour.paymentMethod}</td>
                 <td style={styles.tdTotal}>
                   {new Intl.NumberFormat("vi-VN").format(tour.totalAmount)}
@@ -349,6 +415,7 @@ const GetAllBookedTours = () => {
           <table style={styles.detailsTable}>
             <thead>
               <tr>
+                <th style={styles.th}>ID</th>
                 <th style={styles.th}>Name</th>
                 <th style={styles.th}>Age</th>
                 <th style={styles.th}>Phone Number</th>
@@ -359,6 +426,7 @@ const GetAllBookedTours = () => {
             <tbody>
               {selectedBookingDetails.tourists.map((tourist, index) => (
                 <tr key={index}>
+                  <td style={styles.td}>{index + 1}</td>
                   <td style={styles.td}>{tourist.touristName}</td>
                   <td style={styles.td}>{tourist.age}</td>
                   <td style={styles.td}>{tourist.phoneNumber}</td>
@@ -368,6 +436,37 @@ const GetAllBookedTours = () => {
               ))}
             </tbody>
           </table>
+          <div style={styles.buttonContainer}>
+            <button
+              onMouseEnter={() => setIsHoveringConfirm(true)}
+              onMouseLeave={() => setIsHoveringConfirm(false)}
+              style={{
+                ...styles.confirmButton,
+                ...(isHoveringConfirm ? styles.confirmButtonHover : {}),
+              }}
+              onClick={() => {
+                handleConfirmBooking(selectedBookingDetails.bookingId);
+                setSelectedBookingDetails(null);
+                setIsHoveringConfirm(false);
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              onMouseEnter={() => setIsHoveringCancel(true)}
+              onMouseLeave={() => setIsHoveringCancel(false)}
+              style={{
+                ...styles.cancelButton,
+                ...(isHoveringCancel ? styles.cancelButtonHover : {}),
+              }}
+              onClick={() => {
+                setSelectedBookingDetails(null);
+                setIsHoveringCancel(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -518,6 +617,22 @@ const styles = {
   submitButtonHover: {
     backgroundColor: "green",
   },
+  confirmButton: {
+    marginTop: "20px",
+    padding: "10px",
+    fontSize: "1rem",
+    border: "none",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "background-color 0.3s, transform 0.3s",
+    marginLeft: "630px",
+  },
+  confirmButtonHover: {
+    backgroundColor: "green",
+  },
   cancelButton: {
     marginTop: "10px",
     marginLeft: "10px",
@@ -532,7 +647,7 @@ const styles = {
     transition: "background-color 0.3s, transform 0.3s",
   },
   cancelButtonHover: {
-    backgroundColor: "#c62828",
+    backgroundColor: "#892318",
   },
   detailsContainer: {
     marginTop: "20px",
