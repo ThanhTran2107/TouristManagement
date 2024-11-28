@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import BookingService from "../../Services/BookingService";
 import TourServices from "../../Services/TourServices";
@@ -19,14 +19,13 @@ const GetAllBookedTours = () => {
   const [isHoveringConfirm, setIsHoveringConfirm] = useState(false);
   const [isHoveringCancel, setIsHoveringCancel] = useState(false);
   const [selectedBookingDetails, setSelectedBookingDetails] = useState(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-
+  const selectedRowRef = useRef(null);
   const PaymentStatus = {
     PAYMENT_IN_PROGRESS: "PAYMENT_IN_PROGRESS",
     PAYMENT_SUCCESSFUL: "PAYMENT_SUCCESSFUL",
   };
 
-  const handleRowClick = async (tour) => {
+  const handleRowClick = async (tour, index) => {
     try {
       const tourDetails = await TourServices.getTourById(
         tour.tourDetails.tourId
@@ -44,10 +43,18 @@ const GetAllBookedTours = () => {
       setSelectedBookingDetails({
         tour: tourDetails.data,
         tourists: tourists.data,
-        booking: booking.data.find((b) => b.bookingId === tour.bookingId), 
+        booking: booking.data.find((b) => b.bookingId === tour.bookingId),
         duration: duration,
       });
-      setShowDetailsModal(true);
+
+      selectedRowRef.current = index;
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 0);
     } catch (error) {
       toast.error("Failed to fetch booking details: " + error.message);
     }
@@ -59,13 +66,13 @@ const GetAllBookedTours = () => {
       return;
     }
 
-    const booking = selectedBookingDetails.booking; 
+    const booking = selectedBookingDetails.booking;
     if (!booking) {
       console.error("Booking is undefined");
       return;
     }
 
-    const bookingId = booking.bookingId; 
+    const bookingId = booking.bookingId;
     if (!bookingId) {
       console.error("bookingId is undefined");
       return;
@@ -96,6 +103,20 @@ const GetAllBookedTours = () => {
         toast.error("Error: " + error.message);
       }
     }
+  };
+
+  const handleCancel = () => {
+    console.log("Selected Row Index:", selectedRowRef.current);
+    if (selectedRowRef.current !== null) {
+      const rowElement = document.getElementById(
+        `row-${selectedRowRef.current}`
+      );
+      console.log("Row Element:", rowElement);
+      if (rowElement) {
+        rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+    setSelectedBookingDetails(null);
   };
 
   const calculateDuration = (startDate, endDate) => {
@@ -265,8 +286,9 @@ const GetAllBookedTours = () => {
           {filteredTours.length > 0 ? (
             filteredTours.map((tour, index) => (
               <tr
+                id={`row-${index}`}
                 key={tour.bookingId}
-                onClick={() => handleRowClick(tour)}
+                onClick={() => handleRowClick(tour, index)}
                 style={{ cursor: "pointer" }}
               >
                 <td style={styles.td}>{index + 1}</td>
@@ -486,8 +508,8 @@ const GetAllBookedTours = () => {
                 ...(isHoveringCancel ? styles.cancelButtonHover : {}),
               }}
               onClick={() => {
-                setSelectedBookingDetails(null);
                 setIsHoveringCancel(false);
+                handleCancel();
               }}
             >
               Cancel
