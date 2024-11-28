@@ -250,7 +250,7 @@ const GetAllBookedTours = () => {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>Booking ID</th>
+            <th style={styles.th}>ID</th>
             <th style={styles.th}>Booking Date</th>
             <th style={styles.th}>Seat Count</th>
             <th style={styles.th}>Payment Status</th>
@@ -358,15 +358,31 @@ const GetAllBookedTours = () => {
 
       {selectedBookingDetails && (
         <div style={styles.detailsContainer}>
-          <p
-            style={{
-              fontFamily: "Uchen, serif",
-              fontSize: "1.5em",
-              color: "#2C3E50",
-            }}
-          >
-            {selectedBookingDetails.tour.tourName}
-          </p>
+          <div>
+            <p
+              style={{
+                fontFamily: "Uchen, serif",
+                fontSize: "1.5em",
+                color: "#2C3E50",
+                flex: 1, 
+                textAlign: "left", 
+              }}
+            >
+              {selectedBookingDetails.tour.tourName}
+            </p>
+            <p
+              style={{
+                fontFamily: "Uchen, serif",
+                fontSize: "1.5em",
+                color: "#2C3E50",
+                marginLeft: "auto", 
+                textAlign: "right", 
+                marginBottom: "-45px"
+              }}
+            >
+              Booking ID: <b>{selectedBookingDetails.booking.bookingId}</b>
+            </p>
+          </div>
           <p style={{ fontSize: "1.2em", color: "#34495E" }}>
             {selectedBookingDetails.tour.source} to{" "}
             {selectedBookingDetails.tour.destination}
@@ -420,7 +436,7 @@ const GetAllBookedTours = () => {
                 <th style={styles.th}>Age</th>
                 <th style={styles.th}>Phone Number</th>
                 <th style={styles.th}>ID Proof</th>
-                <th style={styles.th}>ID Proof Number</th>
+                <th style={styles.th}>ID Number</th>
               </tr>
             </thead>
             <tbody>
