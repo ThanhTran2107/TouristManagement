@@ -28,26 +28,33 @@ ChartJS.register(
 
 const SpringChart = () => {
   const [selectedChart, setSelectedChart] = useState("revenue");
+  const [selectedYear, setSelectedYear] = useState("2024"); // State cho năm
   const [revenueData, setRevenueData] = useState({ labels: [], datasets: [] });
 
+  
   useEffect(() => {
     const fetchRevenueData = async () => {
       try {
         const response = await BookingService.getAllBookings();
         const data = response.data;
-        console.log(data);
 
         const revenueByMonth = {};
+        const selectedYearInt = parseInt(selectedYear); // Chuyển năm được chọn sang số nguyên
 
         if (Array.isArray(data)) {
           data.forEach((item) => {
-            const month = new Date(item.bookingDate).getMonth() + 1;
+            const bookingDate = new Date(item.bookingDate);
+            const year = bookingDate.getFullYear();
+            const month = bookingDate.getMonth() + 1;
             const amount = item.totalAmount;
 
-            if (!revenueByMonth[month]) {
-              revenueByMonth[month] = 0;
+            // Chỉ lấy dữ liệu của năm được chọn
+            if (year === selectedYearInt) {
+              if (!revenueByMonth[month]) {
+                revenueByMonth[month] = 0;
+              }
+              revenueByMonth[month] += amount;
             }
-            revenueByMonth[month] += amount;
           });
 
           const monthNames = [
@@ -66,7 +73,7 @@ const SpringChart = () => {
           ];
 
           const labels = Object.keys(revenueByMonth).map(
-            (month) => monthNames[month - 1] 
+            (month) => monthNames[month - 1]
           );
           const amounts = Object.values(revenueByMonth);
 
@@ -74,7 +81,7 @@ const SpringChart = () => {
             labels: labels,
             datasets: [
               {
-                label: "Revenue",
+                label: `Revenue (${selectedYear})`,
                 data: amounts,
                 backgroundColor: "rgba(75, 192, 192, 0.6)",
                 borderColor: "rgba(75, 192, 192, 1)",
@@ -91,7 +98,7 @@ const SpringChart = () => {
     };
 
     fetchRevenueData();
-  }, []);
+  }, [selectedYear]); // Chạy lại khi `selectedYear` thay đổi
 
   const salesData = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -139,21 +146,42 @@ const SpringChart = () => {
     },
   };
 
-  const handleChange = (event) => {
+  const handleChangeChart = (event) => {
     setSelectedChart(event.target.value);
+  };
+
+  const handleChangeYear = (event) => {
+    setSelectedYear(event.target.value);
   };
 
   return (
     <div style={Styles.container}>
-      <select
-        onChange={handleChange}
-        value={selectedChart}
-        style={Styles.select}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
       >
-        <option value="revenue">Revenue Chart</option>
-        <option value="sales">Sales Chart</option>
-        <option value="customers">Customers Chart</option>
-      </select>
+        <select
+          onChange={handleChangeChart}
+          value={selectedChart}
+          style={Styles.select}
+        >
+          <option value="revenue">Revenue Chart</option>
+          <option value="sales">Sales Chart</option>
+          <option value="customers">Customers Chart</option>
+        </select>
+        <select
+          onChange={handleChangeYear}
+          value={selectedYear}
+          style={Styles.select}
+        >
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
 
       {selectedChart === "revenue" && (
         <div style={Styles.chartContainer}>
