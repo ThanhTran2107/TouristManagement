@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 const tourPic = require("../../images/tourList.png");
-const addTourPic = require("../../images/addTour.png");
+const confirm = require("../../images/confirmation.png");
 const chartpic = require("../../images/chart.png");
 const account_management = require("../../images/account_management.png");
 
@@ -20,7 +20,7 @@ const Admin = () => {
         <div style={Styles.cardContainer}>
           <Card image={account_management} title="Accounts" link="/accounts" />
           <Card image={tourPic} title="Tour List" link="/tourTable" />
-          <Card image={addTourPic} title="Add Tour" link="/addTour" />
+          <Card image={confirm} title="Confirmation" link="/getallbookings" />
           <Card
             image={chartpic}
             title="Analytics"

@@ -192,19 +192,19 @@ export default class Navbar extends Component {
                       >
                         <h5>Invoice</h5>
                       </Link>
-                    ) : role === "ADMIN" ? (
-                      <Link
-                        className="nav-link text-white"
-                        to={"/getallbookings"}
-                        style={{
-                          color: "#ffffff",
-                          fontWeight: "bold",
-                          fontFamily: "Uchen, serif",
-                        }}
-                      >
-                        <h5>Confirmation</h5>
-                      </Link>
                     ) : (
+                      // ) : role === "ADMIN" ? (
+                      // <Link
+                      //   className="nav-link text-white"
+                      //   to={"/getallbookings"}
+                      //   style={{
+                      //     color: "#ffffff",
+                      //     fontWeight: "bold",
+                      //     fontFamily: "Uchen, serif",
+                      //   }}
+                      // >
+                      //   <h5>Confirmation</h5>
+                      // </Link>
                       ""
                     )}
                   </li>
@@ -263,7 +263,9 @@ export default class Navbar extends Component {
                     >
                       {" "}
                       <b>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome, {firstName}{" "}
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome, {firstName}{" "}
                         {lastName}
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       </b>{" "}

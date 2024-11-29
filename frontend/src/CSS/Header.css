@@ -33,6 +33,7 @@ nav .navbar-collapse {
     color: white;
     font-weight: bold; 
     transition: background-color 0.3s;
+    border-radius: 10px;
 }
 
 .nav-link:hover {

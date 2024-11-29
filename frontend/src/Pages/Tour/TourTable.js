@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TourServices from "../../Services/TourServices";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const homeIcon = require("../../images/homeIcon.png");
@@ -10,6 +11,7 @@ const searchIcon = require("../../images/search-icon.png");
 const refreshIcon = require("../../images/refresh.png");
 
 const TourTable = () => {
+  const navigate = useNavigate(); 
   const [tours, setTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [bookingAmountFilter, setBookingAmountFilter] = useState("");
@@ -118,6 +120,10 @@ const TourTable = () => {
     (a, b) => a.bookingAmount - b.bookingAmount
   );
 
+  const handleAddTour = () => {
+    navigate("/addTour");
+  };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>
@@ -138,6 +144,20 @@ const TourTable = () => {
             alt="refresh icon"
             style={styles.refreshIcon}
           />
+        </button>
+        <button
+          onClick={handleAddTour}
+          style={styles.addButton}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor =
+              styles.addButtonHover.backgroundColor;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor =
+              styles.addButton.backgroundColor;
+          }}
+        >
+          Add Tours
         </button>
         <select
           value={bookingAmountFilter}
@@ -193,15 +213,11 @@ const TourTable = () => {
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
                 </p>
-                <span
-                  style={{marginRight: "10px"}}
-                >
+                <span style={{ marginRight: "10px" }}>
                   <img src={homeIcon} alt="people icon" style={styles.icon} />
                   {duration} days
                 </span>
-                <span
-                  style={{marginRight: "10px"}}
-                >
+                <span style={{ marginRight: "10px" }}>
                   <img src={people} alt="people icon" style={styles.icon} />
                   {tour.maxSeats} seats
                 </span>
@@ -293,7 +309,7 @@ const styles = {
   title: {
     textAlign: "center",
     fontFamily: "Uchen, serif",
-    marginBottom: "20px",
+    marginBottom: "30px",
     color: "#333",
   },
   row: {
@@ -372,6 +388,25 @@ const styles = {
     transition: "background-color 0.3s ease, transform 0.2s",
     fontWeight: "bold",
   },
+  addButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "14px 20px",
+    whiteSpace: "nowrap",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    borderRadius: "10px",
+    border: "none",
+    textDecoration: "none",
+    transition: "background-color 0.3s ease, transform 0.2s",
+    fontWeight: "bold",
+    lineHeight: "1",
+    cursor: "pointer",
+  },
+  addButtonHover: {
+    backgroundColor: "green",
+  },
   searchContainer: {
     display: "flex",
     alignItems: "center",
@@ -443,8 +478,8 @@ const styles = {
     width: "65%",
     height: "70%",
     objectFit: "contain",
-    transition: "all 0.3s ease", 
-    animation: "zoomIn 0.3s ease", 
+    transition: "all 0.3s ease",
+    animation: "zoomIn 0.3s ease",
   },
   "@keyframes zoomIn": {
     from: {

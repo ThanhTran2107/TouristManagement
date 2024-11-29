@@ -273,7 +273,7 @@ const styles = {
     color: "white",
     borderRadius: "10px",
     border: "none",
- cursor: "pointer",
+    cursor: "pointer",
     transition: "background-color 0.3s ease",
   },
 };
