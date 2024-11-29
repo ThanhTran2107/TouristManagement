@@ -28,10 +28,44 @@ ChartJS.register(
 
 const SpringChart = () => {
   const [selectedChart, setSelectedChart] = useState("revenue");
-  const [selectedYear, setSelectedYear] = useState("2024"); // State cho năm
+  const [selectedYear, setSelectedYear] = useState("2024");
   const [revenueData, setRevenueData] = useState({ labels: [], datasets: [] });
 
-  
+  const [salesData, setSalesData] = useState({ labels: [], datasets: [] });
+  const [salesChartType, setSalesChartType] = useState("byMonth");
+
+  const customersData = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        label: "Customers",
+        data: [30, 50, 70, 40, 60, 90, 110],
+        backgroundColor: [
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+          "rgba(255, 159, 64, 0.6)",
+          "rgba(255, 99, 132, 0.6)",
+        ],
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Tour Statistics",
+      },
+    },
+  };
+
   useEffect(() => {
     const fetchRevenueData = async () => {
       try {
@@ -39,7 +73,7 @@ const SpringChart = () => {
         const data = response.data;
 
         const revenueByMonth = {};
-        const selectedYearInt = parseInt(selectedYear); // Chuyển năm được chọn sang số nguyên
+        const selectedYearInt = parseInt(selectedYear);
 
         if (Array.isArray(data)) {
           data.forEach((item) => {
@@ -48,7 +82,6 @@ const SpringChart = () => {
             const month = bookingDate.getMonth() + 1;
             const amount = item.totalAmount;
 
-            // Chỉ lấy dữ liệu của năm được chọn
             if (year === selectedYearInt) {
               if (!revenueByMonth[month]) {
                 revenueByMonth[month] = 0;
@@ -89,8 +122,6 @@ const SpringChart = () => {
               },
             ],
           });
-        } else {
-          console.error("Data is not an array:", data);
         }
       } catch (error) {
         console.error("Error fetching revenue data:", error);
@@ -98,53 +129,121 @@ const SpringChart = () => {
     };
 
     fetchRevenueData();
-  }, [selectedYear]); // Chạy lại khi `selectedYear` thay đổi
+  }, [selectedYear]);
 
-  const salesData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Tickets Sold",
-        data: [50, 70, 80, 60, 90, 120, 150],
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 2,
-        fill: false,
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      try {
+        const response = await BookingService.getAllBookings();
+        const data = response.data;
 
-  const customersData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Customers",
-        data: [30, 50, 70, 40, 60, 90, 110],
-        backgroundColor: [
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
-          "rgba(255, 159, 64, 0.6)",
-          "rgba(255, 99, 132, 0.6)",
-        ],
-      },
-    ],
-  };
+        const salesByMonth = {};
+        const salesByTour = {};
+        const salesByType = {};
+        const selectedYearInt = parseInt(selectedYear);
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Tour Statistics",
-      },
-    },
-  };
+        if (Array.isArray(data)) {
+          data.forEach((item) => {
+            const bookingDate = new Date(item.bookingDate);
+            const year = bookingDate.getFullYear();
+            const month = bookingDate.getMonth() + 1;
+            const tourName = item.tourName;
+            const tourType = item.tourType;
+            const seatCount = item.seatCount;
+
+            if (year === selectedYearInt) {
+              if (!salesByMonth[month]) {
+                salesByMonth[month] = 0;
+              }
+              salesByMonth[month] += seatCount;
+
+              if (!salesByTour[tourName]) {
+                salesByTour[tourName] = 0;
+              }
+              salesByTour[tourName] += seatCount;
+
+              if (!salesByType[tourType]) {
+                salesByType[tourType] = 0;
+              }
+              salesByType[tourType] += seatCount;
+            }
+          });
+
+          if (salesChartType === "byMonth") {
+            const monthNames = [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December",
+            ];
+            const monthLabels = Object.keys(salesByMonth).map(
+              (month) => monthNames[month - 1]
+            );
+            const monthAmounts = Object.values(salesByMonth);
+            setSalesData({
+              labels: monthLabels,
+              datasets: [
+                {
+                  label: "Tickets sold by month",
+                  data: monthAmounts,
+                  backgroundColor: "rgba(255, 99, 132, 0.6)",
+                  borderColor: "rgba(255, 99, 132, 1)",
+                  borderWidth: 2,
+                },
+              ],
+            });
+          }
+
+          if (salesChartType === "byTourName") {
+            const tourLabels = Object.keys(salesByTour);
+            const tourAmounts = Object.values(salesByTour);
+            setSalesData({
+              labels: tourLabels,
+              datasets: [
+                {
+                  label: "Tickets sold by tour name",
+                  data: tourAmounts,
+                  backgroundColor: "rgba(54, 162, 235, 0.6)",
+                  borderColor: "rgba(54, 162, 235, 1)",
+                  borderWidth: 2,
+                },
+              ],
+            });
+          }
+
+          if (salesChartType === "byTourType") {
+            const typeLabels = Object.keys(salesByType);
+            const typeAmounts = Object.values(salesByType);
+            setSalesData({
+              labels: typeLabels,
+              datasets: [
+                {
+                  label: "Tickets sold by tour type",
+                  data: typeAmounts,
+                  backgroundColor: "rgba(75, 192, 192, 0.6)",
+                  borderColor: "rgba(75, 192, 192, 1)",
+                  borderWidth: 2,
+                },
+              ],
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching sales data:", error);
+      }
+    };
+
+    fetchSalesData();
+  }, [salesChartType, selectedYear]);
+
 
   const handleChangeChart = (event) => {
     setSelectedChart(event.target.value);
@@ -152,6 +251,10 @@ const SpringChart = () => {
 
   const handleChangeYear = (event) => {
     setSelectedYear(event.target.value);
+  };
+
+  const handleChangeSalesChartType = (event) => {
+    setSalesChartType(event.target.value);
   };
 
   return (
@@ -190,8 +293,43 @@ const SpringChart = () => {
       )}
 
       {selectedChart === "sales" && (
-        <div style={Styles.chartContainer}>
-          <Line data={salesData} options={options} width={300} height={100} />
+        <div>
+          <select
+            onChange={handleChangeSalesChartType}
+            value={salesChartType}
+            style={Styles.select}
+          >
+            <option value="byMonth">Month</option>
+            <option value="byTourName">Tour Name</option>
+            <option value="byTourType">Tour Type</option>
+          </select>
+
+          <div style={Styles.chartContainer}>
+            {salesChartType === "byMonth" && (
+              <Bar
+                data={salesData}
+                options={options}
+                width={300}
+                height={100}
+              />
+            )}
+            {salesChartType === "byTourName" && (
+              <Bar
+                data={salesData}
+                options={options}
+                width={300}
+                height={100}
+              />
+            )}
+            {salesChartType === "byTourType" && (
+              <Bar
+                data={salesData}
+                options={options}
+                width={300}
+                height={100}
+              />
+            )}
+          </div>
         </div>
       )}
 
