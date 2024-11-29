@@ -418,13 +418,14 @@ const styles = {
     borderRadius: "10px",
     border: "1px solid #ccc",
     width: "300px",
-    marginRight: "10px",
+    marginRight: "70px",
     outline: "none",
   },
   searchIcon: {
     width: "25px",
     height: "25px",
     marginRight: "10px",
+    marginLeft: "-60px"
   },
   refreshButton: {
     background: "none",
@@ -436,7 +437,7 @@ const styles = {
   refreshIcon: {
     width: "25px",
     height: "25px",
-    marginRight: "550px",
+    marginRight: "430px",
   },
   bookingAmountSelect: {
     padding: "10px",

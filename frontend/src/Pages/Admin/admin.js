@@ -25,7 +25,7 @@ const Admin = () => {
             image={chartpic}
             title="Analytics"
             link="/springChart"
-            imageStyle={{ width: "120px", height: "120px", marginTop: 32 }}
+            imageStyle={{ width: "120px", height: "120px", marginTop: 30 }}
           />
         </div>
       </div>
