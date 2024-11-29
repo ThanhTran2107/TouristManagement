@@ -189,7 +189,7 @@ const SpringChart = () => {
               labels: monthLabels,
               datasets: [
                 {
-                  label: "Tickets sold by month",
+                  label: `Tickets sold by month (${selectedYear})`,
                   data: monthAmounts,
                   backgroundColor: "rgba(255, 99, 132, 0.6)",
                   borderColor: "rgba(255, 99, 132, 1)",
@@ -206,7 +206,7 @@ const SpringChart = () => {
               labels: tourLabels.length > 0 ? tourLabels : ["No Data"],
               datasets: [
                 {
-                  label: "Tickets sold by tour name",
+                  label: `Tickets sold by tour name (${selectedYear})`,
                   data: tourAmounts.length > 0 ? tourAmounts : [0],
                   backgroundColor: "rgba(54, 162, 235, 0.6)",
                   borderColor: "rgba(54, 162, 235, 1)",
@@ -223,7 +223,7 @@ const SpringChart = () => {
               labels: typeLabels.length > 0 ? typeLabels : ["No Data"],
               datasets: [
                 {
-                  label: "Tickets sold by tour type",
+                  label: `Tickets sold by tour type (${selectedYear})`,
                   data: typeAmounts.length > 0 ? typeAmounts : [0],
                   backgroundColor: "rgba(75, 192, 192, 0.6)",
                   borderColor: "rgba(75, 192, 192, 1)",
