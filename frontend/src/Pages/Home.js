@@ -366,7 +366,7 @@ export const Home = () => {
             Feedback
           </Link>
           <br />
-          <Link
+          {/* <p
             to="/faq"
             style={{
               fontFamily: "Nunito",
@@ -375,18 +375,19 @@ export const Home = () => {
             }}
           >
             FAQs
-          </Link>
+          </p> */}
           <br />
-          <Link
+          {/* <p
             to="/contactus"
             style={{
               fontFamily: "Nunito",
               color: "white",
               textDecoration: "none",
+              marginBottom: "-50px"
             }}
           >
-            ContactUs
-          </Link>
+            Contact Us
+          </p> */}
         </span>
 
         <span

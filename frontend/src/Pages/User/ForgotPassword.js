@@ -20,13 +20,11 @@ const ForgotPassword = () => {
             toast.success("Your Password : " + password);
             console.log("Email exists");
         } else {
-            // Email không tồn tại
-            toast.error("Email does not exist!"); // Hiển thị thông báo lỗi
+            toast.error("Email does not exist!"); 
             console.error("Email does not exist");
         }
     } catch (error) {
-        // Xử lý lỗi
-        toast.error("An error occurred while checking the email."); // Hiển thị thông báo lỗi
+        toast.error("An error occurred while checking the email."); 
         console.error("Error:", error.response ? error.response.data : error.message);
     } finally {
         setLoading(false);
@@ -84,7 +82,6 @@ const ForgotPassword = () => {
   );
 };
 
-// Styles
 const styles = {
   background: {
     background: `linear-gradient(to right, #D2DAFF ,#EFEFEF, #B1B2FF)`,
