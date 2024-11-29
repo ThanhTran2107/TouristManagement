@@ -147,28 +147,30 @@ const SpringChart = () => {
             const bookingDate = new Date(item.bookingDate);
             const year = bookingDate.getFullYear();
             const month = bookingDate.getMonth() + 1;
-            const tourName = item.tourName;
-            const tourType = item.tourType;
-            const seatCount = item.seatCount;
+
+            // Kiểm tra tourName, tourType và seatCount
+            const tourName = item.tourDetails.tourName || "Unknown Tour"; // Gán giá trị mặc định nếu tourName không có
+            const tourType = item.tourType || "Unknown Type"; // Gán giá trị mặc định nếu tourType không có
+            const seatCount = item.seatCount || 0; // Gán giá trị mặc định nếu seatCount không có
+
+            console.log(`Processing item:`, item); // Log thông tin item để kiểm tra
+            console.log(
+              `Tour Name: ${tourName}, Tour Type: ${tourType}, Seat Count: ${seatCount}`
+            );
 
             if (year === selectedYearInt) {
-              if (!salesByMonth[month]) {
-                salesByMonth[month] = 0;
-              }
-              salesByMonth[month] += seatCount;
+              // Cập nhật doanh số theo tháng
+              salesByMonth[month] = (salesByMonth[month] || 0) + seatCount;
 
-              if (!salesByTour[tourName]) {
-                salesByTour[tourName] = 0;
-              }
-              salesByTour[tourName] += seatCount;
+              // Cập nhật doanh số theo tên tour
+              salesByTour[tourName] = (salesByTour[tourName] || 0) + seatCount;
 
-              if (!salesByType[tourType]) {
-                salesByType[tourType] = 0;
-              }
-              salesByType[tourType] += seatCount;
+              // Cập nhật doanh số theo loại tour
+              salesByType[tourType] = (salesByType[tourType] || 0) + seatCount;
             }
           });
 
+          // Xử lý doanh số theo tháng
           if (salesChartType === "byMonth") {
             const monthNames = [
               "January",
@@ -202,15 +204,16 @@ const SpringChart = () => {
             });
           }
 
+          // Xử lý doanh số theo tên tour
           if (salesChartType === "byTourName") {
             const tourLabels = Object.keys(salesByTour);
             const tourAmounts = Object.values(salesByTour);
             setSalesData({
-              labels: tourLabels,
+              labels: tourLabels.length > 0 ? tourLabels : ["No Data"],
               datasets: [
                 {
                   label: "Tickets sold by tour name",
-                  data: tourAmounts,
+                  data: tourAmounts.length > 0 ? tourAmounts : [0],
                   backgroundColor: "rgba(54, 162, 235, 0.6)",
                   borderColor: "rgba(54, 162, 235, 1)",
                   borderWidth: 2,
@@ -219,15 +222,16 @@ const SpringChart = () => {
             });
           }
 
+          // Xử lý doanh số theo loại tour
           if (salesChartType === "byTourType") {
             const typeLabels = Object.keys(salesByType);
             const typeAmounts = Object.values(salesByType);
             setSalesData({
-              labels: typeLabels,
+              labels: typeLabels.length > 0 ? typeLabels : ["No Data"],
               datasets: [
                 {
                   label: "Tickets sold by tour type",
-                  data: typeAmounts,
+                  data: typeAmounts.length > 0 ? typeAmounts : [0],
                   backgroundColor: "rgba(75, 192, 192, 0.6)",
                   borderColor: "rgba(75, 192, 192, 1)",
                   borderWidth: 2,
@@ -285,7 +289,6 @@ const SpringChart = () => {
           <option value="2026">2026</option>
         </select>
       </div>
-
       {selectedChart === "revenue" && (
         <div style={Styles.chartContainer}>
           <Bar data={revenueData} options={options} width={300} height={100} />
@@ -314,7 +317,7 @@ const SpringChart = () => {
               />
             )}
             {salesChartType === "byTourName" && (
-              <Bar
+              <Line // Thay đổi từ Bar thành Line
                 data={salesData}
                 options={options}
                 width={300}
