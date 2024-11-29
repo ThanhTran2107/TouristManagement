@@ -148,29 +148,24 @@ const SpringChart = () => {
             const year = bookingDate.getFullYear();
             const month = bookingDate.getMonth() + 1;
 
-            // Kiểm tra tourName, tourType và seatCount
-            const tourName = item.tourDetails.tourName || "Unknown Tour"; // Gán giá trị mặc định nếu tourName không có
-            const tourType = item.tourType || "Unknown Type"; // Gán giá trị mặc định nếu tourType không có
-            const seatCount = item.seatCount || 0; // Gán giá trị mặc định nếu seatCount không có
+            const tourName = item.tourDetails.tourName || "Unknown Tour"; 
+            const tourType = item.tourDetails.tourType || "Unknown Type"; 
+            const seatCount = item.seatCount || 0; 
 
-            console.log(`Processing item:`, item); // Log thông tin item để kiểm tra
+            console.log(`Processing item:`, item); 
             console.log(
               `Tour Name: ${tourName}, Tour Type: ${tourType}, Seat Count: ${seatCount}`
             );
 
             if (year === selectedYearInt) {
-              // Cập nhật doanh số theo tháng
               salesByMonth[month] = (salesByMonth[month] || 0) + seatCount;
 
-              // Cập nhật doanh số theo tên tour
               salesByTour[tourName] = (salesByTour[tourName] || 0) + seatCount;
 
-              // Cập nhật doanh số theo loại tour
               salesByType[tourType] = (salesByType[tourType] || 0) + seatCount;
             }
           });
 
-          // Xử lý doanh số theo tháng
           if (salesChartType === "byMonth") {
             const monthNames = [
               "January",
@@ -204,7 +199,6 @@ const SpringChart = () => {
             });
           }
 
-          // Xử lý doanh số theo tên tour
           if (salesChartType === "byTourName") {
             const tourLabels = Object.keys(salesByTour);
             const tourAmounts = Object.values(salesByTour);
@@ -222,7 +216,6 @@ const SpringChart = () => {
             });
           }
 
-          // Xử lý doanh số theo loại tour
           if (salesChartType === "byTourType") {
             const typeLabels = Object.keys(salesByType);
             const typeAmounts = Object.values(salesByType);
@@ -317,7 +310,7 @@ const SpringChart = () => {
               />
             )}
             {salesChartType === "byTourName" && (
-              <Line // Thay đổi từ Bar thành Line
+              <Line 
                 data={salesData}
                 options={options}
                 width={300}
