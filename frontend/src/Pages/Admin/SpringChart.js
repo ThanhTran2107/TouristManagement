@@ -13,6 +13,7 @@ import {
   ArcElement,
 } from "chart.js";
 import BookingService from "../../Services/BookingService";
+import FeedbackService from "../../Services/FeedBackService";
 
 ChartJS.register(
   CategoryScale,
@@ -30,28 +31,16 @@ const SpringChart = () => {
   const [selectedChart, setSelectedChart] = useState("revenue");
   const [selectedYear, setSelectedYear] = useState("2024");
   const [revenueData, setRevenueData] = useState({ labels: [], datasets: [] });
+  const [revenueChartType, setRevenueChartType] = useState("byMonth");
 
   const [salesData, setSalesData] = useState({ labels: [], datasets: [] });
   const [salesChartType, setSalesChartType] = useState("byMonth");
 
-  const customersData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [
-      {
-        label: "Customers",
-        data: [30, 50, 70, 40, 60, 90, 110],
-        backgroundColor: [
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
-          "rgba(255, 159, 64, 0.6)",
-          "rgba(255, 99, 132, 0.6)",
-        ],
-      },
-    ],
-  };
+  const [feedbackData, setFeedbackData] = useState({
+    labels: [],
+    datasets: [],
+  }); 
+  const [feedbacksChartType, setFeedbacksChartType] = useState("byRating");
 
   const options = {
     responsive: true,
@@ -73,6 +62,8 @@ const SpringChart = () => {
         const data = response.data;
 
         const revenueByMonth = {};
+        const revenueByTour = {};
+        const revenueByType = {};
         const selectedYearInt = parseInt(selectedYear);
 
         if (Array.isArray(data)) {
@@ -81,12 +72,13 @@ const SpringChart = () => {
             const year = bookingDate.getFullYear();
             const month = bookingDate.getMonth() + 1;
             const amount = item.totalAmount;
+            const tourName = item.tourDetails.tourName || "Unknown Tour";
+            const tourType = item.tourDetails.tourType || "Unknown Type";
 
             if (year === selectedYearInt) {
-              if (!revenueByMonth[month]) {
-                revenueByMonth[month] = 0;
-              }
-              revenueByMonth[month] += amount;
+              revenueByMonth[month] = (revenueByMonth[month] || 0) + amount;
+              revenueByTour[tourName] = (revenueByTour[tourName] || 0) + amount;
+              revenueByType[tourType] = (revenueByType[tourType] || 0) + amount;
             }
           });
 
@@ -105,23 +97,75 @@ const SpringChart = () => {
             "December",
           ];
 
-          const labels = Object.keys(revenueByMonth).map(
-            (month) => monthNames[month - 1]
-          );
-          const amounts = Object.values(revenueByMonth);
+          if (revenueChartType === "byMonth") {
+            const labels = Object.keys(revenueByMonth).map(
+              (month) => monthNames[month - 1]
+            );
+            const amounts = Object.values(revenueByMonth);
 
-          setRevenueData({
-            labels: labels,
-            datasets: [
-              {
-                label: `Revenue (${selectedYear})`,
-                data: amounts,
-                backgroundColor: "rgba(75, 192, 192, 0.6)",
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1,
-              },
-            ],
-          });
+            const backgroundColors = [
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+            ];
+
+            setRevenueData({
+              labels: labels,
+              datasets: [
+                {
+                  label: `Revenue by month (${selectedYear})`,
+                  data: amounts,
+                  backgroundColor: backgroundColors.slice(0, labels.length),
+                  borderWidth: 1,
+                },
+              ],
+            });
+          }
+
+          if (revenueChartType === "byTourName") {
+            const tourLabels = Object.keys(revenueByTour);
+            const tourAmounts = Object.values(revenueByTour);
+            setRevenueData({
+              labels: tourLabels.length > 0 ? tourLabels : ["No Data"],
+              datasets: [
+                {
+                  label: `Revenue by tour Name (${selectedYear})`,
+                  data: tourAmounts.length > 0 ? tourAmounts : [0],
+                  backgroundColor: "rgba(75, 192, 192, 0.6)",
+                  borderColor: "rgba(54, 162, 235, 1)",
+                  borderWidth: 1,
+                },
+              ],
+            });
+          }
+
+          if (revenueChartType === "byTourType") {
+            const typeLabels = Object.keys(revenueByType);
+            const typeAmounts = Object.values(revenueByType);
+            setRevenueData({
+              labels: typeLabels.length > 0 ? typeLabels : ["No Data"],
+              datasets: [
+                {
+                  label: `Revenue by tour Type (${selectedYear})`,
+                  data: typeAmounts.length > 0 ? typeAmounts : [0],
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.6)",
+                    "rgba(54, 162, 235, 0.6)",
+                  ],
+                  borderWidth: 2,
+                },
+              ],
+            });
+          }
         }
       } catch (error) {
         console.error("Error fetching revenue data:", error);
@@ -129,7 +173,7 @@ const SpringChart = () => {
     };
 
     fetchRevenueData();
-  }, [selectedYear]);
+  }, [selectedYear, revenueChartType]);
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -148,20 +192,13 @@ const SpringChart = () => {
             const year = bookingDate.getFullYear();
             const month = bookingDate.getMonth() + 1;
 
-            const tourName = item.tourDetails.tourName || "Unknown Tour"; 
-            const tourType = item.tourDetails.tourType || "Unknown Type"; 
-            const seatCount = item.seatCount || 0; 
-
-            console.log(`Processing item:`, item); 
-            console.log(
-              `Tour Name: ${tourName}, Tour Type: ${tourType}, Seat Count: ${seatCount}`
-            );
+            const tourName = item.tourDetails.tourName || "Unknown Tour";
+            const tourType = item.tourDetails.tourType || "Unknown Type";
+            const seatCount = item.seatCount || 0;
 
             if (year === selectedYearInt) {
               salesByMonth[month] = (salesByMonth[month] || 0) + seatCount;
-
               salesByTour[tourName] = (salesByTour[tourName] || 0) + seatCount;
-
               salesByType[tourType] = (salesByType[tourType] || 0) + seatCount;
             }
           });
@@ -185,15 +222,33 @@ const SpringChart = () => {
               (month) => monthNames[month - 1]
             );
             const monthAmounts = Object.values(salesByMonth);
+
+            const backgroundColors = [
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+              "rgba(255, 159, 64, 0.6)",
+            ];
+
             setSalesData({
               labels: monthLabels,
               datasets: [
                 {
                   label: `Tickets sold by month (${selectedYear})`,
                   data: monthAmounts,
-                  backgroundColor: "rgba(255, 99, 132, 0.6)",
-                  borderColor: "rgba(255, 99, 132, 1)",
-                  borderWidth: 2,
+                  backgroundColor: backgroundColors.slice(
+                    0,
+                    monthLabels.length
+                  ),
+                  borderWidth: 1,
                 },
               ],
             });
@@ -208,9 +263,9 @@ const SpringChart = () => {
                 {
                   label: `Tickets sold by tour name (${selectedYear})`,
                   data: tourAmounts.length > 0 ? tourAmounts : [0],
-                  backgroundColor: "rgba(54, 162, 235, 0.6)",
+                  backgroundColor: "rgba(75, 192, 192, 0.6)",
                   borderColor: "rgba(54, 162, 235, 1)",
-                  borderWidth: 2,
+                  borderWidth: 1,
                 },
               ],
             });
@@ -225,8 +280,10 @@ const SpringChart = () => {
                 {
                   label: `Tickets sold by tour type (${selectedYear})`,
                   data: typeAmounts.length > 0 ? typeAmounts : [0],
-                  backgroundColor: "rgba(75, 192, 192, 0.6)",
-                  borderColor: "rgba(75, 192, 192, 1)",
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.6)",
+                    "rgba(54, 162, 235, 0.6)",
+                  ],
                   borderWidth: 2,
                 },
               ],
@@ -241,6 +298,46 @@ const SpringChart = () => {
     fetchSalesData();
   }, [salesChartType, selectedYear]);
 
+  useEffect(() => {
+    const fetchFeedbackData = async () => {
+      try {
+        const response = await FeedbackService.getAllFeedBacks();
+        const data = response.data;
+        const selectedYearInt = parseInt(selectedYear);
+
+        const feedbackCounts = {};
+        if (Array.isArray(data)) {
+          data.forEach((item) => {
+            const rating = item.rating || "No Rating";
+           
+            feedbackCounts[rating] = (feedbackCounts[rating] || 0) + 1;
+          });
+
+          const labels = Object.keys(feedbackCounts);
+          const counts = Object.values(feedbackCounts);
+
+          setFeedbackData({
+            labels: labels.length > 0 ? labels : ["No Data"],
+            datasets: [
+              {
+                label: `Feedbacks by rating (${selectedYear})`,
+                data: counts.length > 0 ? counts : [0],
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.6)",
+                  "rgba(54, 162, 235, 0.6)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching feedback data:", error);
+      }
+    };
+
+    fetchFeedbackData();
+  }, [feedbacksChartType, selectedYear]);
 
   const handleChangeChart = (event) => {
     setSelectedChart(event.target.value);
@@ -252,6 +349,10 @@ const SpringChart = () => {
 
   const handleChangeSalesChartType = (event) => {
     setSalesChartType(event.target.value);
+  };
+
+  const handleChangeRevenueChartType = (event) => {
+    setRevenueChartType(event.target.value);
   };
 
   return (
@@ -270,21 +371,59 @@ const SpringChart = () => {
         >
           <option value="revenue">Revenue Chart</option>
           <option value="sales">Sales Chart</option>
-          <option value="customers">Customers Chart</option>
+          <option value="feedbacks">Feedbacks Chart</option>
         </select>
-        <select
-          onChange={handleChangeYear}
-          value={selectedYear}
-          style={Styles.select}
-        >
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-        </select>
+        {selectedChart !== "feedbacks" && (
+          <select
+            onChange={handleChangeYear}
+            value={selectedYear}
+            style={Styles.select}
+          >
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        )}
       </div>
+
       {selectedChart === "revenue" && (
-        <div style={Styles.chartContainer}>
-          <Bar data={revenueData} options={options} width={300} height={100} />
+        <div>
+          <select
+            onChange={handleChangeRevenueChartType}
+            value={revenueChartType}
+            style={Styles.select}
+          >
+            <option value="byMonth">Month</option>
+            <option value="byTourName">Tour Name</option>
+            <option value="byTourType">Tour Type</option>
+          </select>
+          {revenueChartType !== "byTourType" && (
+            <div style={Styles.chartContainer}>
+              {revenueChartType === "byMonth" && (
+                <Bar
+                  data={revenueData}
+                  options={options}
+                  width={300}
+                  height={100}
+                />
+              )}
+              {revenueChartType === "byTourName" && (
+                <Line
+                  data={revenueData}
+                  options={options}
+                  width={300}
+                  height={100}
+                />
+              )}
+            </div>
+          )}
+          {revenueChartType === "byTourType" && (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={Styles.pieContainer}>
+                <Pie data={revenueData} options={options} />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -299,43 +438,55 @@ const SpringChart = () => {
             <option value="byTourName">Tour Name</option>
             <option value="byTourType">Tour Type</option>
           </select>
+          {salesChartType !== "byTourType" && (
+            <div style={Styles.chartContainer}>
+              {salesChartType === "byMonth" && (
+                <Bar
+                  data={salesData}
+                  options={options}
+                  width={300}
+                  height={100}
+                />
+              )}
+              {salesChartType === "byTourName" && (
+                <Line
+                  data={salesData}
+                  options={options}
+                  width={300}
+                  height={100}
+                />
+              )}
+            </div>
+          )}
+          {salesChartType === "byTourType" && (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={Styles.pieContainer}>
+                <Pie data={salesData} options={options} />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
+      {selectedChart === "feedbacks" && (
+        <div>
           <div style={Styles.chartContainer}>
-            {salesChartType === "byMonth" && (
-              <Bar
-                data={salesData}
-                options={options}
-                width={300}
-                height={100}
-              />
-            )}
-            {salesChartType === "byTourName" && (
-              <Line 
-                data={salesData}
-                options={options}
-                width={300}
-                height={100}
-              />
-            )}
-            {salesChartType === "byTourType" && (
-              <Bar
-                data={salesData}
-                options={options}
-                width={300}
-                height={100}
-              />
-            )}
+            <Bar
+              data={feedbackData}
+              options={{
+                ...options,
+                title: {
+                  display: true,
+                  text: "Feedbacks by Rating",
+                },
+              }}
+              width={300}
+              height={100}
+            />
           </div>
         </div>
       )}
 
-      {selectedChart === "customers" && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <div style={Styles.pieContainer}>
-            <Pie data={customersData} options={options} />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
