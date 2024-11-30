@@ -62,6 +62,11 @@ const AddTourist = () => {
     let newFormValues = [...formValues];
     newFormValues[i][e.target.name] = e.target.value;
 
+    if (e.target.name === "touristName" && e.target.value.length > 50) {
+      toast.error("Tên đầy đủ không được vượt quá 30 ký tự.");
+      return;
+    }
+
     if (e.target.name === "age") {
       newFormValues[i][e.target.name] = parseInt(e.target.value) || 0;
     } else {
@@ -156,6 +161,10 @@ const AddTourist = () => {
     event.preventDefault();
 
     const allFormsValid = formValues.every((form) => {
+      if (form.touristName.length > 50) {
+        toast.error("Tên đầy đủ không được vượt quá 50 ký tự.");
+        return false;
+      }
       return (
         form.touristName &&
         form.age &&
@@ -683,6 +692,7 @@ const AddTourist = () => {
                           required
                           onChange={(e) => handleChange(index, e)}
                           style={divStyle.input}
+                          maxLength={50}
                         />
                       </div>
                       <div style={divStyle.inputContainer}>

@@ -45,7 +45,7 @@ public class Tourist {
 	@Column(name = "id_proof_no", nullable = false)
 	private String idProofNo;
 
-	@Length(min = 2, max = 20, message = "Invalid length of tourist name")
+	@Length(min = 2, max = 50, message = "Invalid length of tourist name")
 	@Column(name = "tourist_name", nullable = false)
 	private String touristName;
 	

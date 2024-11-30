@@ -86,6 +86,17 @@ const GetAllBookedTours = () => {
         PaymentStatus.PAYMENT_SUCCESSFUL
       );
       toast.success("Payment status updated to PAYMENT_SUCCESSFUL");
+      
+      if (selectedRowRef.current !== null) {
+        const rowElement = document.getElementById(
+          `row-${selectedRowRef.current}`
+        );
+        console.log("Row Element:", rowElement);
+        if (rowElement) {
+          rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+
       fetchBookedTours();
     } catch (error) {
       if (error.response) {
