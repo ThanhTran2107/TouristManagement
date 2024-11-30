@@ -155,42 +155,44 @@ const GetAllBookedTours = () => {
     handleSearch();
   }, [searchTerm, bookedTours, paymentMethodFilter, priceFilter]);
 
-  const handleSearch = () => {
-    const lowercasedFilter = searchTerm.toLowerCase();
-    const filteredData = bookedTours.filter((tour) => {
-      const matchesPaymentMethod =
-        paymentMethodFilter === "ALL" ||
-        tour.paymentMethod === paymentMethodFilter;
-      const matchesPrice =
-        priceFilter === "ALL" ||
-        (priceFilter === "Less than 1.000.000" && tour.totalAmount < 1000000) ||
-        (priceFilter === "1.000.000 - 2.000.000" &&
-          tour.totalAmount >= 1000000 &&
-          tour.totalAmount < 2000000) ||
-        (priceFilter === "2.000.000 - 3.000.000" &&
-          tour.totalAmount >= 2000000 &&
-          tour.totalAmount < 3000000) ||
-        (priceFilter === "3.000.000 - 4.000.000" &&
-          tour.totalAmount >= 3000000 &&
-          tour.totalAmount < 4000000) ||
-        (priceFilter === "4.000.000 - 5.000.000" &&
-          tour.totalAmount >= 4000000 &&
-          tour.totalAmount < 5000000) ||
-        (priceFilter === "Greater than 5.000.000" &&
-          tour.totalAmount > 5000000);
+ const handleSearch = () => {
+   const lowercasedFilter = searchTerm.toLowerCase();
+   const filteredData = bookedTours.filter((tour) => {
+     const matchesPaymentMethod =
+       paymentMethodFilter === "ALL" ||
+       tour.paymentMethod === paymentMethodFilter;
+     const matchesPrice =
+       priceFilter === "ALL" ||
+       (priceFilter === "Less than 1.000.000" && tour.totalAmount < 1000000) ||
+       (priceFilter === "1.000.000 - 2.000.000" &&
+         tour.totalAmount >= 1000000 &&
+         tour.totalAmount < 2000000) ||
+       (priceFilter === "2.000.000 - 3.000.000" &&
+         tour.totalAmount >= 2000000 &&
+         tour.totalAmount < 3000000) ||
+       (priceFilter === "3.000.000 - 4.000.000" &&
+         tour.totalAmount >= 3000000 &&
+         tour.totalAmount < 4000000) ||
+       (priceFilter === "4.000.00 0 - 5.000.000" &&
+         tour.totalAmount >= 4000000 &&
+         tour.totalAmount < 5000000) ||
+       (priceFilter === "Greater than 5.000.000" && tour.totalAmount > 5000000);
 
-      const matchesSearchTerm =
-        tour.bookingId.toString().includes(lowercasedFilter) ||
-        tour.bookingDate.toLowerCase().includes(lowercasedFilter) ||
-        tour.seatCount.toString().includes(lowercasedFilter) ||
-        tour.paymentStatus.toLowerCase().includes(lowercasedFilter) ||
-        tour.paymentMethod.toLowerCase().includes(lowercasedFilter) ||
-        tour.totalAmount.toString().includes(lowercasedFilter);
+     const matchesSearchTerm =
+       tour.bookingId.toString().includes(lowercasedFilter) ||
+       tour.seatCount.toString().includes(lowercasedFilter) ||
+       tour.paymentStatus.toLowerCase().includes(lowercasedFilter) ||
+       tour.paymentMethod.toLowerCase().includes(lowercasedFilter) ||
+       tour.totalAmount.toString().includes(lowercasedFilter) ||
+       (tour.bookingDate &&
+         convertDateFormat(tour.bookingDate).includes(lowercasedFilter)) ||
+       (tour.bookingDate &&
+         formatDate(tour.bookingDate).includes(lowercasedFilter));
 
-      return matchesPaymentMethod && matchesPrice && matchesSearchTerm;
-    });
-    setFilteredTours(filteredData);
-  };
+     return matchesPaymentMethod && matchesPrice && matchesSearchTerm;
+   });
+   setFilteredTours(filteredData);
+ };
 
   const handleRefresh = () => {
     fetchBookedTours();
@@ -198,6 +200,17 @@ const GetAllBookedTours = () => {
     setPaymentMethodFilter("ALL");
     setPriceFilter("ALL");
     setSelectedBookingDetails(null);
+  };
+
+  const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', options);
+  };
+
+  const convertDateFormat = (dateString) => {
+    const [day, month, year] = dateString.split("/");
+    return `${year}-${month}-${day}`;
   };
 
   const handleDeleteTour = (bookingId, tourId, seatCount) => {
@@ -303,7 +316,7 @@ const GetAllBookedTours = () => {
                 style={{ cursor: "pointer" }}
               >
                 <td style={styles.td}>{index + 1}</td>
-                <td style={styles.td}>{tour.bookingDate}</td>
+                <td style={styles.td}>{formatDate(tour.bookingDate)}</td>
                 <td style={styles.td}>{tour.seatCount}</td>
                 <td
                   style={{
@@ -471,7 +484,7 @@ const GetAllBookedTours = () => {
             {" | "}
             <strong>End Date:</strong> {selectedBookingDetails.tour.tourEndDate}
           </p>
-          <p style={{ marginTop: "-7px" }}>
+          <p>
             <b>Departure Time:</b> {selectedBookingDetails.tour.departureTime}
           </p>
           <table style={styles.detailsTable}>

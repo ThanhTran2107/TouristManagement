@@ -42,7 +42,10 @@ const AccountManagement = () => {
         account.email.toLowerCase().includes(lowercasedFilter) ||
         account.phoneNo.toString().includes(searchTerm) ||
         account.address.toLowerCase().includes(lowercasedFilter) ||
-        account.dob.toLowerCase().includes(lowercasedFilter);
+        (account.dob &&
+          convertDateFormat(account.dob).includes(lowercasedFilter)) ||
+          (account.dob &&
+            formatDate(account.dob).includes(lowercasedFilter));
 
       return matchesRole && matchesSearchTerm;
     });
@@ -85,6 +88,17 @@ const AccountManagement = () => {
     }
   };
 
+   const formatDate = (dateString) => {
+     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+     const date = new Date(dateString);
+     return date.toLocaleDateString("vi-VN", options);
+   };
+
+   const convertDateFormat = (dateString) => {
+     const [day, month, year] = dateString.split("/");
+     return `${year}-${month}-${day}`;
+   };
+
   return (
     <div style={Styles.container}>
       <h2 style={Styles.title}>Account Management</h2>
@@ -96,16 +110,10 @@ const AccountManagement = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={Styles.searchInput}
         />
-        <button
-          style={Styles.searchButton}
-          onClick={handleSearch}
-        >
+        <button style={Styles.searchButton} onClick={handleSearch}>
           <img src={searchIcon} alt="Search" style={Styles.icon} />
         </button>
-        <button
-          style={Styles.refreshButton}
-          onClick ={handleRefresh}
-        >
+        <button style={Styles.refreshButton} onClick={handleRefresh}>
           <img src={refreshIcon} alt="Refresh" style={Styles.icon} />
         </button>
         <select
@@ -124,7 +132,7 @@ const AccountManagement = () => {
         <thead>
           <tr>
             <th style={Styles.th}>ID</th>
-            <th style={Styles.th}>Full Name</th> 
+            <th style={Styles.th}>Full Name</th>
             <th style={Styles.th}>Email</th>
             <th style={Styles.th}>Date of Birth</th>
             <th style={Styles.th}>Address</th>
@@ -140,14 +148,17 @@ const AccountManagement = () => {
                 key={account.id}
                 style={{
                   ...Styles.row,
-                  backgroundColor: selectedRowId === account.id ? '#d1e7dd' : 'transparent',
+                  backgroundColor:
+                    selectedRowId === account.id ? "#d1e7dd" : "transparent",
                 }}
-                onClick={() => handleRowClick(account)} 
+                onClick={() => handleRowClick(account)}
               >
                 <td style={Styles.td}>{index + 1}</td>
-                <td style={Styles.td}>{account.firstName + " " + account.lastName}</td> 
+                <td style={Styles.td}>
+                  {account.firstName + " " + account.lastName}
+                </td>
                 <td style={Styles.td}>{account.email}</td>
-                <td style={Styles.td}>{account.dob}</td>
+                <td style={Styles.td}>{formatDate(account.dob)}</td>
                 <td style={Styles.td}>{account.address}</td>
                 <td style={Styles.td}>{account.phoneNo}</td>
                 <td style={Styles.td}>{account.role}</td>
@@ -155,19 +166,25 @@ const AccountManagement = () => {
                   <button
                     style={Styles.deleteButton}
                     onClick={(e) => {
-                      e.stopPropagation(); 
+                      e.stopPropagation();
                       setAccountToDelete(account);
                       setShowDeleteModal(true);
                     }}
                   >
-                    <img src={deleteIcon} alt="Delete" style={Styles.deleteIcon} />
+                    <img
+                      src={deleteIcon}
+                      alt="Delete"
+                      style={Styles.deleteIcon}
+                    />
                   </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="8" style={Styles.td}>No accounts found</td> 
+              <td colSpan="8" style={Styles.td}>
+                No accounts found
+              </td>
             </tr>
           )}
         </tbody>
@@ -176,17 +193,30 @@ const AccountManagement = () => {
         <>
           <div style={Styles.overlay} />
           <div style={Styles.modal}>
-            <h3><b>Change Role for {selectedAccount.firstName} {selectedAccount.lastName}</b></h3>
+            <h3>
+              <b>
+                Change Role for {selectedAccount.firstName}{" "}
+                {selectedAccount.lastName}
+              </b>
+            </h3>
             <form onSubmit={handleRoleChange}>
-              <select value={newRole} onChange={(e) => setNewRole(e.target.value)} style={Styles.roleSelect}>
+              <select
+                value={newRole}
+                onChange={(e) => setNewRole(e.target.value)}
+                style={Styles.roleSelect}
+              >
                 <option value="USER">USER</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
               <button
                 type="submit"
                 style={Styles.submitButton}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "green"}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "green")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#4CAF50")
+                }
               >
                 Submit
               </button>
@@ -197,8 +227,12 @@ const AccountManagement = () => {
                   setSelectedRowId(null);
                 }}
                 style={Styles.cancelButton}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#892318")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#e02c18")
+                }
               >
                 Cancel
               </button>
@@ -210,12 +244,18 @@ const AccountManagement = () => {
         <>
           <div style={Styles.overlay} />
           <div style={Styles.modal}>
-            <h3><b>Delete This Account ?</b></h3>
+            <h3>
+              <b>Delete This Account ?</b>
+            </h3>
             <button
               onClick={handleDeleteAccount}
               style={Styles.submitButton}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "green"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#4CAF50"}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "green")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#4CAF50")
+              }
             >
               Confirm
             </button>
@@ -224,9 +264,13 @@ const AccountManagement = () => {
                 setShowDeleteModal(false);
                 setAccountToDelete(null);
               }}
-                            style={Styles.cancelButton}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#892318"}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e02c18"}
+              style={Styles.cancelButton}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#892318")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#e02c18")
+              }
             >
               Cancel
             </button>

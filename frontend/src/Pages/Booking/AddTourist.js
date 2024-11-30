@@ -94,6 +94,13 @@ const AddTourist = () => {
       return;
     }
 
+    if (seat === 1) {
+      toast.error(
+        "You cannot add more customers as there is only 1 seat left."
+      );
+      return;
+    }
+
     if (seat > 0) {
       setFormValues([
         ...formValues,
@@ -450,7 +457,7 @@ const AddTourist = () => {
                     }}
                     onClick={handleCardImageClick}
                   />
-                  <p
+                  {/* <p
                     style={{
                       position: "absolute",
                       top: "70px",
@@ -463,7 +470,7 @@ const AddTourist = () => {
                     }}
                   >
                     Card Payment
-                  </p>
+                  </p> */}
                   {showCardForm && (
                     <div
                       id="card-modal-overlay"
@@ -807,8 +814,8 @@ const AddTourist = () => {
                 Tour Details: <b>{tourInfo.tourDetailInfo || "N/A"}</b>
               </h5>
               <p>
-                <b>Start Date:</b> {tourInfo.tourStartDate || "N/A"} | <b>End Date:</b>{" "}
-                {tourInfo.tourEndDate || "N/A"}
+                <b>Start Date:</b> {tourInfo.tourStartDate || "N/A"} |{" "}
+                <b>End Date:</b> {tourInfo.tourEndDate || "N/A"}
               </p>
               <p style={{ marginTop: "-7px" }}>
                 <b>Departure Time:</b> {tourInfo.tourDepartureTime}
@@ -891,7 +898,7 @@ const AddTourist = () => {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "20px",
+            marginTop: "-25px",
             marginRight: "45px",
           }}
         >
@@ -905,6 +912,7 @@ const AddTourist = () => {
             }}
             onMouseEnter={() => setIsHoveredAdd(true)}
             onMouseLeave={() => setIsHoveredAdd(false)}
+            disabled={seat === 1}
           >
             <h5>
               <b>Add</b>

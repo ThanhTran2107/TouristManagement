@@ -75,11 +75,14 @@ const SpringChart = () => {
             const tourName = item.tourDetails.tourName || "Unknown Tour";
             const tourType = item.tourDetails.tourType || "Unknown Type";
 
-            if (year === selectedYearInt) {
-              revenueByMonth[month] = (revenueByMonth[month] || 0) + amount;
-              revenueByTour[tourName] = (revenueByTour[tourName] || 0) + amount;
-              revenueByType[tourType] = (revenueByType[tourType] || 0) + amount;
-            }
+          if (
+            year === selectedYearInt &&
+            item.paymentStatus === "PAYMENT_SUCCESSFUL"
+          ) {
+            revenueByMonth[month] = (revenueByMonth[month] || 0) + amount;
+            revenueByTour[tourName] = (revenueByTour[tourName] || 0) + amount;
+            revenueByType[tourType] = (revenueByType[tourType] || 0) + amount;
+          }
           });
 
           const monthNames = [
@@ -196,7 +199,10 @@ const SpringChart = () => {
             const tourType = item.tourDetails.tourType || "Unknown Type";
             const seatCount = item.seatCount || 0;
 
-            if (year === selectedYearInt) {
+            if (
+              year === selectedYearInt &&
+              item.paymentStatus === "PAYMENT_SUCCESSFUL"
+            ) {
               salesByMonth[month] = (salesByMonth[month] || 0) + seatCount;
               salesByTour[tourName] = (salesByTour[tourName] || 0) + seatCount;
               salesByType[tourType] = (salesByType[tourType] || 0) + seatCount;
