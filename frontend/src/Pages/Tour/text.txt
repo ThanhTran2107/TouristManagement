@@ -20,7 +20,7 @@ const EditTour = () => {
   const [tourType, setTourType] = useState("");
   const [tourImage, setTourImage] = useState(null);
   const [tourImageBLOB, setTourImageBLOB] = useState("");
-  const [departureTime, setDepartureTime] = useState("");
+  const [departureTime, setDepartureTime] = useState(""); // Thêm state cho departureTime
 
   const updateTour = async (e) => {
     e.preventDefault();
@@ -37,7 +37,7 @@ const EditTour = () => {
       maxSeats,
       transportationMode,
       tourType,
-      departureTime,
+      departureTime, // Thêm departureTime vào đối tượng cập nhật
       tourImage: tourImageBLOB,
     };
 
@@ -93,7 +93,7 @@ const EditTour = () => {
           setMaxSeats(response.data.maxSeats);
           setTransportationMode(response.data.transportationMode);
           setTourType(response.data.tourType);
-          setDepartureTime(response.data.departureTime);
+          setDepartureTime(response.data.departureTime); // Đặt giá trị departureTime từ API
         })
         .catch((error) => {
           console.log("Something went wrong", error);

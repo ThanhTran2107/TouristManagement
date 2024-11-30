@@ -53,6 +53,7 @@ public class TourDetailsServiceImpl implements TourDetailsService {
         tourDetails.setTransportationMode(tourDetailsDTO.getTransportationMode());
         tourDetails.setTourType(tourDetailsDTO.getTourType());
         tourDetails.setTourImage(tourDetailsDTO.getTourImage());
+        tourDetails.setDepartureTime(tourDetailsDTO.getDepartureTime());
         
         tourDetailsRepository.save(tourDetails);
         return modelMapper.map(tourDetails, TourDetailsDTO.class);

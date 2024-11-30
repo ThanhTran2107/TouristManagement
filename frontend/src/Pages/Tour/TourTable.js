@@ -239,8 +239,13 @@ const TourTable = () => {
                   Tour Details: <b>{tour.tourDetailInfo}</b>
                 </h5>
                 <p>
-                  Start Date: <b>{tour.tourStartDate}</b> | End Date:{" "}
-                  <b>{tour.tourEndDate}</b>
+                  <b>Start Date:</b> {tour.tourStartDate} | <b>End Date:</b>{" "}
+                  {tour.tourEndDate}
+                </p>
+                <p
+                  style={{ marginTop: "-7px" }}
+                >
+                  <b>Departure Time:</b> {tour.departureTime}
                 </p>
                 <h2 style={styles.price}>
                   {new Intl.NumberFormat("vi-VN").format(tour.bookingAmount)}{" "}

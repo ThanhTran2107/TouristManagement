@@ -62,6 +62,10 @@ public class TourDetails {
     @Column(name = "tour_end_date", nullable = false)
     private LocalDate tourEndDate;
 
+    @Column(name = "departure_time", nullable = false)
+    @NonNull
+    private String departureTime; 
+
     @Column(name = "max_seats")
     @Min(value = 0)
     private Integer maxSeats;

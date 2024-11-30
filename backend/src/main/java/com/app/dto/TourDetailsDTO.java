@@ -27,6 +27,7 @@ public class TourDetailsDTO {
 	private String tourDetailInfo;
 	private LocalDate tourStartDate;
 	private LocalDate tourEndDate;
+	private String departureTime;
 	private Integer maxSeats;
 	private TransportationMode transportationMode;
 	private TourTypeEnum tourType;

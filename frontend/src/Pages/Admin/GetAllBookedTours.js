@@ -471,6 +471,9 @@ const GetAllBookedTours = () => {
             {" | "}
             <strong>End Date:</strong> {selectedBookingDetails.tour.tourEndDate}
           </p>
+          <p style={{ marginTop: "-7px" }}>
+            <b>Departure Time:</b> {selectedBookingDetails.tour.departureTime}
+          </p>
           <table style={styles.detailsTable}>
             <thead>
               <tr>

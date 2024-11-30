@@ -144,8 +144,11 @@ const GetBookedTours = () => {
                 </p>
                 <p style={{ marginBottom: 10 }}>
                   Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
-                  Date: <b>{tour.tourDetails.tourEndDate}</b> | Booking Date:{" "}
-                  <b>{tour.bookingDate}</b>
+                  <b>Date:</b> {tour.tourDetails.tourEndDate} | <b>Booking Date:</b>{" "}
+                  {tour.bookingDate}
+                </p>
+                <p style={{ marginTop: "5px" }}>
+                  <b>Departure Time:</b> {tour.tourDetails.departureTime}
                 </p>
                 <p
                   style={{
@@ -168,7 +171,7 @@ const GetBookedTours = () => {
                         ? "green"
                         : hoveredBookingId === tour.bookingId
                         ? "#892318"
-                        : "#e02c18", 
+                        : "#e02c18",
                       opacity: isPaymentSuccessful ? 0.5 : 1,
                       cursor: isPaymentSuccessful ? "not-allowed" : "pointer",
                     }}
@@ -184,7 +187,7 @@ const GetBookedTours = () => {
                             )
                         : null
                     }
-                    disabled={isPaymentSuccessful} 
+                    disabled={isPaymentSuccessful}
                   >
                     <b>
                       {isPaymentSuccessful

@@ -182,15 +182,11 @@ const UserTourTable = () => {
                 <p style={styles.cardSubtitle}>
                   {tour.source} to {tour.destination}
                 </p>
-                <span
-                  style={{marginRight: "10px"}}
-                >
+                <span style={{ marginRight: "10px" }}>
                   <img src={homeIcon} alt="home icon" style={styles.icon} />
                   {duration} days
                 </span>
-                <span
-                  style={{marginRight: "10px"}}
-                >
+                <span style={{ marginRight: "10px" }}>
                   <img src={people} alt="people icon" style={styles.icon} />
                   {tour.maxSeats} seats
                 </span>
@@ -212,8 +208,11 @@ const UserTourTable = () => {
                   Tour Details: <b>{tour.tourDetailInfo}</b>
                 </h5>
                 <p>
-                  Start Date: <b>{tour.tourStartDate}</b> | End Date:{" "}
-                  <b>{tour.tourEndDate}</b>
+                  <b>Start Date:</b> {tour.tourStartDate} | <b>End Date:</b>{" "}
+                  {tour.tourEndDate}
+                </p>
+                <p style={{ marginTop: "-7px" }}>
+                  <b>Departure Time:</b> {tour.departureTime}
                 </p>
                 <h2 style={styles.price}>
                   {new Intl.NumberFormat("vi-VN").format(tour.bookingAmount)}{" "}
@@ -240,6 +239,7 @@ const UserTourTable = () => {
                               tourType: tour.tourType,
                               tourTransportation: tour.transportationMode,
                               tourImage: tour.tourImage,
+                              tourDepartureTime: tour.departureTime
                             },
                           }
                         : null

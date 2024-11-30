@@ -17,6 +17,7 @@ const AddTour = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [tourImage, setTourImage] = useState(null);
   const [tourImageBLOB, setTourImageBLOB] = useState("");
+  const [departureTime, setDepartureTime] = useState("");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -39,7 +40,7 @@ const AddTour = () => {
 
     if (new Date(tourEndDate) < new Date(tourStartDate)) {
       toast.error("End date cannot be earlier than start date!");
-      return; 
+      return;
     }
 
     if (activities.length > 500) {
@@ -59,14 +60,14 @@ const AddTour = () => {
       tourDetailInfo,
       bookingAmount,
       tourType,
-      tourImage: tourImageBLOB
+      departureTime,
+      tourImage: tourImageBLOB,
     };
 
     if (!tourImage) {
       toast.error("Please upload an image before updating");
       return;
-    }
-    else{
+    } else {
       TourServices.saveTourDetails(tour)
         .then((response) => {
           console.log("Tour added successfully", response.data);
@@ -83,6 +84,7 @@ const AddTour = () => {
           setTransportationMode("");
           setTourType("");
           setTourImage("");
+          setDepartureTime("");
         })
         .catch((error) => {
           toast.error("Something went wrong: " + error.message);
@@ -90,7 +92,7 @@ const AddTour = () => {
         });
     }
   };
-  
+
   return (
     <div>
       <div
@@ -173,6 +175,19 @@ const AddTour = () => {
                       onChange={(e) => setTourEndDate(e.target.value)}
                     />
                   </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Departure Time:</label>
+                  <input
+                    type="text"
+                    required
+                    className="form-control"
+                    name="departureTime"
+                    value={departureTime}
+                    onChange={(e) => setDepartureTime(e.target.value)}
+                    placeholder="HH:mm AM/PM"
+                  />
                 </div>
 
                 <div className="mb-3">

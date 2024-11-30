@@ -807,8 +807,11 @@ const AddTourist = () => {
                 Tour Details: <b>{tourInfo.tourDetailInfo || "N/A"}</b>
               </h5>
               <p>
-                Start Date: <b>{tourInfo.tourStartDate || "N/A"}</b> | End Date:{" "}
-                <b>{tourInfo.tourEndDate || "N/A"}</b>
+                <b>Start Date:</b> {tourInfo.tourStartDate || "N/A"} | <b>End Date:</b>{" "}
+                {tourInfo.tourEndDate || "N/A"}
+              </p>
+              <p style={{ marginTop: "-7px" }}>
+                <b>Departure Time:</b> {tourInfo.tourDepartureTime}
               </p>
               <div
                 style={{ borderTop: "2px solid black", margin: "10px 0" }}
