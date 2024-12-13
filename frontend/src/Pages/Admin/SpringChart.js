@@ -410,7 +410,7 @@ const SpringChart = () => {
                   data={revenueData}
                   options={options}
                   width={300}
-                  height={100}
+                  height={90}
                 />
               )}
               {revenueChartType === "byTourName" && (
@@ -418,7 +418,7 @@ const SpringChart = () => {
                   data={revenueData}
                   options={options}
                   width={300}
-                  height={100}
+                  height={90}
                 />
               )}
             </div>
@@ -451,7 +451,7 @@ const SpringChart = () => {
                   data={salesData}
                   options={options}
                   width={300}
-                  height={100}
+                  height={90}
                 />
               )}
               {salesChartType === "byTourName" && (
@@ -459,7 +459,7 @@ const SpringChart = () => {
                   data={salesData}
                   options={options}
                   width={300}
-                  height={100}
+                  height={90}
                 />
               )}
             </div>
@@ -487,7 +487,7 @@ const SpringChart = () => {
                 },
               }}
               width={300}
-              height={100}
+              height={90}
             />
           </div>
         </div>

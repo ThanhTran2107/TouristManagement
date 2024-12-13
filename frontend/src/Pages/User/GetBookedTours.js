@@ -143,8 +143,8 @@ const GetBookedTours = () => {
                   Tour Details: <b>{tour.tourDetails.tourDetailInfo}</b>
                 </p>
                 <p style={{ marginBottom: 10 }}>
-                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> | End
-                  <b>Date:</b> {tour.tourDetails.tourEndDate} | <b>Booking Date:</b>{" "}
+                  Start Date: <b>{tour.tourDetails.tourStartDate}</b> |{" "}
+                  <b>End Date:</b> {tour.tourDetails.tourEndDate} | <b>Booking Date:</b>{" "}
                   {tour.bookingDate}
                 </p>
                 <p style={{ marginTop: "5px" }}>
